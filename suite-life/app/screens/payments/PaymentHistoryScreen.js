@@ -6,7 +6,7 @@ import Screen from "../../components/Screen";
 
 import defaultStyles from "../../config/styles";
 
-export default function PaymentSuitemateScreen() {
+export default function PaymentHistoryScreen() {
   return (
     <Screen style={styles.screen}>
       <AppText style={defaultStyles.title}>Suitemate Payments</AppText>

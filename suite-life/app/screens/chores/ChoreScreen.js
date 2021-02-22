@@ -5,8 +5,9 @@ import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
 
 import defaultStyles from "../../config/styles";
+import routes from "../../navigation/routes";
 
-export default function ChoreScreen() {
+export default function ChoreScreen({ navigation }) {
   return (
     <Screen style={styles.screen}>
       <AppText style={defaultStyles.title}>Add Chore</AppText>
@@ -23,7 +24,7 @@ export default function ChoreScreen() {
       <AppButton
         title="Add Chore"
         color="primary"
-        onPress={() => console.log("Add Chore Tapped")}
+        onPress={() => navigation.navigate(routes.CHORE_ADD)}
       ></AppButton>
     </Screen>
   );

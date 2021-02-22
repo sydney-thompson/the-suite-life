@@ -1,21 +1,14 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 
-import ApartmentScreen from "./app/screens/ApartmentScreen";
-import ColorTestScreen from "./app/screens/ColorTestScreen";
-import LoginScreen from "./app/screens/LoginScreen";
-import RegisterScreen from "./app/screens/RegisterScreen";
-import WelcomeScreen from "./app/screens/WelcomeScreen";
-import {
-  PaymentScreen,
-  PaymentAddScreen,
-  PaymentSuitemateScreen,
-} from "./app/screens/payments";
-import { ChoreScreen, ChoreAddScreen } from "./app/screens/chores";
+import navigationTheme from "./app/navigation/navigationTheme";
+import AppNavigator from "./app/navigation/AppNavigator";
+import AuthNavigator from "./app/navigation/AuthNavigator";
 
 export default function App() {
-  return <ChoreAddScreen />;
+  return (
+    <NavigationContainer theme={navigationTheme}>
+      <AppNavigator />
+    </NavigationContainer>
+  );
 }
-
-const styles = StyleSheet.create({});
