@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import * as Yup from "yup";
 
@@ -9,6 +9,8 @@ import {
   SubmitButton,
 } from "../../components/forms";
 import colors from "../../config/colors";
+import AppButton from "../../components/AppButton";
+import routes from "../../navigation/routes";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
@@ -16,12 +18,16 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().required().min(4).label("Password"),
 });
 
-export default function RegisterScreen() {
+export default function RegisterScreen({ navigation }) {
   return (
     <Screen style={styles.container}>
       <Image style={styles.logo} source={require("../../assets/favicon.png")} />
       <Form
-        initialValues={{ name: "", email: "", password: "" }}
+        initialValues={{
+          name: "",
+          email: "",
+          password: "",
+        }}
         onSubmit={(values) => console.log(values)}
         validationSchema={validationSchema}
       >
@@ -49,7 +55,19 @@ export default function RegisterScreen() {
           secureTextEntry
           textContentType="password"
         />
-        <SubmitButton title="Create Account" />
+        <View style={styles.spacer} />
+        {/* <SubmitButton title="Join Suite" color={"primary"} />
+        <SubmitButton title="Create Suite" /> */}
+        <AppButton
+          title="Join Suite"
+          color="primary"
+          onPress={() => navigation.navigate(routes.JOIN_SUITE)}
+        />
+        <AppButton
+          title="Create Suite"
+          color="black"
+          onPress={() => navigation.navigate(routes.CREATE_SUITE)}
+        />
       </Form>
     </Screen>
   );
@@ -66,5 +84,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 50,
     marginBottom: 20,
+  },
+  spacer: {
+    flex: 1,
   },
 });

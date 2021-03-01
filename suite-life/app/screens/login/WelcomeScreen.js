@@ -22,7 +22,7 @@ export default function WelcomeScreen({ navigation }) {
           title="Login"
           color="primary"
           onPress={() => navigation.navigate(routes.LOGIN)}
-        ></AppButton>
+        />
         <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)}>
           <AppText style={styles.createAccount}>Create Account</AppText>
         </TouchableOpacity>
