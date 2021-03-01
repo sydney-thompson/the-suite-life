@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
-import { db } from '../components/Firebase/firebase';
+import { db } from "../../components/firebase/firebase";
 
 import defaultStyles from "../../config/styles";
 
@@ -21,7 +21,7 @@ export default function ChoreAddScreen() {
           let chores_new = chores_old.push(chore);
 
           db.collection("users").document(userId).update({
-            chores: chores_new
+            chores: chores_new,
           });
         }}
       ></AppButton>
