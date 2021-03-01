@@ -54,6 +54,7 @@ export default function LoginScreen({ navigation }) {
             </AppText>
           </TouchableOpacity>
         </View>
+        <View style={styles.spacer} />
         <SubmitButton title="Log In" />
       </Form>
       <View style={styles.createAccountContainer}>
@@ -90,6 +91,9 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 50,
     marginBottom: 20,
+  },
+  spacer: {
+    flex: 1,
   },
   welcomeText: {
     color: colors.white,

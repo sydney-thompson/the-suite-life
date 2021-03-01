@@ -56,18 +56,7 @@ export default function RegisterScreen({ navigation }) {
           textContentType="password"
         />
         <View style={styles.spacer} />
-        {/* <SubmitButton title="Join Suite" color={"primary"} />
-        <SubmitButton title="Create Suite" /> */}
-        <AppButton
-          title="Join Suite"
-          color="primary"
-          onPress={() => navigation.navigate(routes.JOIN_SUITE)}
-        />
-        <AppButton
-          title="Create Suite"
-          color="black"
-          onPress={() => navigation.navigate(routes.CREATE_SUITE)}
-        />
+        <SubmitButton title="Register" />
       </Form>
     </Screen>
   );
