@@ -1,15 +1,40 @@
 export default {
-  primary: "#D2BF55",
-  secondary: "#FBBFCA",
-  tertiary: "#E23E1B",
-  quaternary: "#FFEED6",
-  black: "#3A3042",
+  primary: "#8FC286",
+  secondary: "#537666",
+  tertiary: "#F2E4B4",
+  black: "#1F2824",
   white: "#FFF9F0",
   medium: "#6e6969",
-  light: "#FFEED6",
+  light: "#B9F6EB",
   dark: "#1F2232",
   danger: "#c22415",
 };
+
+// export default {
+//   primary: "#307418",
+//   secondary: "#9CCE5C",
+//   tertiary: "#5CCEAC",
+//   quaternary: "#5F2964",
+//   black: "#3A3042",
+//   white: "#FFF9F0",
+//   medium: "#6e6969",
+//   light: "#B9F6EB",
+//   dark: "#1F2232",
+//   danger: "#c22415",
+// };
+
+// export default {
+//   primary: "#D2BF55",
+//   secondary: "#FBBFCA",
+//   tertiary: "#E23E1B",
+//   quaternary: "#FFEED6",
+//   black: "#3A3042",
+//   white: "#FFF9F0",
+//   medium: "#6e6969",
+//   light: "#FFEED6",
+//   dark: "#1F2232",
+//   danger: "#c22415",
+// };
 
 // green, pink, burgendy;
 // export default {

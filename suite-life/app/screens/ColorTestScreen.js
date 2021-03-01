@@ -4,6 +4,7 @@ import Constants from "expo-constants";
 
 import Screen from "../components/Screen";
 import colors from "../config/colors";
+import AppButton from "../components/AppButton";
 
 export default function ColorTestScreen() {
   return (
@@ -12,11 +13,15 @@ export default function ColorTestScreen() {
         <Text style={styles.titleText}>Title Text</Text>
         <Text style={styles.subTitleText}>Subtitle Text</Text>
       </View>
+      <View style={styles.buttonContainer}>
+        <AppButton title="Button" />
+      </View>
       <View style={styles.paletteContainer}>
         <View style={styles.black} />
         <View style={styles.primary} />
         <View style={styles.secondary} />
         <View style={styles.tertiary} />
+        <View style={styles.white} />
         {colors.quaternary && <View style={styles.quaternary} />}
         {colors.quinary && <View style={styles.quinary} />}
       </View>
@@ -25,10 +30,17 @@ export default function ColorTestScreen() {
 }
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    backgroundColor: colors.black,
+  },
   screen: {
     backgroundColor: colors.white,
     flex: 1,
     justifyContent: "space-between",
+    alignItems: "center",
     paddingTop: Constants.statusBarHeight,
   },
   textContainer: {
@@ -52,6 +64,11 @@ const styles = StyleSheet.create({
   },
   black: {
     backgroundColor: colors.black,
+    height: 300,
+    flex: 1,
+  },
+  white: {
+    backgroundColor: colors.white,
     height: 300,
     flex: 1,
   },

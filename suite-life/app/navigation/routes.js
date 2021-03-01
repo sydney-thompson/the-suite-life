@@ -11,5 +11,6 @@ export default Object.freeze({
   PAYMENT_NAV: "PaymentNavigation",
   REGISTER: "Register",
   RULES: "Rules",
+  SUITE: "Suite",
   WELCOME: "Welcome",
 });
