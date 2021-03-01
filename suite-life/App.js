@@ -20,6 +20,7 @@ export default function App() {
   }
 
   useEffect(() => {
+    console.log("AUTH STATE CHANGED");
     const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   }, []);
@@ -29,6 +30,8 @@ export default function App() {
   let Navigator = <AppNavigator />;
   if (!user) {
     Navigator = <AuthNavigator />;
+  } else {
+    console.log("user:", user);
   }
 
   return (
