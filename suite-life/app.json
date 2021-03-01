@@ -27,6 +27,9 @@
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
-    }
+    },
+    "facebookScheme": "fb1097367824036534",
+    "facebookAppId": "1097367824036534",
+    "facebookDisplayName": "the-suite-life"
   }
 }
