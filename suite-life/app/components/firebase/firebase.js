@@ -1,7 +1,7 @@
-import * as firebase from 'firebase';
-import 'firebase/auth';
+import * as firebase from "firebase";
+import "firebase/auth";
 
-import firebaseConfig from './firebaseConfig';
+import firebaseConfig from "./firebaseConfig";
 
 // Initialize firebase app
 
