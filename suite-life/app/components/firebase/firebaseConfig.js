@@ -3,7 +3,7 @@
 export default {
   apiKey: "AIzaSyB3ExgzPoyG8VBKacy2roP21UbaZn_n7YU",
   authDomain: "the-suite-life-s21.firebaseapp.com",
-  databaseUrl: "https://the-suite-life-s21-default-rtdb.firebaseio.com/",
+  databaseURL: "https://the-suite-life-s21-default-rtdb.firebaseio.com/",
   projectId: "the-suite-life-s21",
   storageBucket: "the-suite-life-s21.appspot.com",
   messagingSenderId: "907884719847",
