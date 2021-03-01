@@ -1,16 +1,20 @@
 import React from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 
-import AppButton from "../components/AppButton";
-import colors from "../config/colors";
-import routes from "../navigation/routes";
-import Screen from "../components/Screen";
+import AppButton from "../../components/AppButton";
+import colors from "../../config/colors";
+import routes from "../../navigation/routes";
+import Screen from "../../components/Screen";
+import AppText from "../../components/AppText";
 
 export default function WelcomeScreen({ navigation }) {
   return (
     <Screen style={styles.screen}>
       <View style={styles.logoContainer}>
-        <Image style={styles.logo} source={require("../assets/favicon.png")} />
+        <Image
+          style={styles.logo}
+          source={require("../../assets/favicon.png")}
+        />
         <Text style={styles.tagline}>The Suite Life</Text>
       </View>
       <View style={styles.buttonContainer}>
@@ -19,11 +23,9 @@ export default function WelcomeScreen({ navigation }) {
           color="primary"
           onPress={() => navigation.navigate(routes.LOGIN)}
         ></AppButton>
-        <AppButton
-          title="Register"
-          color="secondary"
-          onPress={() => navigation.navigate(routes.REGISTER)}
-        ></AppButton>
+        <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)}>
+          <AppText style={styles.createAccount}>Create Account</AppText>
+        </TouchableOpacity>
       </View>
     </Screen>
   );
@@ -41,6 +43,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
+  },
+  createAccount: {
+    color: colors.black,
+    fontSize: 20,
   },
   logo: {
     width: 100,

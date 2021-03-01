@@ -2,28 +2,35 @@ import React from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import * as Yup from "yup";
 
-import Screen from "../components/Screen";
+import Screen from "../../components/Screen";
 import {
   AppForm as Form,
   AppFormField as FormField,
   SubmitButton,
-} from "../components/forms";
+} from "../../components/forms";
+import colors from "../../config/colors";
 
 const validationSchema = Yup.object().shape({
+  name: Yup.string().required().label("Name"),
   email: Yup.string().required().email().label("Email"),
   password: Yup.string().required().min(4).label("Password"),
 });
 
-export default function LoginScreen(props) {
+export default function RegisterScreen() {
   return (
     <Screen style={styles.container}>
-      <Image style={styles.logo} source={require("../assets/favicon.png")} />
-
+      <Image style={styles.logo} source={require("../../assets/favicon.png")} />
       <Form
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ name: "", email: "", password: "" }}
         onSubmit={(values) => console.log(values)}
         validationSchema={validationSchema}
       >
+        <FormField
+          autoCorrect={false}
+          icon="account"
+          name="name"
+          placeholder="Name"
+        />
         <FormField
           autoCapitalize="none"
           autoCorrect={false}
@@ -42,7 +49,7 @@ export default function LoginScreen(props) {
           secureTextEntry
           textContentType="password"
         />
-        <SubmitButton title="Login" />
+        <SubmitButton title="Create Account" />
       </Form>
     </Screen>
   );
@@ -50,6 +57,7 @@ export default function LoginScreen(props) {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: colors.secondary,
     padding: 10,
   },
   logo: {

@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   subTitleText: {
-    color: colors.tertiary,
+    color: colors.secondary,
     fontSize: 24,
     fontFamily: Platform.OS === "android" ? "Roboto" : "Avenir",
   },
