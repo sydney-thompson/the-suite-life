@@ -4,9 +4,9 @@ import { Alert } from "react-native";
 import * as Facebook from "expo-facebook";
 import * as firebase from "firebase";
 
-import { auth } from "../../components/firebase/firebase";
+import { auth } from "../firebase/firebase";
 
-export default async function loginWithFacebook() {
+export default async function facebookLogin() {
   await Facebook.initializeAsync({ appId: "1097367824036534" });
 
   const data = await Facebook.logInWithReadPermissionsAsync({

@@ -4,10 +4,10 @@ import { Alert } from "react-native";
 import * as Google from "expo-google-app-auth";
 import * as firebase from "firebase";
 
-import { auth } from "../../components/firebase/firebase";
-import firebaseConfig from "../../components/firebase/firebaseConfig";
+import { auth } from "../firebase/firebase";
+import firebaseConfig from "../firebase/firebaseConfig";
 
-export default async function loginwithGoogle() {
+export async function googleLogin() {
   const { type, accessToken, user } = await Google.logInAsync({
     iosClientId: `907884719847-8do0qdtlq6a94oq2q7lijna1cnpkbmqn.apps.googleusercontent.com`,
     androidClientId: `907884719847-0c094rtuqvn89kdnugkcoja4a0qqu839.apps.googleusercontent.com`,
@@ -65,4 +65,8 @@ export default async function loginwithGoogle() {
   } else {
     console.log("Type:", type);
   }
+}
+
+export async function googleLogout() {
+  auth.signOut();
 }

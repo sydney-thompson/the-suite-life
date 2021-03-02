@@ -4,8 +4,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import colors from "../../config/colors";
-import loginWithFacebook from "../../components/auth/loginWithFacebook";
-import loginWithGoogle from "../../components/auth/loginWithGoogle";
+import { googleLogin, googleLogout } from "../../components/auth/googleAuth";
 import routes from "../../navigation/routes";
 import Screen from "../../components/Screen";
 
@@ -17,18 +16,18 @@ export default function WelcomeScreen({ navigation }) {
           style={styles.logo}
           source={require("../../assets/favicon.png")}
         />
-        <Text style={styles.tagline}>The Suite Life</Text>
+        <Text style={styles.title}>The Suite Life</Text>
       </View>
       <View style={styles.buttonContainer}>
         <AppButton
-          title="Login"
-          color="primary"
-          onPress={loginWithGoogle}
+          title="Login with Google"
+          color="black"
+          onPress={googleLogin}
           // onPress={() => navigation.navigate(routes.LOGIN)}
         />
-        <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)}>
           <AppText style={styles.createAccount}>Create Account</AppText>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </Screen>
   );
@@ -39,6 +38,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
+    backgroundColor: colors.secondary,
   },
   buttonContainer: {
     width: "100%",
@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
     top: 70,
     alignItems: "center",
   },
-  tagline: {
-    color: colors.black,
-    fontSize: 40,
+  title: {
+    color: colors.white,
+    fontSize: 50,
     fontFamily: Platform.OS === "android" ? "Roboto" : "Times New Roman",
     fontWeight: "bold",
     paddingVertical: 20,
