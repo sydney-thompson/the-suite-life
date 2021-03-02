@@ -1,42 +1,15 @@
 import React from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-import * as Facebook from "expo-facebook";
-import * as firebase from "firebase";
 
 import AppButton from "../../components/AppButton";
-import { auth } from "../../components/firebase/firebase";
+import AppText from "../../components/AppText";
 import colors from "../../config/colors";
+import loginWithFacebook from "../../components/auth/loginWithFacebook";
+import loginWithGoogle from "../../components/auth/loginWithGoogle";
 import routes from "../../navigation/routes";
 import Screen from "../../components/Screen";
-import AppText from "../../components/AppText";
 
 export default function WelcomeScreen({ navigation }) {
-  async function loginWithFacebook() {
-    // const appId = "1097367824036534";
-    // const appName = "the-suite-life";
-    await Facebook.initializeAsync();
-
-    console.log("trying login");
-    const { type, token } = await Facebook.logInWithReadPermissionsAsync({
-      permissions: ["public_profile"],
-    });
-
-    console.log("trying to get credentials");
-    console.log("type:", type);
-    console.log("token:", token);
-    if (type === "success") {
-      console.log("SUCCESS!");
-      // Build Firebase credential with the Facebook access token.
-      const credential = auth.FacebookAuthProvider.credential(token);
-      console.log("credeintial:", credential);
-      // Sign in with credential from the Facebook user.
-      auth.signInWithCredential(credential).catch((error) => {
-        // Handle Errors here.
-        console.log("error:", error);
-      });
-    }
-  }
-
   return (
     <Screen style={styles.screen}>
       <View style={styles.logoContainer}>
@@ -50,7 +23,7 @@ export default function WelcomeScreen({ navigation }) {
         <AppButton
           title="Login"
           color="primary"
-          onPress={loginWithFacebook}
+          onPress={loginWithGoogle}
           // onPress={() => navigation.navigate(routes.LOGIN)}
         />
         <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)}>

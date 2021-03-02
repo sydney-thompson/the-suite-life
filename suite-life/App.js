@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import * as Facebook from "expo-facebook";
-import * as firebase from "firebase";
 
 import AppNavigator from "./app/navigation/AppNavigator";
 import AuthNavigator from "./app/navigation/AuthNavigator";

@@ -13,7 +13,10 @@
     "@react-navigation/native": "^5.9.3",
     "@react-navigation/stack": "^5.14.3",
     "expo": "~40.0.0",
+    "expo-facebook": "~9.1.0",
+    "expo-google-app-auth": "^8.1.4",
     "expo-status-bar": "~1.0.3",
+    "firebase": "7.9.0",
     "formik": "^2.2.6",
     "react": "16.13.1",
     "react-dom": "16.13.1",
@@ -23,9 +26,7 @@
     "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "~2.15.2",
     "react-native-web": "~0.13.12",
-    "yup": "^0.32.9",
-    "firebase": "7.9.0",
-    "expo-facebook": "~9.1.0"
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"
