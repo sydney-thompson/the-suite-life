@@ -25,6 +25,11 @@ import { googleLogin } from "../../components/auth/googleAuth";
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
   pronouns: Yup.string().optional().label("Pronouns"),
+  suiteCode: Yup.string()
+    .optional()
+    .min(10, "Suite code is exactly 10 characters")
+    .max(10, "Suite code is exactly 10 characters")
+    .label("Suite Code"),
 });
 
 export default function RegisterScreen({ navigation }) {
@@ -47,6 +52,7 @@ export default function RegisterScreen({ navigation }) {
         initialValues={{
           name: "",
           pronouns: "",
+          suiteCode: "",
           // email: "",
           // password: "",
         }}
@@ -64,7 +70,12 @@ export default function RegisterScreen({ navigation }) {
           autoCapitalize="none"
           autoCorrect={false}
           name="pronouns"
-          placeholder="Pronouns"
+          placeholder="Pronouns (optional)"
+        />
+        <FormField
+          autoCorrect={false}
+          name="suiteCode"
+          placeholder="Suite Code (optional)"
         />
         {/* <FormField
           autoCapitalize="none"
@@ -83,7 +94,7 @@ export default function RegisterScreen({ navigation }) {
           textContentType="password"
         /> */}
         <View style={styles.spacer} />
-        <SubmitButton title="register with google" />
+        <SubmitButton title="sign up using google" />
       </Form>
     </Screen>
   );
