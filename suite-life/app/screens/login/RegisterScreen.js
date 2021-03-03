@@ -1,46 +1,74 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableWithoutFeedback,
+} from "react-native";
 import * as Yup from "yup";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import Screen from "../../components/Screen";
+import AppButton from "../../components/AppButton";
 import {
   AppForm as Form,
   AppFormField as FormField,
   SubmitButton,
 } from "../../components/forms";
+import AppText from "../../components/AppText";
+import AppTitle from "../../components/AppTitle";
 import colors from "../../config/colors";
-import AppButton from "../../components/AppButton";
 import routes from "../../navigation/routes";
+import Screen from "../../components/Screen";
+import { googleLogin } from "../../components/auth/googleAuth";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
-  email: Yup.string().required().email().label("Email"),
-  password: Yup.string().required().min(4).label("Password"),
+  pronouns: Yup.string().optional().label("Pronouns"),
 });
 
 export default function RegisterScreen({ navigation }) {
   return (
     <Screen style={styles.container}>
-      <Image style={styles.logo} source={require("../../assets/favicon.png")} />
+      <View style={styles.headerContainer}>
+        <View style={styles.deleteIconContainer}>
+          <MaterialCommunityIcons
+            name="close"
+            color={colors.medium}
+            size={30}
+          />
+        </View>
+        <AppTitle style={styles.title}>Sign Up</AppTitle>
+        <TouchableWithoutFeedback onPress={() => googleLogin()}>
+          <AppText style={styles.login}>Login</AppText>
+        </TouchableWithoutFeedback>
+      </View>
       <Form
         initialValues={{
           name: "",
-          email: "",
-          password: "",
+          pronouns: "",
+          // email: "",
+          // password: "",
         }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => {
+          successCallback = () => {
+            console.log(values);
+          };
+          failureCallback = () => {};
+          googleLogin().then(successCallback, failureCallback);
+        }}
         validationSchema={validationSchema}
       >
-        <FormField
-          autoCorrect={false}
-          icon="account"
-          name="name"
-          placeholder="Name"
-        />
+        <FormField autoCorrect={false} name="name" placeholder="Name" />
         <FormField
           autoCapitalize="none"
           autoCorrect={false}
-          icon="email"
+          name="pronouns"
+          placeholder="Pronouns"
+        />
+        {/* <FormField
+          autoCapitalize="none"
+          autoCorrect={false}
           keyboardType="email-address"
           name="email"
           placeholder="Email"
@@ -49,14 +77,13 @@ export default function RegisterScreen({ navigation }) {
         <FormField
           autoCapitalize="none"
           autoCorrect={false}
-          icon="lock"
           name="password"
           placeholder="Password"
           secureTextEntry
           textContentType="password"
-        />
+        /> */}
         <View style={styles.spacer} />
-        <SubmitButton title="Register" />
+        <SubmitButton title="register with google" />
       </Form>
     </Screen>
   );
@@ -64,8 +91,24 @@ export default function RegisterScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.secondary,
+    alignItems: "center",
+    backgroundColor: colors.white,
     padding: 10,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
+  deleteIconContainer: {
+    position: "absolute",
+    left: 10,
+  },
+  login: {
+    color: colors.primary,
+    position: "absolute",
+    right: 10,
   },
   logo: {
     width: 80,
@@ -75,6 +118,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   spacer: {
-    flex: 1,
+    height: 20,
+  },
+  title: {
+    marginBottom: 10,
   },
 });

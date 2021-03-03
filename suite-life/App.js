@@ -28,9 +28,10 @@ export default function App() {
   let Navigator = <AppNavigator />;
   if (!user) {
     Navigator = <AuthNavigator />;
-  } else {
-    console.log("user:", user);
   }
+  // } else {
+  //   console.log("user:", user);
+  // }
 
   return (
     <NavigationContainer theme={navigationTheme}>

@@ -12,9 +12,9 @@ export async function googleLogin() {
     iosClientId: `907884719847-8do0qdtlq6a94oq2q7lijna1cnpkbmqn.apps.googleusercontent.com`,
     androidClientId: `907884719847-0c094rtuqvn89kdnugkcoja4a0qqu839.apps.googleusercontent.com`,
   });
-  console.log("type:", type);
-  console.log("accessToken:", accessToken);
-  console.log("user:", user);
+  // console.log("type:", type);
+  // console.log("accessToken:", accessToken);
+  // console.log("user:", user);
 
   if (type === "success") {
     // Build Firebase credential with the Facebook access token.
@@ -23,7 +23,7 @@ export async function googleLogin() {
       null,
       accessToken
     );
-    console.log("credential:", credential);
+    // console.log("credential:", credential);
 
     // Sign in with credential from the Facebook user.
     auth.signInWithCredential(credential).catch((error) => {
@@ -39,11 +39,13 @@ export async function googleLogin() {
       if (errorCode === "auth/account-exists-with-different-credential") {
         Alert.alert("Email already associated with another account.");
         // Handle account linking here, if using.
+        reject("error");
       } else {
         console.error(error);
+        reject("error");
       }
+      resolve("success");
     });
-    console.log("signed in?");
 
     // NOTE: Can retrieve ID with (await response.json()).id or variations like const { id, name } = await response.json();
     // const response = await fetch(
@@ -62,8 +64,10 @@ export async function googleLogin() {
     Alert.alert(
       "To login with Google, you must approve sign-in access for The Suite Life."
     );
+    reject(type);
   } else {
     console.log("Type:", type);
+    reject("type");
   }
 }
 
