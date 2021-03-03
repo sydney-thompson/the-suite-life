@@ -37,11 +37,15 @@ export default function RegisterScreen({ navigation }) {
     <Screen style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.deleteIconContainer}>
-          <MaterialCommunityIcons
-            name="close"
-            color={colors.medium}
-            size={30}
-          />
+          <TouchableWithoutFeedback
+            onPress={() => navigation.navigate(routes.WELCOME)}
+          >
+            <MaterialCommunityIcons
+              name="close"
+              color={colors.medium}
+              size={30}
+            />
+          </TouchableWithoutFeedback>
         </View>
         <AppTitle style={styles.title}>Sign Up</AppTitle>
         <TouchableWithoutFeedback onPress={() => googleLogin()}>
