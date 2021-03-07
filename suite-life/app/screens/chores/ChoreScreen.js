@@ -3,11 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
+import {db} from '../../../src/config';
 
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 
 export default function ChoreScreen({ navigation }) {
+
   return (
     <Screen style={styles.screen}>
       <AppText style={defaultStyles.title}>Add Chore</AppText>
