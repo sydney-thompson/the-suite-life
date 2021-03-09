@@ -10,7 +10,7 @@ import { googleLogin, googleLogout } from "../../components/auth/googleAuth";
 import routes from "../../navigation/routes";
 import Screen from "../../components/Screen";
 
-export default function WelcomeScreen({ navigation }) {
+export default function NewVsExistingScreen({ navigation }) {
   return (
     <Screen style={styles.screen}>
       <View style={styles.titleContainer}>
@@ -20,10 +20,10 @@ export default function WelcomeScreen({ navigation }) {
 
       <View style={styles.buttonContainer}>
         <AppButton
-          title="Login"
+          title="Join Existing Suite"
           textStyle={styles.buttonText}
           color="white"
-          onPress={googleLogin}
+          onPress={() => navigation.navigate(routes.JOIN_SUITE)}
           //onPress={() => navigation.navigate(routes.REGISTER)}
         />
         {/* <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)}>
@@ -33,11 +33,11 @@ export default function WelcomeScreen({ navigation }) {
 
       <View style={styles.buttonContainer}>
         <AppButton
-          title="Create New Account"
+          title="Create New Suite"
           textStyle={styles.buttonText}
           color="white"
           // onPress={googleLogin}
-          onPress={() => navigation.navigate(routes.REGISTER)}
+          onPress={() => navigation.navigate(routes.CREATE_SUITE)}
         />
         {/* <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)}>
           <AppText style={styles.createAccount}>Create Account</AppText>

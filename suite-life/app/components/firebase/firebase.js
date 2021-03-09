@@ -12,6 +12,63 @@ if (!firebase.apps.length) {
 export const auth = firebase.auth();
 export const db = firebase.database();
 
+export const createSuite = (
+  suite_id,
+  suite_name,
+) => {
+  db.ref("suites/" + suite_id).set({ // initialze to empty arrays by default
+    chores: [],
+    transactions: [],
+    messages: [],
+    users: [auth.currentUser.uid],
+    id: suite_id,
+    name: suite_name,
+  });
+};
+
+export const createUser = (
+  name,
+  pronouns,
+) => {
+  db.ref("users/" + name).set({ // initialze to empty arrays by default
+    id: auth.currentUser.uid,
+    name: name,
+    pronouns: pronouns,
+    suite_id: null,
+  });
+};
+
+export const updateUserSuite = (
+  user_id,
+  suite_id,
+) => {
+  db.ref("users/" + user_id).set({ // initialze to empty arrays by default
+    suite_id: suite_id,
+  });
+};
+
+
+
+export var checksuite = () => {
+
+
+  var suites = firebase.database().ref("suites/");
+
+  suites.on("child_changed", function(data) {
+    var player = data.val();
+    console.log("The new suite is " + player.name);
+    return true;
+  });
+
+
+}
+
+
+
+
+/*************************************************************************************************************************** 
+
+
 // authorization
 export const registerWithEmail = (email, password) => {
   auth.createUserWithEmailAndPassword(email, password);
@@ -29,6 +86,10 @@ export const passwordReset = (email) => {
   auth.sendPasswordResetEmail(email);
 };
 
+
+
+
+
 // writing data
 export const updatePerson = (userId, name, email, pronouns, suite_tag) => {
   db.ref("users/" + userId).set({
@@ -39,6 +100,7 @@ export const updatePerson = (userId, name, email, pronouns, suite_tag) => {
   });
 };
 
+/*
 export const updateSuite = (
   chores,
   transactions,
@@ -53,7 +115,9 @@ export const updateSuite = (
     persons: persons,
     suite_tag: suite_tag,
   });
-};
+}; */
+
+
 
 // reading data
 // export const readPerson = (userId) => {

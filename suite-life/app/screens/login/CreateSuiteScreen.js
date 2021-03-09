@@ -10,6 +10,7 @@ import {
 import colors from "../../config/colors";
 import Screen from "../../components/Screen";
 import AppText from "../../components/AppText";
+import {auth, createSuite} from "../../components/firebase/firebase"
 
 const validationSchema = Yup.object().shape({
   suiteName: Yup.string().required().min(4).label("Suite Name"),
@@ -21,7 +22,10 @@ export default function CreateSuiteScreen() {
       <AppText style={styles.headerText}>Name your new suite!</AppText>
       <Form
         initialValues={{ suiteName: "" }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => {
+          console.log(values.suiteName);
+          createSuite(Math.floor(Math.random() * 1000000000), values.suiteName);
+        }}
         validationSchema={validationSchema}
       >
         <FormField

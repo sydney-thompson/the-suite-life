@@ -21,15 +21,11 @@ import colors from "../../config/colors";
 import routes from "../../navigation/routes";
 import Screen from "../../components/Screen";
 import { googleLogin } from "../../components/auth/googleAuth";
+import { createUser, auth } from "../../components/firebase/firebase"
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
   pronouns: Yup.string().optional().label("Pronouns"),
-  suiteCode: Yup.string()
-    .optional()
-    .min(10, "Suite code is exactly 10 characters")
-    .max(10, "Suite code is exactly 10 characters")
-    .label("Suite Code"),
 });
 
 export default function RegisterScreen({ navigation }) {
@@ -48,24 +44,27 @@ export default function RegisterScreen({ navigation }) {
           </TouchableWithoutFeedback>
         </View>
         <AppTitle style={styles.title}>Sign Up</AppTitle>
-        <TouchableWithoutFeedback onPress={() => googleLogin()}>
-          <AppText style={styles.login}>Login</AppText>
-        </TouchableWithoutFeedback>
       </View>
       <Form
         initialValues={{
           name: "",
           pronouns: "",
-          suiteCode: "",
           // email: "",
           // password: "",
         }}
         onSubmit={(values) => {
           successCallback = () => {
             console.log(values);
+            
           };
-          failureCallback = () => {};
+          failureCallback = () => {
+
+          };
           googleLogin().then(successCallback, failureCallback);
+          createUser(values.name, values.pronouns);
+          console.log('done')
+          navigation.navigate(routes.NEWEXIST);
+
         }}
         validationSchema={validationSchema}
       >
@@ -75,11 +74,6 @@ export default function RegisterScreen({ navigation }) {
           autoCorrect={false}
           name="pronouns"
           placeholder="Pronouns (optional)"
-        />
-        <FormField
-          autoCorrect={false}
-          name="suiteCode"
-          placeholder="Suite Code (optional)"
         />
         {/* <FormField
           autoCapitalize="none"
@@ -98,7 +92,7 @@ export default function RegisterScreen({ navigation }) {
           textContentType="password"
         /> */}
         <View style={styles.spacer} />
-        <SubmitButton title="sign up using google" />
+        <SubmitButton title="Create Account" />
       </Form>
     </Screen>
   );

@@ -15,4 +15,5 @@ export default Object.freeze({
   RULES: "Rules",
   SUITE: "Suite",
   WELCOME: "Welcome",
+  NEWEXIST: "NewVsExisting",
 });
