@@ -9,7 +9,6 @@ import {
 import * as Yup from "yup";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import AppButton from "../../components/AppButton";
 import {
   AppForm as Form,
   AppFormField as FormField,
@@ -21,7 +20,7 @@ import colors from "../../config/colors";
 import routes from "../../navigation/routes";
 import Screen from "../../components/Screen";
 import { googleLogin } from "../../components/auth/googleAuth";
-import { createUser, auth } from "../../components/firebase/firebase"
+import { createUser, auth } from "../../components/firebase/firebase";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
@@ -44,6 +43,17 @@ export default function RegisterScreen({ navigation }) {
           </TouchableWithoutFeedback>
         </View>
         <AppTitle style={styles.title}>Sign Up</AppTitle>
+        <View style={styles.loginContainer}>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              const successCallback = () => {};
+              const failureCallback = () => {};
+              googleLogin().then(successCallback, failureCallback);
+            }}
+          >
+            <AppText style={styles.login}>Log In</AppText>
+          </TouchableWithoutFeedback>
+        </View>
       </View>
       <Form
         initialValues={{
@@ -53,18 +63,13 @@ export default function RegisterScreen({ navigation }) {
           // password: "",
         }}
         onSubmit={(values) => {
-          successCallback = () => {
-            console.log(values);
-            
+          const successCallback = () => {
+            // console.log("uid:", auth.currentUser.uid);
+            // createUser(values.name, values.pronouns);
+            navigation.navigate(routes.JOIN_SUITE, values);
           };
-          failureCallback = () => {
-
-          };
+          const failureCallback = () => {};
           googleLogin().then(successCallback, failureCallback);
-          createUser(values.name, values.pronouns);
-          console.log('done')
-          navigation.navigate(routes.NEWEXIST);
-
         }}
         validationSchema={validationSchema}
       >
@@ -116,6 +121,9 @@ const styles = StyleSheet.create({
   },
   login: {
     color: colors.primary,
+    justifyContent: "flex-end",
+  },
+  loginContainer: {
     position: "absolute",
     right: 10,
   },
