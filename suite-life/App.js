@@ -19,6 +19,7 @@ export default function App() {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitalizing] = useState(true);
   const [user, setUser] = useState();
+  const [registered, setRegistered] = useState(false);
 
   // Handle user state changes
   function onAuthStateChanged(user) {
@@ -30,22 +31,25 @@ export default function App() {
     console.log("AUTH STATE CHANGED");
     const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
-  }, []);
+  }, [registered]);
 
-  checkUserExists("l4J8y0iZtjSUhEJysRLhGHPysDl2")
-    .then((res) => {
-      console.log("exists:", res);
-    })
-    .catch((res) => console.log("ERROR:", res));
+  if (user) {
+    checkUserExists(auth.currentUser.uid)
+      .then((res) => {
+        console.log("exists:", res);
+        if (res) setRegistered(res);
+      })
+      .catch((res) => console.log("ERROR:", res));
+  }
 
   if (initializing) return null;
 
   let Navigator = <AuthNavigator />;
-  // if (user) {
-  //   Navigator = <AppNavigator />;
-  // } else {
-  //   console.log("user:", user);
-  // }
+  if (user) {
+    Navigator = <AppNavigator />;
+  } else {
+    console.log("user:", user);
+  }
 
   return (
     <NavigationContainer theme={navigationTheme}>
