@@ -3,13 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import AppNavigator from "./app/navigation/AppNavigator";
 import AuthNavigator from "./app/navigation/AuthNavigator";
-import {
-  auth,
-  db,
-  checksuite,
-  checkSuiteExists,
-  checkUserExists,
-} from "./app/components/firebase/firebase";
+import { auth, db } from "./app/components/firebase/firebase";
+import { checksuite, checkSuiteExists, checkUserExists } from "./app/components/firebase/suites";
 import navigationTheme from "./app/navigation/navigationTheme";
 
 var userhere = false;

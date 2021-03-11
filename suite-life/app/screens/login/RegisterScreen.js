@@ -20,7 +20,8 @@ import colors from "../../config/colors";
 import routes from "../../navigation/routes";
 import Screen from "../../components/Screen";
 import { googleLogin } from "../../components/auth/googleAuth";
-import { createUser, auth } from "../../components/firebase/firebase";
+import { auth } from "../../components/firebase/firebase";
+import { createUser } from "../../components/firebase/suites";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),

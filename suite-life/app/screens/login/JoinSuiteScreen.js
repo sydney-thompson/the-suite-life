@@ -20,13 +20,13 @@ import AppText from "../../components/AppText";
 import routes from "../../navigation/routes";
 import AppTitle from "../../components/AppTitle";
 import { color } from "react-native-reanimated";
+import { auth } from "../../components/firebase/firebase";
 import {
   addUserToSuite,
-  auth,
   checkSuiteExists,
   checkUserExists,
   createUser,
-} from "../../components/firebase/firebase";
+} from "../../components/firebase/suites";
 
 const validationSchema = Yup.object().shape({
   suiteID: Yup.string()

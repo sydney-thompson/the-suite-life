@@ -16,15 +16,16 @@ import {
 import colors from "../../config/colors";
 import Screen from "../../components/Screen";
 import AppText from "../../components/AppText";
+import { auth } from "../../components/firebase/firebase";
 import {
-  auth,
   createSuite,
   createUser,
   checkSuiteExists,
   updateUserSuite,
   checkUserExists,
   addUserToSuite,
-} from "../../components/firebase/firebase";
+} from "../../components/firebase/suites";
+
 import AppTitle from "../../components/AppTitle";
 import routes from "../../navigation/routes";
 
