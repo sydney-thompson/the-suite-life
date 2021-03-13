@@ -1,16 +1,19 @@
 import * as firebase from "firebase";
 import "firebase/auth";
+import { ErrorMessage } from "../forms";
 
 import firebaseConfig from "./firebaseConfig";
 
 // Initialize firebase app
-
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
 export const auth = firebase.auth();
 export const db = firebase.database();
+
+/*************************************************************************************************************************** 
+
 
 // authorization
 export const registerWithEmail = (email, password) => {
@@ -29,6 +32,10 @@ export const passwordReset = (email) => {
   auth.sendPasswordResetEmail(email);
 };
 
+
+
+
+
 // writing data
 export const updatePerson = (userId, name, email, pronouns, suite_tag) => {
   db.ref("users/" + userId).set({
@@ -39,6 +46,7 @@ export const updatePerson = (userId, name, email, pronouns, suite_tag) => {
   });
 };
 
+/*
 export const updateSuite = (
   chores,
   transactions,
@@ -53,7 +61,7 @@ export const updateSuite = (
     persons: persons,
     suite_tag: suite_tag,
   });
-};
+}; */
 
 // reading data
 // export const readPerson = (userId) => {

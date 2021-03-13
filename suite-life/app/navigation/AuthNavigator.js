@@ -17,6 +17,8 @@ const AuthNavigator = () => (
     <Stack.Screen name={routes.WELCOME} component={WelcomeScreen} />
     <Stack.Screen name={routes.LOGIN} component={LoginScreen} />
     <Stack.Screen name={routes.REGISTER} component={RegisterScreen} />
+    <Stack.Screen name={routes.CREATE_SUITE} component={CreateSuiteScreen} />
+    <Stack.Screen name={routes.JOIN_SUITE} component={JoinSuiteScreen} />
   </Stack.Navigator>
 );
 

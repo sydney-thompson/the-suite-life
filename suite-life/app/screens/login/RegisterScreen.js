@@ -5,11 +5,11 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import * as Yup from "yup";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import AppButton from "../../components/AppButton";
 import {
   AppForm as Form,
   AppFormField as FormField,
@@ -18,89 +18,86 @@ import {
 import AppText from "../../components/AppText";
 import AppTitle from "../../components/AppTitle";
 import colors from "../../config/colors";
+import { googleLogin, googleLogout } from "../../components/auth/googleAuth";
 import routes from "../../navigation/routes";
 import Screen from "../../components/Screen";
-import { googleLogin } from "../../components/auth/googleAuth";
+import RegistrationContext from "../../components/auth/RegistrationContext";
+import { checkUserExists } from "../../components/firebase/suites";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
   pronouns: Yup.string().optional().label("Pronouns"),
-  suiteCode: Yup.string()
-    .optional()
-    .min(10, "Suite code is exactly 10 characters")
-    .max(10, "Suite code is exactly 10 characters")
-    .label("Suite Code"),
 });
 
 export default function RegisterScreen({ navigation }) {
   return (
-    <Screen style={styles.container}>
-      <View style={styles.headerContainer}>
-        <View style={styles.deleteIconContainer}>
-          <TouchableWithoutFeedback
-            onPress={() => navigation.navigate(routes.WELCOME)}
+    <RegistrationContext.Consumer>
+      {(setRegistered) => (
+        <Screen style={styles.container}>
+          <View style={styles.headerContainer}>
+            <View style={styles.deleteIconContainer}>
+              <TouchableWithoutFeedback
+                onPress={() => navigation.navigate(routes.WELCOME)}
+              >
+                <MaterialCommunityIcons
+                  name="close"
+                  color={colors.medium}
+                  size={30}
+                />
+              </TouchableWithoutFeedback>
+            </View>
+            <AppTitle style={styles.title}>Sign Up</AppTitle>
+            <View style={styles.loginContainer}>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  const failureCallback = () => {};
+                  googleLogin().then(() => {
+                    checkUserExists()
+                      .then((res) => {
+                        if (res) {
+                          setRegistered.setRegistered(true);
+                        } else {
+                          googleLogout();
+                          Alert.alert("This account does not exist.");
+                        }
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                  }, failureCallback);
+                }}
+              >
+                <AppText style={styles.login}>Log In</AppText>
+              </TouchableWithoutFeedback>
+            </View>
+          </View>
+          <Form
+            initialValues={{
+              name: "",
+              pronouns: "",
+            }}
+            onSubmit={(values) => {
+              const successCallback = () => {
+                navigation.navigate(routes.JOIN_SUITE, values);
+              };
+              const failureCallback = () => {};
+              googleLogin().then(successCallback, failureCallback);
+            }}
+            validationSchema={validationSchema}
           >
-            <MaterialCommunityIcons
-              name="close"
-              color={colors.medium}
-              size={30}
+            <FormField autoCorrect={false} name="name" placeholder="Name" />
+            <FormField
+              autoCapitalize="none"
+              autoCorrect={false}
+              name="pronouns"
+              placeholder="Pronouns (optional)"
             />
-          </TouchableWithoutFeedback>
-        </View>
-        <AppTitle style={styles.title}>Sign Up</AppTitle>
-        <TouchableWithoutFeedback onPress={() => googleLogin()}>
-          <AppText style={styles.login}>Login</AppText>
-        </TouchableWithoutFeedback>
-      </View>
-      <Form
-        initialValues={{
-          name: "",
-          pronouns: "",
-          suiteCode: "",
-          // email: "",
-          // password: "",
-        }}
-        onSubmit={(values) => {
-          successCallback = () => {
-            console.log(values);
-          };
-          failureCallback = () => {};
-          googleLogin().then(successCallback, failureCallback);
-        }}
-        validationSchema={validationSchema}
-      >
-        <FormField autoCorrect={false} name="name" placeholder="Name" />
-        <FormField
-          autoCapitalize="none"
-          autoCorrect={false}
-          name="pronouns"
-          placeholder="Pronouns (optional)"
-        />
-        <FormField
-          autoCorrect={false}
-          name="suiteCode"
-          placeholder="Suite Code (optional)"
-        />
-        {/* <FormField
-          autoCapitalize="none"
-          autoCorrect={false}
-          keyboardType="email-address"
-          name="email"
-          placeholder="Email"
-          textContentType="emailAddress"
-        />
-        <FormField
-          autoCapitalize="none"
-          autoCorrect={false}
-          name="password"
-          placeholder="Password"
-          secureTextEntry
-          textContentType="password"
-        /> */}
-        <View style={styles.spacer} />
-        <SubmitButton title="sign up using google" />
-      </Form>
-    </Screen>
+            <View style={styles.spacer} />
+            <SubmitButton title="Create Account" />
+          </Form>
+        </Screen>
+      )}
+    </RegistrationContext.Consumer>
   );
 }
 
@@ -122,6 +119,9 @@ const styles = StyleSheet.create({
   },
   login: {
     color: colors.primary,
+    justifyContent: "flex-end",
+  },
+  loginContainer: {
     position: "absolute",
     right: 10,
   },
