@@ -19,7 +19,6 @@ import Screen from "../../components/Screen";
 import AppText from "../../components/AppText";
 import routes from "../../navigation/routes";
 import AppTitle from "../../components/AppTitle";
-import { color } from "react-native-reanimated";
 import {
   addUserToSuite,
   auth,
@@ -27,6 +26,7 @@ import {
   checkUserExists,
   createUser,
 } from "../../components/firebase/firebase";
+import RegistrationContext from "../../components/auth/RegistrationContext";
 
 const validationSchema = Yup.object().shape({
   suiteID: Yup.string()
@@ -37,13 +37,10 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function JoinSuiteScreen({ route, navigation }) {
-  function registerUser(values) {
-    console.log("params:", route.params);
-
+  function registerUser(values, setRegistered) {
     const uid = auth.currentUser.uid;
     Promise.all([checkSuiteExists(values.suiteID), checkUserExists(uid)])
       .then((res) => {
-        console.log("RES:", res);
         const suiteExists = res[0];
         const userExists = res[1];
         if (suiteExists && !userExists) {
@@ -54,6 +51,7 @@ export default function JoinSuiteScreen({ route, navigation }) {
             values.suiteID
           );
           addUserToSuite(values.suiteID, uid);
+          setRegistered(true);
         } else if (userExists) {
           Alert.alert("An account with these credentials already exists.");
         } else if (!suiteExists) {
@@ -66,42 +64,48 @@ export default function JoinSuiteScreen({ route, navigation }) {
   }
 
   return (
-    <Screen style={styles.container}>
-      <View style={styles.headerContainer}>
-        <View style={styles.deleteIconContainer}>
-          <TouchableWithoutFeedback
-            onPress={() => navigation.navigate(routes.REGISTER)}
+    <RegistrationContext.Consumer>
+      {(setRegistered) => (
+        <Screen style={styles.container}>
+          <View style={styles.headerContainer}>
+            <View style={styles.deleteIconContainer}>
+              <TouchableWithoutFeedback
+                onPress={() => navigation.navigate(routes.REGISTER)}
+              >
+                <MaterialCommunityIcons
+                  name="keyboard-backspace"
+                  color={colors.medium}
+                  size={30}
+                />
+              </TouchableWithoutFeedback>
+            </View>
+            <AppTitle style={styles.title}>Join a Suite</AppTitle>
+          </View>
+          <Form
+            initialValues={{ suiteID: "" }}
+            onSubmit={(values) => {
+              registerUser(values, setRegistered.setRegistered);
+            }}
+            validationSchema={validationSchema}
           >
-            <MaterialCommunityIcons
-              name="keyboard-backspace"
-              color={colors.medium}
-              size={30}
+            <FormField
+              autoCorrect={false}
+              name="suiteID"
+              placeholder="Suite Code"
             />
-          </TouchableWithoutFeedback>
-        </View>
-        <AppTitle style={styles.title}>Join a Suite</AppTitle>
-      </View>
-      <Form
-        initialValues={{ suiteID: "" }}
-        onSubmit={(values) => {
-          registerUser(values);
-        }}
-        validationSchema={validationSchema}
-      >
-        <FormField
-          autoCorrect={false}
-          name="suiteID"
-          placeholder="Suite Code"
-        />
-        <View style={styles.spacer} />
-        <SubmitButton title="Join Suite" />
-      </Form>
-      <TouchableOpacity
-        onPress={() => navigation.navigate(routes.CREATE_SUITE, route.params)}
-      >
-        <AppText style={styles.createSuiteText}>Create Suite</AppText>
-      </TouchableOpacity>
-    </Screen>
+            <View style={styles.spacer} />
+            <SubmitButton title="Join Suite" />
+          </Form>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate(routes.CREATE_SUITE, route.params)
+            }
+          >
+            <AppText style={styles.createSuiteText}>Create Suite</AppText>
+          </TouchableOpacity>
+        </Screen>
+      )}
+    </RegistrationContext.Consumer>
   );
 }
 

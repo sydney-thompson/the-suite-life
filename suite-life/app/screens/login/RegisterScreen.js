@@ -5,6 +5,7 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import * as Yup from "yup";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -17,10 +18,12 @@ import {
 import AppText from "../../components/AppText";
 import AppTitle from "../../components/AppTitle";
 import colors from "../../config/colors";
+import { googleLogin, googleLogout } from "../../components/auth/googleAuth";
 import routes from "../../navigation/routes";
 import Screen from "../../components/Screen";
-import { googleLogin } from "../../components/auth/googleAuth";
-import { createUser, auth } from "../../components/firebase/firebase";
+import RegistrationContext from "../../components/auth/RegistrationContext";
+import { checkUserExists } from "../../components/firebase/firebase";
+import { auth } from "firebase";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
@@ -29,77 +32,73 @@ const validationSchema = Yup.object().shape({
 
 export default function RegisterScreen({ navigation }) {
   return (
-    <Screen style={styles.container}>
-      <View style={styles.headerContainer}>
-        <View style={styles.deleteIconContainer}>
-          <TouchableWithoutFeedback
-            onPress={() => navigation.navigate(routes.WELCOME)}
-          >
-            <MaterialCommunityIcons
-              name="close"
-              color={colors.medium}
-              size={30}
-            />
-          </TouchableWithoutFeedback>
-        </View>
-        <AppTitle style={styles.title}>Sign Up</AppTitle>
-        <View style={styles.loginContainer}>
-          <TouchableWithoutFeedback
-            onPress={() => {
-              const successCallback = () => {};
+    <RegistrationContext.Consumer>
+      {(setRegistered) => (
+        <Screen style={styles.container}>
+          <View style={styles.headerContainer}>
+            <View style={styles.deleteIconContainer}>
+              <TouchableWithoutFeedback
+                onPress={() => navigation.navigate(routes.WELCOME)}
+              >
+                <MaterialCommunityIcons
+                  name="close"
+                  color={colors.medium}
+                  size={30}
+                />
+              </TouchableWithoutFeedback>
+            </View>
+            <AppTitle style={styles.title}>Sign Up</AppTitle>
+            <View style={styles.loginContainer}>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  const failureCallback = () => {};
+                  googleLogin().then(() => {
+                    checkUserExists()
+                      .then((res) => {
+                        if (res) {
+                          setRegistered.setRegistered(true);
+                        } else {
+                          googleLogout();
+                          Alert.alert("This account does not exist.");
+                        }
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                  }, failureCallback);
+                }}
+              >
+                <AppText style={styles.login}>Log In</AppText>
+              </TouchableWithoutFeedback>
+            </View>
+          </View>
+          <Form
+            initialValues={{
+              name: "",
+              pronouns: "",
+            }}
+            onSubmit={(values) => {
+              const successCallback = () => {
+                navigation.navigate(routes.JOIN_SUITE, values);
+              };
               const failureCallback = () => {};
               googleLogin().then(successCallback, failureCallback);
             }}
+            validationSchema={validationSchema}
           >
-            <AppText style={styles.login}>Log In</AppText>
-          </TouchableWithoutFeedback>
-        </View>
-      </View>
-      <Form
-        initialValues={{
-          name: "",
-          pronouns: "",
-          // email: "",
-          // password: "",
-        }}
-        onSubmit={(values) => {
-          const successCallback = () => {
-            // console.log("uid:", auth.currentUser.uid);
-            // createUser(values.name, values.pronouns);
-            navigation.navigate(routes.JOIN_SUITE, values);
-          };
-          const failureCallback = () => {};
-          googleLogin().then(successCallback, failureCallback);
-        }}
-        validationSchema={validationSchema}
-      >
-        <FormField autoCorrect={false} name="name" placeholder="Name" />
-        <FormField
-          autoCapitalize="none"
-          autoCorrect={false}
-          name="pronouns"
-          placeholder="Pronouns (optional)"
-        />
-        {/* <FormField
-          autoCapitalize="none"
-          autoCorrect={false}
-          keyboardType="email-address"
-          name="email"
-          placeholder="Email"
-          textContentType="emailAddress"
-        />
-        <FormField
-          autoCapitalize="none"
-          autoCorrect={false}
-          name="password"
-          placeholder="Password"
-          secureTextEntry
-          textContentType="password"
-        /> */}
-        <View style={styles.spacer} />
-        <SubmitButton title="Create Account" />
-      </Form>
-    </Screen>
+            <FormField autoCorrect={false} name="name" placeholder="Name" />
+            <FormField
+              autoCapitalize="none"
+              autoCorrect={false}
+              name="pronouns"
+              placeholder="Pronouns (optional)"
+            />
+            <View style={styles.spacer} />
+            <SubmitButton title="Create Account" />
+          </Form>
+        </Screen>
+      )}
+    </RegistrationContext.Consumer>
   );
 }
 

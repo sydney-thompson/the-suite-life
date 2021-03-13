@@ -27,13 +27,14 @@ import {
 } from "../../components/firebase/firebase";
 import AppTitle from "../../components/AppTitle";
 import routes from "../../navigation/routes";
+import RegistrationContext from "../../components/auth/RegistrationContext";
 
 const validationSchema = Yup.object().shape({
   suiteName: Yup.string().required().min(1).label("Suite Name"),
 });
 
 export default function CreateSuiteScreen({ route, navigation }) {
-  function registerUser(values) {
+  function registerUser(values, setRegistered) {
     console.log("params:", route.params);
 
     const suiteID = Math.floor(Math.random() * 90000000) + 10000000;
@@ -47,6 +48,7 @@ export default function CreateSuiteScreen({ route, navigation }) {
           createSuite(suiteID, values.suiteName);
           createUser(uid, route.params.name, route.params.pronouns, suiteID);
           addUserToSuite(suiteID, uid);
+          setRegistered(true);
         } else if (suiteExists && !userExists) {
           Alert.alert("We're sorry, something went wrong. Please try again.");
         } else if (userExists) {
@@ -59,37 +61,41 @@ export default function CreateSuiteScreen({ route, navigation }) {
   }
 
   return (
-    <Screen style={styles.container}>
-      <View style={styles.headerContainer}>
-        <View style={styles.deleteIconContainer}>
-          <TouchableWithoutFeedback
-            onPress={() => navigation.navigate(routes.JOIN_SUITE)}
+    <RegistrationContext.Consumer>
+      {(setRegistered) => (
+        <Screen style={styles.container}>
+          <View style={styles.headerContainer}>
+            <View style={styles.deleteIconContainer}>
+              <TouchableWithoutFeedback
+                onPress={() => navigation.navigate(routes.JOIN_SUITE)}
+              >
+                <MaterialCommunityIcons
+                  name="keyboard-backspace"
+                  color={colors.medium}
+                  size={30}
+                />
+              </TouchableWithoutFeedback>
+            </View>
+            <AppTitle style={styles.title}>Create a Suite</AppTitle>
+          </View>
+          <Form
+            initialValues={{ suiteName: "" }}
+            onSubmit={(values) => {
+              registerUser(values, setRegistered.setRegistered);
+            }}
+            validationSchema={validationSchema}
           >
-            <MaterialCommunityIcons
-              name="keyboard-backspace"
-              color={colors.medium}
-              size={30}
+            <FormField
+              autoCorrect={false}
+              name="suiteName"
+              placeholder="Suite Name"
             />
-          </TouchableWithoutFeedback>
-        </View>
-        <AppTitle style={styles.title}>Create a Suite</AppTitle>
-      </View>
-      <Form
-        initialValues={{ suiteName: "" }}
-        onSubmit={(values) => {
-          registerUser(values);
-        }}
-        validationSchema={validationSchema}
-      >
-        <FormField
-          autoCorrect={false}
-          name="suiteName"
-          placeholder="Suite Name"
-        />
-        <View style={styles.spacer} />
-        <SubmitButton title="Create Suite" />
-      </Form>
-    </Screen>
+            <View style={styles.spacer} />
+            <SubmitButton title="Create Suite" />
+          </Form>
+        </Screen>
+      )}
+    </RegistrationContext.Consumer>
   );
 }
 
