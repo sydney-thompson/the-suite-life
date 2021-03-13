@@ -23,7 +23,6 @@ import routes from "../../navigation/routes";
 import Screen from "../../components/Screen";
 import RegistrationContext from "../../components/auth/RegistrationContext";
 import { checkUserExists } from "../../components/firebase/firebase";
-import { auth } from "firebase";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),

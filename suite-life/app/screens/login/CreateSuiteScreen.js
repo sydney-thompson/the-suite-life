@@ -13,9 +13,8 @@ import {
   AppFormField as FormField,
   SubmitButton,
 } from "../../components/forms";
+import AppTitle from "../../components/AppTitle";
 import colors from "../../config/colors";
-import Screen from "../../components/Screen";
-import AppText from "../../components/AppText";
 import {
   auth,
   createSuite,
@@ -25,9 +24,9 @@ import {
   checkUserExists,
   addUserToSuite,
 } from "../../components/firebase/firebase";
-import AppTitle from "../../components/AppTitle";
 import routes from "../../navigation/routes";
 import RegistrationContext from "../../components/auth/RegistrationContext";
+import Screen from "../../components/Screen";
 
 const validationSchema = Yup.object().shape({
   suiteName: Yup.string().required().min(1).label("Suite Name"),
