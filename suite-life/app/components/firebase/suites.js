@@ -46,19 +46,26 @@ export async function createSuite(suiteID, suiteName) {
   }
   
   // Checks if the uid is in the users database
-  export function checkUserExists(uid) {
+  export function checkUserExists(uid = null) {
     return new Promise((resolve, reject) => {
-      const ref = db.ref(`users/${uid}`);
-      ref.once(
-        "value",
-        (snapshot) => {
-          resolve(!(snapshot.val() === null));
-        },
-        (error) => {
-          console.log("USER EXISTS ERROR: ", error);
-          reject(error);
+      try {
+        if (!uid) {
+          uid = auth.currentUser.uid;
         }
-      );
+        const ref = db.ref(`users/${uid}`);
+        ref.once(
+          "value",
+          (snapshot) => {
+            resolve(!(snapshot.val() === null));
+          },
+          (error) => {
+            console.log("USER EXISTS ERROR: ", error);
+            reject(error);
+          }
+        );
+      } catch (err) {
+        reject(err);
+      }
     });
   }
   
