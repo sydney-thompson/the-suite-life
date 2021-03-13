@@ -3,12 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import AppNavigator from "./app/navigation/AppNavigator";
 import AuthNavigator from "./app/navigation/AuthNavigator";
-<<<<<<< HEAD
-import { auth, db } from "./app/components/firebase/firebase";
-import { checksuite, checkSuiteExists, checkUserExists } from "./app/components/firebase/suites";
-=======
 import { auth } from "./app/components/firebase/firebase";
->>>>>>> 8a5d36289b7705b3f6a920bb0cff96d3da038e39
 import navigationTheme from "./app/navigation/navigationTheme";
 import RegistrationContext from "./app/components/auth/RegistrationContext";
 
