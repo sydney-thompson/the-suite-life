@@ -3,6 +3,7 @@ export default Object.freeze({
   APARTMENT: "Apartment",
   CHORES: "Chores",
   CHORE_ADD: "ChoreAdd",
+  CHORE_EDIT: "ChoreEdit",
   CHORE_NAV: "ChoreNavigation",
   LOGIN: "Login",
   PAYMENTS: "Payments",
