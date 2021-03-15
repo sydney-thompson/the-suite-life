@@ -4,7 +4,7 @@ import { TextInput } from 'react-native';
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
-import {db} from '../../../src/config';
+import { db } from "../../components/firebase/firebase";
 
 import defaultStyles from "../../config/styles";
 
@@ -27,6 +27,14 @@ export default function ChoreAddScreen() {
     setChoreName('')
     setFrequencyName('')
     setChoreAssignee('')
+    
+    // from main branch
+    let chores_old = db.child(chores).getValue(String.class);
+    let chores_new = chores_old.push(chore);
+
+    db.collection("users").document(userId).update({
+       chores: chores_new,
+    });
   }
   return (
     <Screen style={styles.screen}>
