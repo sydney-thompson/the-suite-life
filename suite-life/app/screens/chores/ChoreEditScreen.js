@@ -4,8 +4,7 @@ import { TextInput } from 'react-native';
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
-import {db} from '../../../src/config';
-
+import { db } from "../../components/firebase/firebase";
 import defaultStyles from "../../config/styles";
 
 export default function ChoreEditScreen(choreInfo) {

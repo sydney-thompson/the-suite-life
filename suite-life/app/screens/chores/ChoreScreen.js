@@ -3,7 +3,7 @@ import { StyleSheet, Text, View  } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
-import {db} from '../../../src/config';
+import { db } from "../../components/firebase/firebase";
 
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
