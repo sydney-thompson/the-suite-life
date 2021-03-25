@@ -2,12 +2,12 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+import AccountNavigator from "./AccountNavigator";
 import ApartmentScreen from "../screens/ApartmentScreen";
 import ChoreNavigation from "./ChoreNavigation";
 import HomeButton from "./HomeButton";
 import PaymentNavigation from "./PaymentNavigation";
 import routes from "./routes";
-import AccountScreen from "../screens/AccountScreen";
 import SuiteAccountScreen from "../screens/SuiteAccountScreen";
 
 const Tab = createBottomTabNavigator();
@@ -66,8 +66,8 @@ const AppNavigator = () => (
       }}
     />
     <Tab.Screen
-      name={routes.ACCOUNT}
-      component={AccountScreen}
+      name={routes.ACCOUNT_NAV}
+      component={AccountNavigator}
       options={{
         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons
