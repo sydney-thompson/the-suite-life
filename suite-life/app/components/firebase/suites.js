@@ -1,4 +1,5 @@
 import { auth, db } from "./firebase";
+import { checkUserExists } from "./users";
 
 // Creates a new suite
 export async function createSuite(suiteID, suiteName) {
