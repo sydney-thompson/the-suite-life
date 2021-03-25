@@ -11,27 +11,45 @@ import { getUserData } from "../components/firebase/users";
 import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import ChoreListSeparater from "../components/ChoreListSeparater";
+import { getUserChores } from "../components/firebase/suites";
 
 const initialChores = [
-  { id: "chore1", assignee: "Sydney", frequency: "Weekly", name: "Laundry" },
+  {
+    id: "chore1",
+    assignee_display: "Sydney",
+    frequency: "Weekly",
+    name: "Laundry",
+  },
   {
     id: "chore2",
-    assignee: "Sydney",
+    assignee_display: "Sydney",
     frequency: "Daily",
     name: "Vaccuuming ",
   },
-  { id: "chore3", assignee: "Sydney", frequency: "Daily", name: "Dishes" },
-  { id: "chore4", assignee: "Sydney", frequency: "Weekly", name: "Dusting" },
+  {
+    id: "chore3",
+    assignee_display: "Sydney",
+    frequency: "Daily",
+    name: "Dishes",
+  },
+  {
+    id: "chore4",
+    assignee_display: "Sydney",
+    frequency: "Weekly",
+    name: "Dusting",
+  },
 ];
 
 export default function ApartmentScreen({ navigation }) {
   const [user, setUser] = useState({ name: "" });
   const [chores, setChores] = useState(initialChores);
-  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     getUserData().then((val) => {
       setUser(val);
+      // const fbChores = getUserChores(user.suiteID, user.uid);
+      // console.log("chores:", fbChores);
+      // setChores(fbChores);
     });
   });
 
@@ -55,14 +73,12 @@ export default function ApartmentScreen({ navigation }) {
             keyExtractor={(chore) => chore.id}
             renderItem={({ item }) => (
               <Chore
-                assignee={item.assignee}
+                assigneeName={item.assignee_display}
                 frequency={item.frequency}
                 name={item.name}
               />
             )}
             ItemSeparatorComponent={ChoreListSeparater}
-            refreshing={refreshing}
-            onRefresh={() => setChores(initialChores)}
           />
         )}
       </View>

@@ -4,7 +4,7 @@ import colors from "../config/colors";
 import AppText from "./AppText";
 
 export default function Chore({
-  assignee,
+  assigneeName,
   frequency,
   name,
   style = null,
@@ -16,7 +16,9 @@ export default function Chore({
         {name}
       </AppText>
       <View style={styles.icon}>
-        <AppText style={[styles.text, styles.iconText]}>{assignee[0]}</AppText>
+        <AppText style={[styles.text, styles.iconText]}>
+          {assigneeName[0]}
+        </AppText>
       </View>
       <AppText style={styles.text}>{`${frequency}`}</AppText>
     </View>
