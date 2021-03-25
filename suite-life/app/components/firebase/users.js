@@ -39,13 +39,43 @@ export function checkUserExists(uid = null) {
 
 // Updates the user's associated suite
 export function updateUserSuite(uid, suiteID) {
-  console.log(`uid:/${uid}`);
   return db.ref(`users/${uid}`).update({
     // initialize to empty arrays by default
     suiteID: suiteID,
   });
 }
 
+export function updateUserDetails(uid, name, pronouns) {
+  return new Promise((resolve, reject) => {
+    Promise.all([checkUserExists(uid)])
+      .then((res) => {
+        const user = db.ref(`users/${uid}`);
+        user.update({
+          name: name,
+          pronouns: pronouns,
+        });
+        resolve();
+      })
+      .catch((err) => {
+        console.log(err);
+        reject();
+      });
+  });
+}
+
 export function getUserData(uid) {
-  return "";
+  return new Promise((resolve, reject) => {
+    const ref = db.ref(`users/${uid}`);
+    ref
+      .once("value", (snapshot) => {
+        if (snapshot.exists()) {
+          resolve(snapshot.val());
+        } else {
+          resolve({ code: "user-not-found" });
+        }
+      })
+      .catch(function (error) {
+        reject(error);
+      });
+  });
 }
