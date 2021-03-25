@@ -22,7 +22,7 @@ import { googleLogin, googleLogout } from "../../components/auth/googleAuth";
 import routes from "../../navigation/routes";
 import Screen from "../../components/Screen";
 import RegistrationContext from "../../components/auth/RegistrationContext";
-import { checkUserExists } from "../../components/firebase/suites";
+import { checkUserExists } from "../../components/firebase/users";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
