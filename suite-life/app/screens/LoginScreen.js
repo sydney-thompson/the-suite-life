@@ -25,6 +25,7 @@ export default function LoginScreen(props) {
         validationSchema={validationSchema}
       >
         <FormField
+          display="AppTextInput"
           autoCapitalize="none"
           autoCorrect={false}
           icon="email"
@@ -34,6 +35,7 @@ export default function LoginScreen(props) {
           textContentType="emailAddress"
         />
         <FormField
+          display="AppTextInput"
           autoCapitalize="none"
           autoCorrect={false}
           icon="lock"

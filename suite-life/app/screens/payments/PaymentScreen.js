@@ -14,11 +14,13 @@ export default function PaymentScreen({ navigation }) {
   const Balances = [
   {
     name: "Suitemate 1",
+    id: 123,
     value: 15,
     color: "primary"
   },
   {
     name: "Suitemate 2",
+    id: 456,
     value: -60,
     color: "tertiary"
   }
@@ -28,7 +30,7 @@ export default function PaymentScreen({ navigation }) {
       <AppText style={defaultStyles.title}>Transactions</AppText>
       {Balances.map((balance) => {
         return (
-        <BalanceDisplay name={balance.name} value={balance.value} color={balance.color} />
+        <BalanceDisplay name={balance.name} key={balance.id} value={balance.value} color={balance.color} />
         );
       })}
       <AppButton
