@@ -18,12 +18,10 @@ import colors from "../../config/colors";
 import { auth } from "../../components/firebase/firebase";
 import {
   createSuite,
-  createUser,
   checkSuiteExists,
-  updateUserSuite,
-  checkUserExists,
   addUserToSuite,
 } from "../../components/firebase/suites";
+import { createUser, checkUserExists } from "../../components/firebase/users";
 import routes from "../../navigation/routes";
 import RegistrationContext from "../../components/auth/RegistrationContext";
 import Screen from "../../components/Screen";
