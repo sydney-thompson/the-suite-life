@@ -11,6 +11,7 @@ export default function ChoreScreen({ navigation }) {
   return (
     <Screen style={styles.screen}>
       <AppText style={defaultStyles.title}>Add Chore</AppText>
+      f
       <AppButton
         title="Chore 1"
         color="tertiary"

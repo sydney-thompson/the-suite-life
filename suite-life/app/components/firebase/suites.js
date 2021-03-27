@@ -1,3 +1,4 @@
+import { ref } from "yup";
 import { auth, db } from "./firebase";
 
 // Creates a new suite
@@ -107,4 +108,14 @@ export async function createSuite(suiteID, suiteName) {
   export function checkUserInSuite() {
     const user = db.ref("suites/");
     return user.suiteID === null;
+  }
+
+  export function updateRules(rules) {
+    let uid = auth.currentUser.uid;
+    let suiteIDRef = db.ref(`users/${uid}/suiteID`);
+    suiteIDRef.once("value", (snapshot) => {
+      let suiteID = snapshot.val();
+      db.ref(`suites/${suiteID}/rules`).set(rules);
+    });
+    return true;
   }

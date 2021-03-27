@@ -47,7 +47,7 @@ export default function CreateSuiteScreen({ route, navigation }) {
           createSuite(suiteID, values.suiteName);
           createUser(uid, route.params.name, route.params.pronouns, suiteID);
           addUserToSuite(suiteID, uid);
-          setRegistered(true);
+          //setRegistered(true);
         } else if (suiteExists && !userExists) {
           Alert.alert("We're sorry, something went wrong. Please try again.");
         } else if (userExists) {
@@ -81,6 +81,7 @@ export default function CreateSuiteScreen({ route, navigation }) {
             initialValues={{ suiteName: "" }}
             onSubmit={(values) => {
               registerUser(values, setRegistered.setRegistered);
+              navigation.navigate(routes.RULES);
             }}
             validationSchema={validationSchema}
           >
