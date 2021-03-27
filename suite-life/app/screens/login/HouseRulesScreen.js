@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, componentDidMount } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 
 import AppButton from "../../components/AppButton";
@@ -8,11 +8,18 @@ import colors from "../../config/colors";
 import Screen from "../../components/Screen";
 import RegistrationContext from "../../components/auth/RegistrationContext";
 import { TextInput } from "react-native-gesture-handler";
-import { updateRules } from "../../components/firebase/suites";
+import { getRules, updateRules } from "../../components/firebase/suites";
 
 export default function HouseRulesScreen({ navigation }) {
-  const defaultRules = "1. Be nice! \n2. Keep up with your chores every week.\n3. Log suite expenses in the app.\n4. Wait no more than 2 weeks to settle balances.\n5. Have a good time!";
-  const [text, onChangeText] = React.useState(defaultRules);  
+  const [text, setText] = React.useState("");
+
+  useEffect(() => {
+    getRules().then((rules) => {
+      console.log(rules);
+      setText(rules);
+    });
+  });
+  // }, []);      couldn't figure out editability with race conditions
 
   return (
     <RegistrationContext.Consumer>
@@ -25,9 +32,10 @@ export default function HouseRulesScreen({ navigation }) {
                 </View>
                 <View style={styles.inputContainer}>
                   <TextInput
-                    value={text}
+                    defaultValue={text}
                     style={styles.input}
-                    onChangeText={onChangeText}
+                    editable={false}
+                    onChangeText={text => setText(text)}
                     multiline={true}
                   />
                 </View>
@@ -71,7 +79,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     padding: 10,
     top: 200,
-    //width: "100%"
   },
   input: {
     height: 425,

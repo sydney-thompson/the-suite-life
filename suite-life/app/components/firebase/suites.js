@@ -13,6 +13,7 @@ export async function createSuite(suiteID, suiteName) {
       name: suiteName,
       transactions: [],
       users: [],
+      rules: "1. Be nice! \n2. Keep up with your chores every week.\n3. Log suite expenses in the app.\n4. Wait no more than 2 weeks to settle balances.\n5. Have a good time!",
     });
   }
   
@@ -108,6 +109,26 @@ export async function createSuite(suiteID, suiteName) {
   export function checkUserInSuite() {
     const user = db.ref("suites/");
     return user.suiteID === null;
+  }
+
+  export async function getRules() {
+    return new Promise((resolve, reject) => {
+      let uid = auth.currentUser.uid;
+      let suiteIDRef = db.ref(`users/${uid}/suiteID`);
+      suiteIDRef.once("value", (snapshot) => {
+        let suiteID = snapshot.val();
+        let rulesRef = db.ref(`suites/${suiteID}/rules`);
+        rulesRef.once("value", (snapshot2) => {
+          resolve(snapshot2.val());
+        })
+        .catch(function (error) {
+          reject(error);
+        });
+      })
+      .catch(function(error) {
+        reject(error);
+      });
+    });
   }
 
   export function updateRules(rules) {
