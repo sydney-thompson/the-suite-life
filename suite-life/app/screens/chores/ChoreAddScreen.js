@@ -1,40 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { TextInput } from 'react-native';
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
 import { db } from "../../components/firebase/firebase";
+import * as choreFunctions from "../../components/firebase/chores_and_payments";
 
 import defaultStyles from "../../config/styles";
 
-export default function ChoreAddScreen() {
+export default function ChoreAddScreen({navigation}) {
   const [choreName, setChoreName] = useState('')
   const [choreFrequency, setFrequencyName] = useState('')
   const [choreAssignee, setChoreAssignee] = useState('')
-  // function to push data to firebase
-  const addNewChore = () => {
-    db.ref('/suites/test123/chores/').push({
-      name: choreName, 
-      frequency: choreFrequency,
-      assignee: choreAssignee
-    });
-  }
+
   // sends data to firebase and clears the textbox values 
   const submitAndClear = () => {
-    console.log("Submit Chore Tapped")
-    addNewChore()
-    setChoreName('')
-    setFrequencyName('')
-    setChoreAssignee('')
-    
-    // from main branch
-    let chores_old = db.child(chores).getValue(String.class);
-    let chores_new = chores_old.push(chore);
-
-    db.collection("users").document(userId).update({
-       chores: chores_new,
-    });
+    // missing data 
+    if(choreName == "" || choreAssignee == "" || choreFrequency == ""){
+      Alert.alert(
+        "Warning: Missing Data",
+        "Please make sure all data fields have values.",
+        [{ text: "OK"}]
+      );
+    }
+    else{
+      choreFunctions.addNewChore(choreName, choreFrequency, choreAssignee)
+      setChoreName('')
+      setFrequencyName('')
+      setChoreAssignee('')
+      navigation.goBack()
+    }
   }
   return (
     <Screen style={styles.screen}>
@@ -58,6 +54,11 @@ export default function ChoreAddScreen() {
         title="Submit Chore"
         color="primary"
         onPress={submitAndClear}
+      ></AppButton>
+      <AppButton
+        title="Cancel"
+        color="primary"
+        onPress={() => navigation.goBack()}
       ></AppButton>
     </Screen>
   );

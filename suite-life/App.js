@@ -26,7 +26,7 @@ export default function App() {
 
   if (initializing) return null;
 
-  let Navigator = <AuthNavigator />;
+  let Navigator = <AppNavigator />;
   if (registered) {
     Navigator = <AppNavigator />;
   }
