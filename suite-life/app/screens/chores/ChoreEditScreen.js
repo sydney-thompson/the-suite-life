@@ -5,40 +5,52 @@ import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
 import { db } from "../../components/firebase/firebase";
-
 import defaultStyles from "../../config/styles";
 
-export default function ChoreAddScreen() {
+export default function ChoreEditScreen(choreInfo) {
+  const { choreID } = choreInfo.route.params;
+  console.log("chore ID:" + choreID)
+
   const [choreName, setChoreName] = useState('')
   const [choreFrequency, setFrequencyName] = useState('')
   const [choreAssignee, setChoreAssignee] = useState('')
+  const [choreRefresher, setChoreRefresher] = useState('')
+
   // function to push data to firebase
-  const addNewChore = () => {
-    db.ref('/suites/test123/chores/').push({
+  const updateChore = () => {
+    db.ref(`/suites/test123/chores/${choreID}`).set({
       name: choreName, 
       frequency: choreFrequency,
       assignee: choreAssignee
     });
   }
+
+  const loadChoreData = (choreID) => {
+    if(choreRefresher != "True"){
+      setChoreRefresher("True")
+      console.log("Button Pressed. Chore ID is:")
+      console.log({choreID})
+      db.ref(`/suites/test123/chores/${choreID}`).once('value', snapshot => {
+        let data = snapshot.val()
+        setChoreName(data.name)
+        setFrequencyName(data.frequency)
+        setChoreAssignee(data.assignee)
+        console.log(data)
+      });
+    }
+    console.log("reached here")
+  }
+  loadChoreData(choreID)
+
   // sends data to firebase and clears the textbox values 
   const submitAndClear = () => {
     console.log("Submit Chore Tapped")
-    addNewChore()
-    setChoreName('')
-    setFrequencyName('')
-    setChoreAssignee('')
-    
-    // from main branch
-    let chores_old = db.child(chores).getValue(String.class);
-    let chores_new = chores_old.push(chore);
-
-    db.collection("users").document(userId).update({
-       chores: chores_new,
-    });
+    updateChore()
+    setChoreRefresher("False")
   }
   return (
     <Screen style={styles.screen}>
-      <AppText style={defaultStyles.title}>Add Chore</AppText>
+      <AppText style={defaultStyles.title}>Edit Chore</AppText>
       <TextInput style = {styles.input}
         placeholder = "Enter Chore Name"
         onChangeText = {(text) => setChoreName(text)}

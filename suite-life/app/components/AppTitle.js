@@ -3,11 +3,11 @@ import { StyleSheet, Text, Platform } from "react-native";
 
 import defaultStyles from "../config/styles";
 
-export default function AppText({ children, style, ...otherProps }) {
+export default function AppTitle({ children, style, ...otherProps }) {
   return (
     <Text
       adjustsFontSizeToFit
-      style={[defaultStyles.text, style]}
+      style={[defaultStyles.title, style]}
       {...otherProps}
     >
       {children}

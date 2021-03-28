@@ -8,6 +8,8 @@ import defaultStyles from "../config/styles";
 import routes from "../navigation/routes";
 
 export default function ApartmentScreen({ navigation }) {
+
+
   return (
     <Screen style={styles.screen}>
       <AppText style={defaultStyles.title}>Apartment Name</AppText>
