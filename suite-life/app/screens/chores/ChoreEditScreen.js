@@ -6,10 +6,10 @@ import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
 import { db } from "../../components/firebase/firebase";
 import defaultStyles from "../../config/styles";
+import routes from "../../navigation/routes";
 
 export default function ChoreEditScreen(choreInfo) {
-  const { choreID } = choreInfo.route.params;
-  console.log("chore ID:" + choreID)
+  const { choreID } = choreInfo.route.params.firebaseID;
 
   const [choreName, setChoreName] = useState('')
   const [choreFrequency, setFrequencyName] = useState('')
@@ -18,35 +18,43 @@ export default function ChoreEditScreen(choreInfo) {
 
   // function to push data to firebase
   const updateChore = () => {
-    db.ref(`/suites/test123/chores/${choreID}`).set({
+    db.ref(`/suites/test123/chores/${choreInfo.route.params.firebaseID}`).set({
       name: choreName, 
       frequency: choreFrequency,
       assignee: choreAssignee
     });
   }
 
-  const loadChoreData = (choreID) => {
+  const loadChoreData = () => {
     if(choreRefresher != "True"){
       setChoreRefresher("True")
-      console.log("Button Pressed. Chore ID is:")
-      console.log({choreID})
-      db.ref(`/suites/test123/chores/${choreID}`).once('value', snapshot => {
+      db.ref(`/suites/test123/chores/${choreInfo.route.params.firebaseID}`).once('value', snapshot => {
         let data = snapshot.val()
         setChoreName(data.name)
         setFrequencyName(data.frequency)
         setChoreAssignee(data.assignee)
-        console.log(data)
       });
     }
-    console.log("reached here")
   }
-  loadChoreData(choreID)
+  loadChoreData()
 
   // sends data to firebase and clears the textbox values 
   const submitAndClear = () => {
-    console.log("Submit Chore Tapped")
-    updateChore()
-    setChoreRefresher("False")
+    const navigator = choreInfo.route.params.navigation;
+    const update_promise = new Promise((resolve, reject) => {
+      updateChore()
+    })
+    update_promise.then(
+      setChoreRefresher("False"),
+      navigator.goBack()
+    )
+  }
+  // sends data to firebase and clears the textbox values 
+  const deleteChore = () => {
+    const navigator = choreInfo.route.params.navigation;
+    let toDelete = db.ref(`/suites/test123/chores/${choreInfo.route.params.firebaseID}`)
+    toDelete.remove()
+    navigator.goBack()
   }
   return (
     <Screen style={styles.screen}>
@@ -70,6 +78,11 @@ export default function ChoreEditScreen(choreInfo) {
         title="Submit Chore"
         color="primary"
         onPress={submitAndClear}
+      ></AppButton>
+      <AppButton
+        title="Delete Chore"
+        color="secondary"
+        onPress={deleteChore}
       ></AppButton>
     </Screen>
   );

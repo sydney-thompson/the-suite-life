@@ -8,7 +8,7 @@ import { db } from "../../components/firebase/firebase";
 
 import defaultStyles from "../../config/styles";
 
-export default function ChoreAddScreen() {
+export default function ChoreAddScreen({navigation}) {
   const [choreName, setChoreName] = useState('')
   const [choreFrequency, setFrequencyName] = useState('')
   const [choreAssignee, setChoreAssignee] = useState('')
@@ -22,19 +22,11 @@ export default function ChoreAddScreen() {
   }
   // sends data to firebase and clears the textbox values 
   const submitAndClear = () => {
-    console.log("Submit Chore Tapped")
     addNewChore()
     setChoreName('')
     setFrequencyName('')
     setChoreAssignee('')
-    
-    // from main branch
-    let chores_old = db.child(chores).getValue(String.class);
-    let chores_new = chores_old.push(chore);
-
-    db.collection("users").document(userId).update({
-       chores: chores_new,
-    });
+    navigation.goBack()
   }
   return (
     <Screen style={styles.screen}>

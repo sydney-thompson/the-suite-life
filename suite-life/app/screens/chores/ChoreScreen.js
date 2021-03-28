@@ -3,14 +3,30 @@ import { StyleSheet, Text, View  } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
-import { db } from "../../components/firebase/firebase";
+import { auth, db } from "../../components/firebase/firebase";
+import * as choreFunctions from "../../components/firebase/chores_and_payments";
 
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 
 export default function ChoreScreen({ navigation }) {
   const [choreRefresh, setChoreRefresh] = useState('')
+  const [choresJSON, setChoresJSON] = useState('')
   var choreJSON = [];
+  //var lastJSON = [];
+
+  // navigate to add screen 
+  const navigate_to_add = () => {
+    setChoreRefresh("False")
+    navigation.navigate(routes.CHORE_ADD, {navigation})
+  }
+
+  // navigate to edit screen 
+  const navigate_to_edit = (firebaseID) => {
+    setChoreRefresh("False")
+    console.log(choreRefresh)
+    navigation.navigate(routes.CHORE_EDIT, {navigation, firebaseID})
+  }
 
   const renderChores = () => {
     // grab chore data from firebase 
@@ -22,22 +38,25 @@ export default function ChoreScreen({ navigation }) {
         choreJSON.push({name: data[key].name, firebaseID: key, frequency: data[key].frequency})
        });
        // set choreRefresh to True when screen loads to trigger quick refresh and allow chore buttons to load
-       if(choreRefresh != "True"){
-        setChoreRefresh("True")
+       //if(choreRefresh != "True"){
+       // setChoreRefresh("True")
+       //}
+       const holder = choresJSON
+       if(JSON.stringify(holder) != JSON.stringify(choreJSON)){
+         setChoresJSON(choreJSON)
        }
-       //console.log({choreJSON})
-       //console.log({choreRefresh})
     });
   }
 
-  const editChore = (choreID) => {
-    console.log("Button Pressed. Chore ID is:")
-    console.log({choreID})
-    db.ref(`/suites/test123/chores/${choreID}`).once('value', snapshot => {
-      let data = snapshot.val()
-      console.log(data)
-    });
-    console.log("reached here")
+  const refresh_screen = () => {
+    choreJSON = choreFunctions.renderChoress()
+   // if(choreRefresh != "True"){
+   //     setChoreRefresh("True")
+   //   }
+    const holder = choresJSON
+    if(JSON.stringify(holder) != JSON.stringify(choreJSON)){
+        setChoresJSON(choreJSON)
+      }
   }
 
   {renderChores()}
@@ -46,8 +65,13 @@ export default function ChoreScreen({ navigation }) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // The screen is focused
-      renderChores()
-      console.log("rendered")
+      //renderChores()
+      const use_promise = new Promise((resolve, reject) => {
+        renderChores()
+      })
+      use_promise.then(
+        console.log("use effect")
+      )
     });
     // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
@@ -62,7 +86,7 @@ export default function ChoreScreen({ navigation }) {
                 key= {item.firebaseID}
                 color="tertiary" 
                 title={ item.name + "\n Frequency: " + item.frequency }
-                onPress={() => navigation.navigate(routes.CHORE_EDIT, {choreID: item.firebaseID})}> 
+                onPress={() => navigate_to_edit(item.firebaseID)}> 
               </AppButton>
               )
          )}
@@ -70,7 +94,7 @@ export default function ChoreScreen({ navigation }) {
      <AppButton
         title="Add Chore"
         color="primary"
-        onPress={() => navigation.navigate(routes.CHORE_ADD)}
+        onPress={() => navigate_to_add()}
       ></AppButton>
     </Screen>
   );
