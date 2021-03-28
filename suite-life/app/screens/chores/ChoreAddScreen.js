@@ -14,11 +14,25 @@ export default function ChoreAddScreen({navigation}) {
   const [choreAssignee, setChoreAssignee] = useState('')
   // function to push data to firebase
   const addNewChore = () => {
-    db.ref('/suites/test123/chores/').push({
-      name: choreName, 
-      frequency: choreFrequency,
-      assignee: choreAssignee
+    db.ref(`/suites/test123/chores`).once('value', snapshot => {
+      let data = snapshot.val()
+      if(data == "None"){
+        db.ref('/suites/test123/chores/').set({
+          name: choreName, 
+          frequency: choreFrequency,
+          assignee: choreAssignee
+        });
+      }
+      else{
+        db.ref('/suites/test123/chores/').push({
+          name: choreName, 
+          frequency: choreFrequency,
+          assignee: choreAssignee
+        });
+      }
     });
+  //  let choresValue = db.ref(`/suites/test456/chores/`)
+  //  console.log(choresValue)
   }
   // sends data to firebase and clears the textbox values 
   const submitAndClear = () => {
