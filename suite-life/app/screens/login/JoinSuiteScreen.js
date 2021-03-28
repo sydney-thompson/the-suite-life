@@ -21,11 +21,10 @@ import routes from "../../navigation/routes";
 import AppTitle from "../../components/AppTitle";
 import { auth } from "../../components/firebase/firebase";
 import {
-  addUserToSuite,
   checkSuiteExists,
-  checkUserExists,
-  createUser,
+  addUserToSuite,
 } from "../../components/firebase/suites";
+import { createUser, checkUserExists } from "../../components/firebase/users";
 import RegistrationContext from "../../components/auth/RegistrationContext";
 
 const validationSchema = Yup.object().shape({
