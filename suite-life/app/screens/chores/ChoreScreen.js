@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { StyleSheet, Text, View  } from "react-native";
+import { StyleSheet, Text, View, ScrollView  } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
@@ -66,7 +66,6 @@ export default function ChoreScreen({ navigation }) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // The screen is focused
-      //renderChores()
       renderChores()
     });
     // Return the function to unsubscribe from the event so it gets removed on unmount
@@ -76,7 +75,8 @@ export default function ChoreScreen({ navigation }) {
   return (
     <Screen style={styles.screen}>
       <AppText style={defaultStyles.title}>Chores</AppText>
-      <View>
+      <ScrollView
+        style={{width: '100%'}}>
          {choreJSON.map((item)=>(
               <AppButton 
                 key= {item.firebaseID}
@@ -86,7 +86,7 @@ export default function ChoreScreen({ navigation }) {
               </AppButton>
               )
          )}
-     </View>
+     </ScrollView>
      <AppButton
         title="Add Chore"
         color="primary"

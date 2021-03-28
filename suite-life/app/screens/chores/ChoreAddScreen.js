@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { TextInput } from 'react-native';
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
@@ -36,11 +36,21 @@ export default function ChoreAddScreen({navigation}) {
   }
   // sends data to firebase and clears the textbox values 
   const submitAndClear = () => {
-    addNewChore()
-    setChoreName('')
-    setFrequencyName('')
-    setChoreAssignee('')
-    navigation.goBack()
+    // missing data 
+    if(choreName == "" || choreAssignee == "" || choreFrequency == ""){
+      Alert.alert(
+        "Warning: Missing Data",
+        "Please make sure all data fields have values.",
+        [{ text: "OK"}]
+      );
+    }
+    else{
+      addNewChore()
+      setChoreName('')
+      setFrequencyName('')
+      setChoreAssignee('')
+      navigation.goBack()
+    }
   }
   return (
     <Screen style={styles.screen}>
