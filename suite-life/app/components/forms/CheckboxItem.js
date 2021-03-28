@@ -13,9 +13,8 @@ export default function AppFormFieldCheckbox({ name, ...otherProps }) {
         onPress={() => setFieldValue(name, !values.check)}
         {...otherProps}
       />
+
+      
     </>
   );
 }
-
-// reminder to delete AppCheckbox and CHeckbox item if no longer needed
-

@@ -3,7 +3,7 @@ import { useFormikContext } from "formik";
 import ErrorMessage from "./ErrorMessage";
 import { CheckBox } from "react-native-elements";
 
-export default function AppFormFieldCheckbox({ name, ...otherProps }) {
+export default function AppCheckbox({ name, ...otherProps }) {
   const { setFieldValue, values } = useFormikContext();
 
   return (
@@ -13,9 +13,8 @@ export default function AppFormFieldCheckbox({ name, ...otherProps }) {
         onPress={() => setFieldValue(name, !values.check)}
         {...otherProps}
       />
+
+      
     </>
   );
 }
-
-// reminder to delete AppCheckbox and CHeckbox item if no longer needed
-
