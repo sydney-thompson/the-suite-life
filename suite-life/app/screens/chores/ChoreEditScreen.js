@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { TextInput } from 'react-native';
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
@@ -7,6 +7,7 @@ import Screen from "../../components/Screen";
 import { db } from "../../components/firebase/firebase";
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
+import * as choreFunctions from "../../components/firebase/chores_and_payments";
 
 export default function ChoreEditScreen(choreInfo) {
   const { choreID } = choreInfo.route.params.firebaseID;
@@ -16,46 +17,50 @@ export default function ChoreEditScreen(choreInfo) {
   const [choreAssignee, setChoreAssignee] = useState('')
   const [choreRefresher, setChoreRefresher] = useState('')
 
-  // function to push data to firebase
-  const updateChore = () => {
-    db.ref(`/suites/test123/chores/${choreInfo.route.params.firebaseID}`).set({
-      name: choreName, 
-      frequency: choreFrequency,
-      assignee: choreAssignee
-    });
+  // navigates back to main screen
+  const returnHome = () => {
+    const navigator = choreInfo.route.params.navigation;
+    navigator.goBack()
   }
 
-  const loadChoreData = () => {
-    if(choreRefresher != "True"){
-      setChoreRefresher("True")
-      db.ref(`/suites/test123/chores/${choreInfo.route.params.firebaseID}`).once('value', snapshot => {
-        let data = snapshot.val()
-        setChoreName(data.name)
-        setFrequencyName(data.frequency)
-        setChoreAssignee(data.assignee)
-      });
-    }
+  // gets chore data from firebase and populates text fields with it 
+   const loadChoreData = () => {
+      if(choreRefresher != "True"){
+        setChoreRefresher("True")
+        const choreData = choreFunctions.loadChoreData(choreInfo.route.params.firebaseID)
+        setChoreName(choreData.name)
+        setFrequencyName(choreData.frequency)
+        setChoreAssignee(choreData.assignee)
+      }
   }
   loadChoreData()
 
   // sends data to firebase and clears the textbox values 
   const submitAndClear = () => {
-    const navigator = choreInfo.route.params.navigation;
-    const update_promise = new Promise((resolve, reject) => {
-      updateChore()
-    })
-    update_promise.then(
-      setChoreRefresher("False"),
-      navigator.goBack()
-    )
+    if(choreName == "" || choreAssignee == "" || choreFrequency == ""){
+      Alert.alert(
+        "Warning: Missing Data",
+        "Please make sure all data fields have values.",
+        [{ text: "OK"}]
+      );
+    }
+    else{
+      const update_promise = new Promise((resolve, reject) => {
+        choreFunctions.updateChore(choreName, choreFrequency, choreAssignee, choreInfo.route.params.firebaseID)
+      })
+      update_promise.then(
+        setChoreRefresher("False"),
+        returnHome()
+      )
+    }
   }
-  // sends data to firebase and clears the textbox values 
+
+  // deletes chore from firebase then returns to main screen
   const deleteChore = () => {
-    const navigator = choreInfo.route.params.navigation;
-    let toDelete = db.ref(`/suites/test123/chores/${choreInfo.route.params.firebaseID}`)
-    toDelete.remove()
-    navigator.goBack()
+    choreFunctions.deleteChore(choreInfo.route.params.firebaseID)
+    returnHome()
   }
+
   return (
     <Screen style={styles.screen}>
       <AppText style={defaultStyles.title}>Edit Chore</AppText>
@@ -78,6 +83,11 @@ export default function ChoreEditScreen(choreInfo) {
         title="Submit Chore"
         color="primary"
         onPress={submitAndClear}
+      ></AppButton>
+      <AppButton
+        title="Cancel"
+        color="primary"
+        onPress={returnHome}
       ></AppButton>
       <AppButton
         title="Delete Chore"

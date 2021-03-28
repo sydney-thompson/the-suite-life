@@ -1,5 +1,51 @@
 import { auth, db } from "./firebase";
 
+export function loadChoreData (firebaseID){
+    var returnData = []
+    db.ref(`/suites/test123/chores/${firebaseID}`).once('value', snapshot => {
+        let data = snapshot.val()
+        returnData = {'name': data.name, 'frequency': data.frequency, 'assignee': data.assignee}
+    });
+    return returnData
+  }
+
+// function to push new chore to firebase
+export function addNewChore (choreName, choreFrequency, choreAssignee){
+    db.ref(`/suites/test123/chores`).once('value', snapshot => {
+      let data = snapshot.val()
+      if(data == "None"){
+        db.ref('/suites/test123/chores/').set({
+          name: choreName, 
+          frequency: choreFrequency,
+          assignee: choreAssignee
+        });
+        choreFunctions.updateChore (choreName, choreFrequency, choreAssignee)
+      }
+      else{
+        db.ref('/suites/test123/chores/').push({
+          name: choreName, 
+          frequency: choreFrequency,
+          assignee: choreAssignee
+        });
+      }
+    });
+  }
+
+// function to update data in firebase
+export function updateChore (choreName, choreFrequency, choreAssignee, firebaseID){
+    db.ref(`/suites/test123/chores/${firebaseID}`).set({
+      name: choreName, 
+      frequency: choreFrequency,
+      assignee: choreAssignee
+    });
+  }
+
+// deletes chore from firebase 
+export function deleteChore (toDeleteID){
+    let toDelete = db.ref(`/suites/test123/chores/${toDeleteID}`)
+    toDelete.remove()
+  }
+
 // currently does not work 
 export function renderChoress(){
     console.log("renderChoress 1")
