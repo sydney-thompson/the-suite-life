@@ -7,7 +7,7 @@ import Screen from "../../components/Screen";
 import { db } from "../../components/firebase/firebase";
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
-import * as choreFunctions from "../../components/firebase/chores_and_payments";
+import * as choreFunctions from "../../components/firebase/chores";
 
 export default function ChoreEditScreen(choreInfo) {
   const { choreID } = choreInfo.route.params.firebaseID;

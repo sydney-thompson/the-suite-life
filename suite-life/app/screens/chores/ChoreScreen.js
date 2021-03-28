@@ -4,7 +4,7 @@ import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
 import { auth, db } from "../../components/firebase/firebase";
-import * as choreFunctions from "../../components/firebase/chores_and_payments";
+import * as choreFunctions from "../../components/firebase/chores";
 
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";

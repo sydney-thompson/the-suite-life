@@ -5,6 +5,7 @@ import AppText from "../../components/AppText";
 import TextInput2 from "../../components/TextInput2";
 import Screen from "../../components/Screen";
 import * as Yup from "yup";
+import * as paymentFunctions from "../../components/firebase/payments";
 
 import defaultStyles from "../../config/styles";
 
@@ -21,11 +22,19 @@ const validationSchema = Yup.object().shape({
   payer: Yup.string().required().label("Payer")
 });
 
-export default function PaymentAddScreen() {
+export default function PaymentAddScreen({navigation}) {
   const AddTransaction = (values) => {
-    // Placeholder: read values of TextInputs and handle data
-    // navigate back to main payments screen
-    console.log(values);
+    // Send values to firebase and navigate back
+    // console.log(values);
+    paymentFunctions.addNewPayment({
+      'title': values.title,
+      'amount': values.amount,
+      'payer': values.payer,
+      'payees': 'empty',  // fill in once you have these fields!!
+      'details': 'empty', // ^^^^^^^
+      'completed': false
+    })
+    navigation.goBack()
   }
   const housemates = [{name: 'Name 1'}, {name: 'Name 2'}];    // placeholder for reading in the housemates of that suite
 
