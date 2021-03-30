@@ -50,8 +50,6 @@ export default function ApartmentScreen({ navigation }) {
 
   useEffect(() => {
     getUserData().then((val) => {
-      console.log("setting user");
-      console.log("val:", val);
       setUser(val);
     });
   }, []);
@@ -60,7 +58,6 @@ export default function ApartmentScreen({ navigation }) {
     if (user) {
       getUserChores(setChores, user.suiteID, user.uid);
     } else {
-      console.log("No user");
       setChores([]);
     }
 

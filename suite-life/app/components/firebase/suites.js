@@ -81,18 +81,12 @@ export function getUserChores(setChores, suiteID, uid = null) {
         if (snapshot.exists()) {
           snapshot.forEach((child) => {
             const chore = child.val();
-            console.log("key:", child.ref.key);
-            // console.log("child:", chore);
-            console.log("assignee:", chore["assignee"]);
-
-            const new_chore = {
+            const newChore = {
               id: child.ref.key,
               ...chore,
             };
-            chores.push(new_chore);
+            chores.push(newChore);
           });
-        } else {
-          console.log("snapshot does not exist");
         }
         setChores(chores);
       },
@@ -106,3 +100,41 @@ export function getUserChores(setChores, suiteID, uid = null) {
 export function disconnectFromChores(suiteID) {
   db.ref(`suites/${suiteID}/chores`).off("value");
 }
+
+// export function getSuitemates(setSuitemates, suiteID, uid = null) {
+//   if (!uid) {
+//     uid = auth.currentUser.uid;
+//   }
+
+//   let chores = [];
+//   return db
+//     .ref(`suites/${suiteID}/users`)
+//     .orderByChild("uid")
+//     .on(
+//       "value",
+//       (snapshot) => {
+//         let suitemates = [];
+//         if (snapshot.exists()) {
+//           snapshot.forEach((child) => {
+//             const suitemate = child.val();
+//             console.log("key:", child.ref.key);
+//             // console.log("child:", chore);
+//             console.log("assignee:", suitemate["assignee"]);
+
+//             const newSuitemate = {
+//               id: child.ref.key,
+//               ...suitemate,
+//             };
+//             suitemates.push(newSuitemate);
+//           });
+//         } else {
+//           console.log("snapshot does not exist");
+//         }
+//         setSuitemates(suitemates);
+//       },
+//       (err) => {
+//         console.log("error:", err);
+//         setSuitemates([]);
+//       }
+//     );
+// }
