@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 15,
     width: "95%",
-    margin: 10,
+    margin: "2%",
     height: "33%",
   },
   cardText: {
