@@ -1,5 +1,5 @@
 import { auth, db } from "./firebase";
-import { checkUserExists } from "./users";
+import { checkUserExists, getUserData } from "./users";
 
 // Creates a new suite
 export async function createSuite(suiteID, suiteName) {
@@ -26,7 +26,6 @@ export function checkSuiteExists(suiteID) {
         resolve(!(snapshot.val() === null));
       },
       (error) => {
-        console.log("SUITE EXISTS ERROR: ", error);
         reject(error);
       }
     );
@@ -43,7 +42,7 @@ export async function addUserToSuite(suiteID, uid) {
         uid: uid,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.error(err));
 }
 
 /* Should change this function's name to be more descriptive */
@@ -53,7 +52,6 @@ export function checkSuite() {
 
   suites.on("child_changed", function (data) {
     const suite = data.val();
-    console.log(`The new suite is ${suite.name}`);
     return true;
   });
 }
@@ -91,7 +89,7 @@ export function getUserChores(setChores, suiteID, uid = null) {
         setChores(chores);
       },
       (err) => {
-        console.log("error:", err);
+        console.error(err);
         setChores([]);
       }
     );
@@ -101,40 +99,41 @@ export function disconnectFromChores(suiteID) {
   db.ref(`suites/${suiteID}/chores`).off("value");
 }
 
-// export function getSuitemates(setSuitemates, suiteID, uid = null) {
-//   if (!uid) {
-//     uid = auth.currentUser.uid;
-//   }
+export function getSuitemates(setSuitemates, suiteID, uid = null) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
 
-//   let chores = [];
-//   return db
-//     .ref(`suites/${suiteID}/users`)
-//     .orderByChild("uid")
-//     .on(
-//       "value",
-//       (snapshot) => {
-//         let suitemates = [];
-//         if (snapshot.exists()) {
-//           snapshot.forEach((child) => {
-//             const suitemate = child.val();
-//             console.log("key:", child.ref.key);
-//             // console.log("child:", chore);
-//             console.log("assignee:", suitemate["assignee"]);
+  let chores = [];
+  return db
+    .ref(`suites/${suiteID}/users`)
+    .orderByChild("uid")
+    .on(
+      "value",
+      (snapshot) => {
+        let suitemates = [];
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const suitemate = child.val();
+            getUserData(suitemate.uid).then((val) => {
+              const newSuitemate = {
+                id: val.uid,
+                ...val,
+              };
+              suitemates.push(newSuitemate);
+              setSuitemates(suitemates);
+            });
+          });
+        }
+        setSuitemates(suitemates);
+      },
+      (err) => {
+        console.error(err);
+        setSuitemates([]);
+      }
+    );
+}
 
-//             const newSuitemate = {
-//               id: child.ref.key,
-//               ...suitemate,
-//             };
-//             suitemates.push(newSuitemate);
-//           });
-//         } else {
-//           console.log("snapshot does not exist");
-//         }
-//         setSuitemates(suitemates);
-//       },
-//       (err) => {
-//         console.log("error:", err);
-//         setSuitemates([]);
-//       }
-//     );
-// }
+export function disconnectFromSuitemates(suiteID) {
+  db.ref(`suites/${suiteID}/users`).off("value");
+}
