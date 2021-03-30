@@ -64,47 +64,45 @@ export function checkUserInSuite() {
   return user.suiteID === null;
 }
 
-export function getUserChores(suiteID, uid = null) {
+export function getUserChores(setChores, suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
 
-  const chores = [];
-  return new Promise((resolve, reject) => {
-    const ref = db.ref(`suites/${suiteID}/chores`);
-
-    let chores = [];
-    try {
-      ref.once(
-        "value",
-        (snapshot) => {
+  let chores = [];
+  return db
+    .ref(`suites/${suiteID}/chores`)
+    .orderByChild("assignee")
+    .equalTo(uid)
+    .on(
+      "value",
+      (snapshot) => {
+        let chores = [];
+        if (snapshot.exists()) {
           snapshot.forEach((child) => {
             const chore = child.val();
-            console.log("child:", chore);
+            console.log("key:", child.ref.key);
+            // console.log("child:", chore);
             console.log("assignee:", chore["assignee"]);
-            if (chore.assignee == uid) {
-              const new_chore = {
-                id: `${chore.assignee}-${chore.name}-${chore.frequency}`,
-                ...chore,
-              };
-              console.log("chore:", new_chore);
-              chores.push(new_chore);
-            } else {
-              console.log(
-                `no match - uid: ${uid} - assignee: ${child.val().assignee}`
-              );
-            }
+
+            const new_chore = {
+              id: child.ref.key,
+              ...chore,
+            };
+            chores.push(new_chore);
           });
-          resolve(chores);
-        },
-        (error) => {
-          console.log("SUITE EXISTS ERROR: ", error);
-          resolve([]);
+        } else {
+          console.log("snapshot does not exist");
         }
-      );
-    } catch (error) {
-      console.error(error);
-      reject(error);
-    }
-  });
+        setChores(chores);
+      },
+      (err) => {
+        console.log("error:", err);
+        setChores([]);
+      }
+    );
+}
+
+export function disconnectFromChores(suiteID) {
+  db.ref(`suites/${suiteID}/chores`).off("value");
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function ChoreListSeparater() {
+export default function VerticalSpaceSeparator() {
   return <View style={styles.conatiner} />;
 }
 

@@ -10,8 +10,12 @@ import colors from "../config/colors";
 import { getUserData } from "../components/firebase/users";
 import routes from "../navigation/routes";
 import Screen from "../components/Screen";
-import ChoreListSeparater from "../components/ChoreListSeparater";
-import { getUserChores } from "../components/firebase/suites";
+import VerticalSpaceSeparator from "../components/VerticalSpaceSeparator";
+import {
+  disconnectFromChores,
+  getUserChores,
+} from "../components/firebase/suites";
+import { db } from "../components/firebase/firebase";
 
 const initialChores = [
   {
@@ -54,16 +58,16 @@ export default function ApartmentScreen({ navigation }) {
 
   useEffect(() => {
     if (user) {
-      console.log("user set - getting chores for suite ", user.suiteID);
-      getUserChores(user.suiteID, user.uid).then((fbChores) => {
-        console.log("chores:");
-        console.log(fbChores);
-        setChores(fbChores);
-      });
+      getUserChores(setChores, user.suiteID, user.uid);
     } else {
-      console.log("no user");
+      console.log("No user");
+      setChores([]);
     }
-  }, [user]);
+
+    return () => {
+      disconnectFromChores();
+    };
+  }, [user, setChores]);
 
   return (
     <Screen style={styles.screen}>
@@ -92,7 +96,7 @@ export default function ApartmentScreen({ navigation }) {
                 name={item.name}
               />
             )}
-            ItemSeparatorComponent={ChoreListSeparater}
+            ItemSeparatorComponent={VerticalSpaceSeparator}
           />
         )}
       </View>
