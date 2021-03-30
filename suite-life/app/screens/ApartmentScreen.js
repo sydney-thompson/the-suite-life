@@ -16,48 +16,62 @@ import { getUserChores } from "../components/firebase/suites";
 const initialChores = [
   {
     id: "chore1",
-    assignee_display: "Sydney",
+    assignee_name: "Sydney",
     frequency: "Weekly",
     name: "Laundry",
   },
   {
     id: "chore2",
-    assignee_display: "Sydney",
+    assignee_name: "Sydney",
     frequency: "Daily",
     name: "Vaccuuming ",
   },
   {
     id: "chore3",
-    assignee_display: "Sydney",
+    assignee_name: "Sydney",
     frequency: "Daily",
     name: "Dishes",
   },
   {
     id: "chore4",
-    assignee_display: "Sydney",
+    assignee_name: "Sydney",
     frequency: "Weekly",
     name: "Dusting",
   },
 ];
 
 export default function ApartmentScreen({ navigation }) {
-  const [user, setUser] = useState({ name: "" });
-  const [chores, setChores] = useState(initialChores);
+  const [user, setUser] = useState(null);
+  const [chores, setChores] = useState([]);
 
   useEffect(() => {
     getUserData().then((val) => {
+      console.log("setting user");
+      console.log("val:", val);
       setUser(val);
-      // const fbChores = getUserChores(user.suiteID, user.uid);
-      // console.log("chores:", fbChores);
-      // setChores(fbChores);
     });
-  });
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      console.log("user set - getting chores for suite ", user.suiteID);
+      getUserChores(user.suiteID, user.uid).then((fbChores) => {
+        console.log("chores:");
+        console.log(fbChores);
+        setChores(fbChores);
+      });
+    } else {
+      console.log("no user");
+    }
+  }, [user]);
 
   return (
     <Screen style={styles.screen}>
       <View style={[styles.cardContainer, styles.welcomeContainer]}>
-        <AppTitle style={styles.welcomeText}>{`Welcome Back,`}</AppTitle>
-        <AppTitle style={styles.welcomeText}>{`${user.name}`}</AppTitle>
+        <AppTitle style={styles.welcomeText}>{`Welcome Back`}</AppTitle>
+        {user && (
+          <AppTitle style={styles.welcomeText}>{`${user.name}`}</AppTitle>
+        )}
       </View>
       <View style={styles.cardContainer}>
         <AppTitle style={styles.cardText}>{`Chores`}</AppTitle>
@@ -73,7 +87,7 @@ export default function ApartmentScreen({ navigation }) {
             keyExtractor={(chore) => chore.id}
             renderItem={({ item }) => (
               <Chore
-                assigneeName={item.assignee_display}
+                assigneeName={item.assignee_name}
                 frequency={item.frequency}
                 name={item.name}
               />
