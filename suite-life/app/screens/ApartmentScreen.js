@@ -97,11 +97,9 @@ export default function ApartmentScreen({ navigation }) {
           />
         )}
       </View>
-      <AppButton
-        title="Payments"
-        color="primary"
-        onPress={() => navigation.navigate(routes.PAYMENT_NAV)}
-      ></AppButton>
+      <View style={styles.cardContainer}>
+        <AppTitle style={styles.cardText}>{`Payments`}</AppTitle>
+      </View>
     </Screen>
   );
 }
