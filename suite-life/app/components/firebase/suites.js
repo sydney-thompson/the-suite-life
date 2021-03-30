@@ -102,54 +102,9 @@ export function getUserChores(suiteID, uid = null) {
           resolve([]);
         }
       );
-
-      // ref.child("chores").orderByChild("assignee").equalTo(uid);
-      // ref.once("value", (snapshot) => {
-      //   // .on("child_added", function (snapshot) {
-      //   if (snapshot.exists()) {
-      //     // console.log("exists - val:", snapshot.val());
-      //     chore = snapshot.val();
-      //     console.log("chore:", chore);
-      //     return chore;
-      //     // chores.push({ id: chore.name, ...chore });
-      //     // console.log("chores len:", chores.length);
-      //     // resolve(snapshot.val());
-      //   } else {
-      //     // console.log("nope");
-      //     return chores;
-      //   }
-      // });
-      // // console.log("chores:", chores);
-      // return chores;
     } catch (error) {
       console.error(error);
       reject(error);
     }
   });
 }
-
-//   return new Promise((resolve, reject) => {
-//     const chores = [];
-//     const ref = db.ref(`suites/${suiteId}`);
-//     ref
-//       .child("chores")
-//       .orderByChild("assignee")
-//       .equalTo(uid)
-//       .on("child_added", function (snapshot) {
-//         if (snapshot.exists()) {
-//           // console.log("exists - val:", snapshot.val());
-//           chores.push({ id: snapshot.val().name, ...snapshot.val });
-//           console.log("chores len:", chores.length);
-//           // resolve(snapshot.val());
-//         } else {
-//           console.log("nope");
-//           resolve({});
-//         }
-//       })
-//       .catch(function (error) {
-//         reject(error);
-//       });
-//     console.log("chores:", chores);
-//     resolve(chores);
-//   });
-// }
