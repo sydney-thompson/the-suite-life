@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import TextInput2 from "../../components/TextInput2";
@@ -19,33 +19,36 @@ import {
 const validationSchema = Yup.object().shape({
   title: Yup.string().required().label("Title"),
   amount: Yup.number().required().positive().label("Amount"),
-  payer: Yup.string().required().label("Payer")
+  payer: Yup.string().required().label("Payer"),
+  details: Yup.string().label("Details")
 });
 
 export default function PaymentAddScreen({navigation}) {
   const AddTransaction = (values) => {
     // Send values to firebase and navigate back
-    // console.log(values);
+
     paymentFunctions.addNewPayment({
       'title': values.title,
       'amount': values.amount,
       'payer': values.payer,
-      'payees': 'empty',  // fill in once you have these fields!!
-      'details': 'empty', // ^^^^^^^
+      'payees': values.payees,
+      'details': values.details,
       'completed': false
     })
     navigation.goBack()
   }
-  const housemates = [{name: 'Name 1'}, {name: 'Name 2'}];    // placeholder for reading in the housemates of that suite
+  const housemates = [{id: 'id1', name: 'Name 1'}, {id: 'id2', name: 'Name 2'}];    // placeholders for reading in the housemates of that suite
+  const initialhousemates = {'id1': false, 'id2': false};
 
   return (
     <Screen style={styles.screen}>
       <AppText style={defaultStyles.title}>New Transaction</AppText>
       <Form
-        initialValues={{ title: "", amount: "", payer: "", check: false }}
+        initialValues={{ title: "", amount: "", payer: "", payees: initialhousemates, details: ""}}
         onSubmit={(values) => AddTransaction(values)}
         validationSchema={validationSchema}
       >
+        <ScrollView style={{width: '100%'}}>
         <FormField
           display="AppTextInputLabel"
           label="Title"
@@ -70,37 +73,35 @@ export default function PaymentAddScreen({navigation}) {
           name="payer"
           placeholder="Who payed for the item?"
         />
-        <AppText>Select housemates who owe:</AppText>
-        <View role="group">
-        <Checkbox
-          name="check"
-          checkedIcon='check-box'
-          iconType='material'
-          uncheckedIcon='check-box-outline-blank'
-          title='TEST'
-          checkedTitle='TESTOOOP'
+        <FormField
+          display="AppTextInputLabel"
+          label="Details"
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="details"
+          placeholder="Additional details"
         />
+        <AppText style={[{color: defaultStyles.colors.black}]}>Select housemates who owe:</AppText>
+        <View>
+        {housemates.map((housemate) => {
+          return (
+            <Checkbox
+              name="payees"
+              specificName={housemate.id}
+              checkedIcon='check-box'
+              iconType='material'
+              uncheckedIcon='check-box-outline-blank'
+              title={housemate.name}
+            />
+          );
+        })}
         </View>
+        </ScrollView>
         <SubmitButton title="Save Transaction" />
       </Form>
     </Screen>
   );
 };
-
-/*<View role="group">
-          {housemates.map((housemate) => {
-          return (
-            <AppText>
-            <Checkbox name="checked" value={housemate.name} />
-            {housemate.name}
-            </AppText>
-          );
-          })}
-        </View>
-
-
-      onPress={() => setFieldValue('check', !values.check)}
-*/
 
 const styles = StyleSheet.create({
   screen: {

@@ -7,7 +7,7 @@ import defaultStyles from "../config/styles";
 const AppTextInputLabel = ({ label, width = "100%", ...otherProps }) => {
   return (
     <View style={[styles.container, { width }]}>
-      <Text style={defaultStyles.text}>{label}</Text>
+      <Text style={[defaultStyles.text, {color: defaultStyles.colors.black}]}>{label}</Text>
       <TextInput
         placeholderTextColor={defaultStyles.colors.secondary}
         style={styles.inputbox}
