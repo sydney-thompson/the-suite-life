@@ -7,6 +7,6 @@ export default function VerticalSpaceSeparator() {
 
 const styles = StyleSheet.create({
   conatiner: {
-    width: 20,
+    width: 10,
   },
 });
