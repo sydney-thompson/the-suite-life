@@ -17,33 +17,6 @@ import {
 } from "../components/firebase/suites";
 import { db } from "../components/firebase/firebase";
 
-const initialChores = [
-  {
-    id: "chore1",
-    assignee_name: "Sydney",
-    frequency: "Weekly",
-    name: "Laundry",
-  },
-  {
-    id: "chore2",
-    assignee_name: "Sydney",
-    frequency: "Daily",
-    name: "Vaccuuming ",
-  },
-  {
-    id: "chore3",
-    assignee_name: "Sydney",
-    frequency: "Daily",
-    name: "Dishes",
-  },
-  {
-    id: "chore4",
-    assignee_name: "Sydney",
-    frequency: "Weekly",
-    name: "Dusting",
-  },
-];
-
 export default function ApartmentScreen({ navigation }) {
   const [user, setUser] = useState(null);
   const [chores, setChores] = useState([]);
@@ -85,7 +58,7 @@ export default function ApartmentScreen({ navigation }) {
           <FlatList
             data={chores}
             horizontal={true}
-            keyExtractor={(chore) => chore.id}
+            keyExtractor={(chore) => chore.id.toString()}
             renderItem={({ item }) => (
               <Chore
                 assigneeName={item.assignee_name}

@@ -107,7 +107,7 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
   let chores = [];
   return db
     .ref(`suites/${suiteID}/users`)
-    .orderByChild("uid")
+    .orderByChild("name")
     .on(
       "value",
       (snapshot) => {
@@ -125,7 +125,7 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
             });
           });
         }
-        setSuitemates(suitemates);
+        // setSuitemates(suitemates);
       },
       (err) => {
         console.error(err);

@@ -12,37 +12,23 @@ import {
 } from "../components/firebase/suites";
 import { getUserData } from "../components/firebase/users";
 
-const defaultSuitemates = [
-  {
-    id: 1,
-    name: "Sydney",
-    pronouns: "she/her",
-  },
-  {
-    id: 2,
-    name: "Brynna",
-    pronouns: "xe/xim",
-  },
-  {
-    id: 3,
-    name: "Matt",
-    pronouns: "he/him",
-  },
-];
-
 export default function AccountScreen() {
   const [user, setUser] = useState(null);
-  const [suitemates, setSuitemates] = useState(defaultSuitemates);
+  const [suitemates, setSuitemates] = useState([]);
 
   useEffect(() => {
     getUserData().then((val) => {
+      console.log("val:", val);
       setUser(val);
+      console.log("user:", user);
     });
   }, []);
 
   useEffect(() => {
+    console.log("\n\n\tSUITEMATES user:", user);
     if (user) {
       getSuitemates(setSuitemates, user.suiteID);
+      console.log("suitemates:", suitemates);
     } else {
       setSuitemates([]);
     }
@@ -67,7 +53,7 @@ export default function AccountScreen() {
         <AppTitle style={styles.cardText}>{`Suitemates`}</AppTitle>
         <FlatList
           data={suitemates}
-          keyExtractor={(suitemate) => suitemate.id}
+          keyExtractor={(suitemate) => suitemate.id.toString()}
           renderItem={({ item }) => (
             <Suitemate name={item.name} pronouns={item.pronouns} />
           )}
