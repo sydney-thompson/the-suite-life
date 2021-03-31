@@ -5,39 +5,45 @@ export function loadChoreData (firebaseID){
     var returnData = []
     db.ref(`/suites/test123/chores/${firebaseID}`).once('value', snapshot => {
         let data = snapshot.val()
-        returnData = {'name': data.name, 'frequency': data.frequency, 'assignee': data.assignee}
+        returnData = {'name': data.name, 'frequency': data.frequency, 'assignees': data.assignees, 'details': data.details, 'completed': data.completed}
     });
     return returnData
   }
 
 // function to push new chore to firebase
-export function addNewChore (choreName, choreFrequency, choreAssignee){
+export function addNewChore (info){
     db.ref(`/suites/test123/chores`).once('value', snapshot => {
       let data = snapshot.val()
       if(data == "None"){
         db.ref('/suites/test123/chores/').set({
-          name: choreName, 
-          frequency: choreFrequency,
-          assignee: choreAssignee
+          name: info.name, 
+          frequency: info.frequency,
+          assignees: info.assignees,
+          details: info.details,
+          completed: info.completed
         });
-        choreFunctions.updateChore (choreName, choreFrequency, choreAssignee)
+        choreFunctions.updateChore (info)
       }
       else{
         db.ref('/suites/test123/chores/').push({
-          name: choreName, 
-          frequency: choreFrequency,
-          assignee: choreAssignee
+          name: info.name, 
+          frequency: info.frequency,
+          assignees: info.assignees,
+          details: info.details,
+          completed: info.completed
         });
       }
     });
   }
 
 // function to update data in firebase
-export function updateChore (choreName, choreFrequency, choreAssignee, firebaseID){
+export function updateChore (info, firebaseID){
     db.ref(`/suites/test123/chores/${firebaseID}`).set({
-      name: choreName, 
-      frequency: choreFrequency,
-      assignee: choreAssignee
+      name: info.name, 
+      frequency: info.frequency,
+      assignees: info.assignees,
+      details: info.details,
+      completed: info.completed
     });
   }
 

@@ -88,6 +88,7 @@ export default function PaymentAddScreen({navigation}) {
             <Checkbox
               name="payees"
               specificName={housemate.id}
+              key={housemate.id}
               checkedIcon='check-box'
               iconType='material'
               uncheckedIcon='check-box-outline-blank'
@@ -99,6 +100,11 @@ export default function PaymentAddScreen({navigation}) {
         </ScrollView>
         <SubmitButton title="Save Transaction" />
       </Form>
+      <AppButton
+        title="Cancel"
+        color="primary"
+        onPress={() => navigation.goBack()}
+      ></AppButton>
     </Screen>
   );
 };
