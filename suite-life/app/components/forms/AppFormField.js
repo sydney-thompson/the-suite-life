@@ -6,7 +6,7 @@ import AppTextInput from "../AppTextInput";
 import AppTextInputLabel from "../AppTextInput_Label";
 import ErrorMessage from "./ErrorMessage";
 
-export default function AppFormField({ name, display, ...otherProps }) {
+export default function AppFormField({ name, display = "AppTextInput", ...otherProps }) {
   const { setFieldTouched, handleChange, errors, touched } = useFormikContext();
   const components_map = {
     "AppTextInputLabel": AppTextInputLabel,
