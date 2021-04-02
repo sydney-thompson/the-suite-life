@@ -26,6 +26,7 @@ import { updateUserDetails } from "../../components/firebase/users";
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
   pronouns: Yup.string().optional().label("Pronouns"),
+
 });
 
 export default function AccountEditScreen({ route, navigation }) {
@@ -65,6 +66,12 @@ export default function AccountEditScreen({ route, navigation }) {
           autoCorrect={false}
           name="pronouns"
           placeholder="Pronouns (optional)"
+        />
+        <FormField
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="suiteid"
+          placeholder="8 Digit Suite ID (optional)"
         />
         <View style={styles.spacer} />
         <SubmitButton title="Update" />

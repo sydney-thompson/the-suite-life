@@ -5,7 +5,8 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
 import AppTitle from "../components/AppTitle";
-import Chore from "../components/ChoreOverview";
+import ChoreOverview from "../components/ChoreOverview";
+import TransactionOverview from "../components/TransactionOverview";
 import colors from "../config/colors";
 import { getUserData } from "../components/firebase/users";
 import routes from "../navigation/routes";
@@ -14,6 +15,8 @@ import VerticalSpaceSeparator from "../components/VerticalSpaceSeparator";
 import {
   disconnectFromChores,
   getUserChores,
+  disconnectFromTransactions,
+  getUserTransactions,
 } from "../components/firebase/suites";
 import { db } from "../components/firebase/firebase";
 
@@ -44,9 +47,33 @@ const initialChores = [
   },
 ];
 
+const initialPayments = [
+  {
+    id: "transaction1",
+    amount: "60",
+    name: "groceries",
+  },
+  {
+    id: "transaction2",
+    amount: "-50",
+    name: "elm social",
+  },
+  {
+    id: "transaction3",
+    amount: "-5.02",
+    name: "boba",
+  },
+  {
+    id: "transaction4",
+    amount: "18.24",
+    name: "panera",
+  },
+];
+
 export default function ApartmentScreen({ navigation }) {
   const [user, setUser] = useState(null);
   const [chores, setChores] = useState([]);
+  const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
     getUserData().then((val) => {
@@ -65,6 +92,18 @@ export default function ApartmentScreen({ navigation }) {
       disconnectFromChores();
     };
   }, [user, setChores]);
+
+  useEffect(() => {
+    if (user) {
+      getUserTransactions(setTransactions, user.suiteID, user.uid);
+    } else {
+      setTransactions([]);
+    }
+
+    return () => {
+      disconnectFromTransactions();
+    };
+  }, [user, setTransactions]);
 
   return (
     <Screen style={styles.screen}>
@@ -87,7 +126,7 @@ export default function ApartmentScreen({ navigation }) {
             horizontal={true}
             keyExtractor={(chore) => chore.id}
             renderItem={({ item }) => (
-              <Chore
+              <ChoreOverview
                 assigneeName={item.assignee_name}
                 frequency={item.frequency}
                 name={item.name}
@@ -97,8 +136,23 @@ export default function ApartmentScreen({ navigation }) {
           />
         )}
       </View>
+
       <View style={styles.cardContainer}>
-        <AppTitle style={styles.cardText}>{`Payments`}</AppTitle>
+        <AppTitle style={styles.cardText}>{`Transactions`}</AppTitle>
+          {<FlatList
+            data={transactions}
+            horizontal={true}
+            keyExtractor={(transaction) => transaction.id}
+            renderItem={({ item }) => (
+              <TransactionOverview
+                name={item.name}
+                amount={item.amount}
+              />
+            )}
+            ItemSeparatorComponent={VerticalSpaceSeparator}
+          />
+         }
+
       </View>
     </Screen>
   );

@@ -8,10 +8,10 @@ export async function createSuite(suiteID, suiteName) {
   db.ref(`suites/${suiteID}`).set({
     // initialze to empty arrays by default
     chores: [],
+    transactions: [],
     id: suiteID,
     messages: [],
     name: suiteName,
-    transactions: [],
     users: [],
   });
 }
@@ -99,12 +99,50 @@ export function disconnectFromChores(suiteID) {
   db.ref(`suites/${suiteID}/chores`).off("value");
 }
 
+export function getUserTransactions(setTransactions, suiteID, uid = null) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
+
+  let transactions = [];
+  return db
+    .ref(`suites/${suiteID}/transactions`)
+    // .orderByChild("assignee")
+    .equalTo(uid)
+    .on(
+      "value",
+      (snapshot) => {
+        let transactions = [];
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const transaction = child.val();
+            const newTransaction = {
+              id: child.ref.key,
+              ...transaction,
+            };
+            transaction.push(newTransaction);
+          });
+        }
+        setTransactions(transactions);
+      },
+      (err) => {
+        console.error(err);
+        setTransactions([]);
+      }
+    );
+}
+
+export function disconnectFromTransactions(suiteID) {
+  db.ref(`suites/${suiteID}/transactions`).off("value");
+}
+
 export function getSuitemates(setSuitemates, suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
 
   let chores = [];
+  let transactions = [];
   return db
     .ref(`suites/${suiteID}/users`)
     .orderByChild("uid")
