@@ -5,7 +5,7 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
 import AppTitle from "../components/AppTitle";
-import Chore from "../components/Chore";
+import Chore from "../components/ChoreOverview";
 import colors from "../config/colors";
 import { getUserData } from "../components/firebase/users";
 import routes from "../navigation/routes";
