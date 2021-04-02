@@ -5,6 +5,7 @@ export default Object.freeze({
   APARTMENT: "Apartment",
   CHORES: "Chores",
   CHORE_ADD: "ChoreAdd",
+  CHORE_EDIT: "ChoreEdit",
   CHORE_NAV: "ChoreNavigation",
   CREATE_SUITE: "CreateSuite",
   LOGIN: "Login",
