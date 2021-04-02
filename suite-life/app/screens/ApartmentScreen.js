@@ -73,7 +73,7 @@ const initialPayments = [
 export default function ApartmentScreen({ navigation }) {
   const [user, setUser] = useState(null);
   const [chores, setChores] = useState([]);
-  const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState(initialPayments);
 
   useEffect(() => {
     getUserData().then((val) => {
@@ -93,17 +93,17 @@ export default function ApartmentScreen({ navigation }) {
     };
   }, [user, setChores]);
 
-  useEffect(() => {
-    if (user) {
-      getUserTransactions(setTransactions, user.suiteID, user.uid);
-    } else {
-      setTransactions([]);
-    }
-
-    return () => {
-      disconnectFromTransactions();
-    };
-  }, [user, setTransactions]);
+  // useEffect(() => {
+  //   if (user) {
+  //     getUserTransactions(setTransactions, user.suiteID, user.uid);
+  //   } else {
+  //     setTransactions([]);
+  //   }
+  //
+  //   return () => {
+  //     disconnectFromTransactions();
+  //   };
+  // }, [user, setTransactions]);
 
   return (
     <Screen style={styles.screen}>

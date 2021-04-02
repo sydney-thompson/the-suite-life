@@ -107,7 +107,6 @@ export function getUserTransactions(setTransactions, suiteID, uid = null) {
   let transactions = [];
   return db
     .ref(`suites/${suiteID}/transactions`)
-    // .orderByChild("assignee")
     .equalTo(uid)
     .on(
       "value",
