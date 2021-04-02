@@ -57,5 +57,6 @@ const styles = StyleSheet.create({
   text: {
     color: colors.black,
     fontSize: 20,
+    alignSelf: "flex-end"
   },
 });

@@ -107,7 +107,6 @@ export function getUserTransactions(setTransactions, suiteID, uid = null) {
   let transactions = [];
   return db
     .ref(`suites/${suiteID}/transactions`)
-    .equalTo(uid)
     .on(
       "value",
       (snapshot) => {
@@ -119,7 +118,7 @@ export function getUserTransactions(setTransactions, suiteID, uid = null) {
               id: child.ref.key,
               ...transaction,
             };
-            transaction.push(newTransaction);
+            transactions.push(newTransaction);
           });
         }
         setTransactions(transactions);
