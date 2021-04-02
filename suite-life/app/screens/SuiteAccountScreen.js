@@ -11,6 +11,7 @@ import {
   getSuitemates,
 } from "../components/firebase/suites";
 import { getUserData } from "../components/firebase/users";
+import { auth } from "firebase";
 
 export default function AccountScreen() {
   const [user, setUser] = useState(null);
@@ -22,7 +23,7 @@ export default function AccountScreen() {
       setUser(val);
       console.log("user:", user);
     });
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
     console.log("\n\n\tSUITEMATES user:", user);

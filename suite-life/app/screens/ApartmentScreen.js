@@ -16,6 +16,7 @@ import {
   getUserChores,
 } from "../components/firebase/suites";
 import { db } from "../components/firebase/firebase";
+import { auth } from "firebase";
 
 export default function ApartmentScreen({ navigation }) {
   const [user, setUser] = useState(null);
@@ -25,7 +26,7 @@ export default function ApartmentScreen({ navigation }) {
     getUserData().then((val) => {
       setUser(val);
     });
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
     if (user) {
