@@ -20,56 +20,6 @@ import {
 } from "../components/firebase/suites";
 import { db } from "../components/firebase/firebase";
 
-const initialChores = [
-  {
-    id: "chore1",
-    assignee_name: "Sydney",
-    frequency: "Weekly",
-    name: "Laundry",
-  },
-  {
-    id: "chore2",
-    assignee_name: "Sydney",
-    frequency: "Daily",
-    name: "Vaccuuming ",
-  },
-  {
-    id: "chore3",
-    assignee_name: "Sydney",
-    frequency: "Daily",
-    name: "Dishes",
-  },
-  {
-    id: "chore4",
-    assignee_name: "Sydney",
-    frequency: "Weekly",
-    name: "Dusting",
-  },
-];
-
-const initialPayments = [
-  {
-    id: "transaction1",
-    amount: "60",
-    name: "groceries",
-  },
-  {
-    id: "transaction2",
-    amount: "-50",
-    name: "elm social",
-  },
-  {
-    id: "transaction3",
-    amount: "-5.02",
-    name: "boba",
-  },
-  {
-    id: "transaction4",
-    amount: "18.24",
-    name: "panera",
-  },
-];
-
 export default function ApartmentScreen({ navigation }) {
   const [user, setUser] = useState(null);
   const [chores, setChores] = useState([]);
