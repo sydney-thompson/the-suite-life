@@ -52,7 +52,7 @@ const TestChores = () => {
     // deleteChore
     choreFunctions.deleteChore(C_TEST_ID);
     db.ref(`/suites/test123/chores/${C_TEST_ID}`).once('value', snapshot => {
-        let data = snapshot.val()
+        let data = snapshot.val();
         if(data == "None") {
             console.log("CHORES/deleteChore: PASSED");
         } else { 
@@ -110,7 +110,7 @@ const TestPayments = () => {
     // deletePayment
     paymentFunctions.deletePayment(P_TEST_ID);
     db.ref(`/suites/test123/payments/${P_TEST_ID}`).once('value', snapshot => {
-        let data = snapshot.val()
+        let data = snapshot.val();
         if(data == "None") {
             console.log("PAYMENTS/deletePayment: PASSED");
         } else { 
@@ -129,7 +129,7 @@ const TestSuites = () => {
     // createSuite(suiteID, suiteName)
     suiteFunctions.createSuite(S_TEST_ID, "S_UT");
     db.ref(`/suites/${S_TEST_ID}`).once('value', snapshot => {
-        let data = snapshot.val()
+        let data = snapshot.val();
         if(data.name == "S_UT") {
             console.log("SUITES/createSuite: PASSED");
         } else { 
@@ -148,7 +148,7 @@ const TestSuites = () => {
     let S_TEST_UID = "UID_UT";
     suiteFunctions.addUserToSuite(S_TEST_ID, S_TEST_UID);
     db.ref(`/suites/${S_TEST_ID}/users/${S_TEST_UID}`).once('value', snapshot => {
-        let data = snapshot.val()
+        let data = snapshot.val();
         if(data == "None") {
             console.log("SUITES/addUserToSuite: FAILED");
         } else { 
@@ -166,9 +166,9 @@ const TestSuites = () => {
     });
     
     // deleteSuite()
-    paymentFunctions.deleteSuite(S_TEST_ID);
+    suiteFunctions.deleteSuite(S_TEST_ID);
     db.ref(`/suites/${S_TEST_ID}`).once('value', snapshot => {
-        let data = snapshot.val()
+        let data = snapshot.val();
         if(data == "None") {
             console.log("SUITES/deleteSuite: PASSED");
         } else { 
@@ -177,5 +177,81 @@ const TestSuites = () => {
     });
 }
 
+
+// USERS ******************************************************************************************************************************************
+
+const TestUsers = () => {
+
+    let U_TEST_UID = 'UID_UT';
+    let U_TEST_NAME = 'NAME_UT';
+    let U_TEST_PRONOUNS = 'PRONOUNS_UT';
+    let U_TEST_SID = 'SID_UT';
+
+
+    // createUser(uid, name, pronouns, suiteID)
+    userFunctions.createUser(U_TEST_UID, U_TEST_NAME, U_TEST_PRONOUNS, U_TEST_SID);
+    db.ref(`/users/${U_TEST_UID}`).once('value', snapshot => {
+        let data = snapshot.val();
+        if(data.uid == U_TEST_UID && data.name == U_TEST_NAME && data.pronouns == U_TEST_PRONOUNS && data.suiteID == U_TEST_SID) {
+            console.log("USERS/createUser: PASSED");
+        } else { 
+            console.log("USERS/createUser: FAILED");
+        }
+    });
+    
+    // checkUserExists(uid)
+    if (userFunctions.checkUserExists(U_TEST_UID) == true) {
+        console.log("USERS/checkUserExists: PASSED");
+    } else {
+        console.log("USERS/checkUserExists: FAILED");
+    }
+
+    // updateUserSuite(uid, suiteID)
+    let U_TEST_SID_NEW = "U_SID_UT";
+    userFunctions.updateUserSuite(U_TEST_UID, U_TEST_SID);
+    db.ref(`/users/${U_TEST_UID}/suiteID`).once('value', snapshot => {
+        let data = snapshot.val();
+        if(data == U_TEST_SID_NEW) {
+            console.log("USERS/updateUserSuite: PASSED");
+        } else { 
+            console.log("USERS/updateUserSuite: FAILED");
+        }
+    });
+
+    // updateUserDetails(uid, name, pronouns)
+    let U_TEST_NAME_NEW = "NEW_NAME_UT";
+    let U_TEST_PRONOUNS_NEW = "NEW_PRONOUNS_UT";
+    userFunctions.updateUserDetails(U_TEST_UID, U_TEST_NAME_NEW, U_TEST_PRONOUNS_NEW);
+    db.ref(`/users/${U_TEST_UID}`).once('value', snapshot => {
+        let data = snapshot.val();
+        if(data.uid == U_TEST_UID && data.name == U_TEST_NAME_NEW && data.pronouns == U_TEST_PRONOUNS_NEW && data.suiteID == U_TEST_SID_NEW) {
+            console.log("USERS/updateUserDetails: PASSED");
+        } else { 
+            console.log("USERS/updateUserDetails: FAILED");
+        }
+    });
+
+    // getUserData(uid)
+    let data = userFunctions.getUserData(U_TEST_UID);
+    if(data.uid == U_TEST_UID && data.name == U_TEST_NAME_NEW && data.pronouns == U_TEST_PRONOUNS_NEW && data.suiteID == U_TEST_SID_NEW) {
+        console.log("USERS/getUserData: PASSED");
+    } else { 
+        console.log("USERS/getUserData: FAILED");
+    }
+
+    // deleteUser(uid)
+    userFunctions.deleteUser(U_TEST_UID);
+    db.ref(`/users/${U_TEST_UID}`).once('value', snapshot => {
+        let data = snapshot.val();
+        if(data == "None") {
+            console.log("USERS/deleteUser: PASSED");
+        } else { 
+            console.log("USERS/deleteUser: FAILED");
+        }
+    });
+}
+
 PaymentChores();
 TestChores();
+TestSuites();
+TestUsers();
