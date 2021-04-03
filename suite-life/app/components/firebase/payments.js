@@ -1,28 +1,56 @@
-import { db } from "./firebase";
-import { checkSuiteExists } from "./suites";
+import { auth, db } from "./firebase";
 
-// Adds payment to suite and associates transaction with specified parties
-export async function addNewPayment(suiteID, title, amount, payer, payees, details) {
-    Promise(checkSuiteExists(suiteID))
-    .then((res) => {
-        let transactionID = 0; // auto-generate an ID?
-        let transaction = {
-            title: title,
-            amount: amount,
-            payer: payer,
-            payees: payees,
-            details: details,
-            completed: false,
-        }
-        db.ref(`suites/${suiteID}/transactions/${transactionID}`).set(transaction);
-    })
-    .catch((err) => console.log(err));
-}
-
-// Mark payment as completed
-export function completePayment(suiteID, transactionID){
-    let transaction = db.ref(`suites/${suiteID}/transaction/${transactionID}`);
-    return transaction.update({
-        complete: true,
+// gets one payment's data from firebase 
+export function loadPaymentData (firebaseID){
+    var returnData = []
+    db.ref(`/suites/test123/payments/${firebaseID}`).once('value', snapshot => {
+        let data = snapshot.val()
+        returnData = {'amount': data.amount, 'completed': data.completed, 'details': data.details, 'payees': data.payees, 'payer': data.payer, 'title': data.title}
     });
-}
+    return returnData
+  }
+
+// function to push new payment to firebase
+export function addNewPayment (info){
+    db.ref(`/suites/test123/payments`).once('value', snapshot => {
+      let data = snapshot.val()
+      if(data == "None"){
+        db.ref('/suites/test123/payments/').set({
+          amount: info.amount, 
+          completed: info.completed,
+          details: info.details,
+          payees: info.payees,
+          payer: info.payer,
+          title: info.title
+        });
+      }
+      else{
+        db.ref('/suites/test123/payments/').push({
+            amount: info.amount, 
+            completed: info.completed,
+            details: info.details,
+            payees: info.payees,
+            payer: info.payer,
+            title: info.title
+        });
+      }
+    });
+  }
+
+// function to update data in firebase
+export function updatePayment (info, firebaseID){
+    db.ref(`/suites/test123/payments/${firebaseID}`).set({
+        amount: info.amount, 
+        completed: info.completed,
+        details: info.details,
+        payees: info.payees,
+        payer: info.payer,
+        title: info.title
+    });
+  }
+
+// deletes payment from firebase 
+export function deletePayment (toDeleteID){
+    let toDelete = db.ref(`/suites/test123/payments/${toDeleteID}`)
+    toDelete.remove()
+  }
