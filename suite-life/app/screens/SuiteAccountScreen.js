@@ -19,17 +19,13 @@ export default function AccountScreen() {
 
   useEffect(() => {
     getUserData().then((val) => {
-      console.log("val:", val);
       setUser(val);
-      console.log("user:", user);
     });
   }, [auth]);
 
   useEffect(() => {
-    console.log("\n\n\tSUITEMATES user:", user);
     if (user) {
       getSuitemates(setSuitemates, user.suiteID);
-      console.log("suitemates:", suitemates);
     } else {
       setSuitemates([]);
     }
