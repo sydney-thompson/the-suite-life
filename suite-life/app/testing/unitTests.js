@@ -64,7 +64,7 @@ const TestChores = () => {
 
 // PAYMENTS ******************************************************************************************************************************************
 
-const PaymentChores = () => {
+const TestPayments = () => {
 
     let TESTER_PAYMENT = {"amount": "AM_UT", "completed": "CMP_UT", "details": "DET_UT", "payees": "PYS_UT", "payer": "PYR_UT"};
 
@@ -114,13 +114,68 @@ const PaymentChores = () => {
         if(data == "None") {
             console.log("PAYMENTS/deletePayment: PASSED");
         } else { 
-            console.log("CHORES/deletePayment: FAILED");
+            console.log("PAYMENTS/deletePayment: FAILED");
         }
     });
 }
 
 
 // SUITES ******************************************************************************************************************************************
+
+const TestSuites = () => {
+
+    let S_TEST_ID = 99999999;
+
+    // createSuite(suiteID, suiteName)
+    suiteFunctions.createSuite(S_TEST_ID, "S_UT");
+    db.ref(`/suites/${S_TEST_ID}`).once('value', snapshot => {
+        let data = snapshot.val()
+        if(data.name == "S_UT") {
+            console.log("SUITES/createSuite: PASSED");
+        } else { 
+            console.log("SUITES/createSuite: FAILED");
+        }
+    });
+    
+    // checkSuiteExists(suiteID)
+    if (suiteFunctions.checkSuiteExists(S_TEST_ID) == true) {
+        console.log("SUITES/checkSuiteExists: PASSED");
+    } else {
+        console.log("SUITES/checkSuiteExists: FAILED");
+    }
+
+    // addUserToSuite(suiteID, uid)
+    let S_TEST_UID = "UID_UT";
+    suiteFunctions.addUserToSuite(S_TEST_ID, S_TEST_UID);
+    db.ref(`/suites/${S_TEST_ID}/users/${S_TEST_UID}`).once('value', snapshot => {
+        let data = snapshot.val()
+        if(data == "None") {
+            console.log("SUITES/addUserToSuite: FAILED");
+        } else { 
+            console.log("SUITES/addUserToSuite: PASSED");
+        }
+    });
+
+    // getRules()
+    getRules().then((rules) => {
+        if (rules == "") {
+            console.log("SUITES/getRules: FAILED");
+        } else {
+            console.log("SUITES/getRules: PASSED");
+        }
+    });
+    
+    // deleteSuite()
+    paymentFunctions.deleteSuite(S_TEST_ID);
+    db.ref(`/suites/${S_TEST_ID}`).once('value', snapshot => {
+        let data = snapshot.val()
+        if(data == "None") {
+            console.log("SUITES/deleteSuite: PASSED");
+        } else { 
+            console.log("SUITES/deleteSuite: FAILED");
+        }
+    });
+}
 
 PaymentChores();
 TestChores();

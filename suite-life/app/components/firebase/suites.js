@@ -46,8 +46,15 @@ export async function createSuite(suiteID, suiteName) {
         })
         .catch((err) => console.log(err));
   }
+
+  export function deleteSuite (toDeleteID){
+    let toDelete = db.ref(`/suites/${toDeleteID}`)
+    toDelete.remove()
+  }
   
-  /* Should change this function's name to be more descriptive */
+/* UNUSED
+
+  // Should change this function's name to be more descriptive 
   // Checks if any suite is modified
   export function checkSuite() {
     const suites = db.ref("suites/");
@@ -58,12 +65,16 @@ export async function createSuite(suiteID, suiteName) {
       return true;
     });
   }
+*/
+
   
+/* UNUSED
   // Checks if a user has an associated suite
   export function checkUserInSuite() {
     const user = db.ref("suites/");
     return user.suiteID === null;
   }
+*/
 
   export async function getRules() {
     return new Promise((resolve, reject) => {
@@ -85,6 +96,8 @@ export async function createSuite(suiteID, suiteName) {
     });
   }
 
+
+  // UNUSED
   export function updateRules(rules) {
     let uid = auth.currentUser.uid;
     let suiteIDRef = db.ref(`users/${uid}/suiteID`);
