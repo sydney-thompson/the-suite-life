@@ -57,7 +57,7 @@ export function updateUserDetails(uid, name, pronouns) {
         resolve();
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         reject();
       });
   });
@@ -72,12 +72,9 @@ export function getUserData(uid) {
     ref
       .once("value", (snapshot) => {
         if (snapshot.exists()) {
-          console.log("user found:", uid);
           const userData = snapshot.val();
-          console.log("snapshot:", userData);
           resolve(userData);
         } else {
-          console.log("No user found:", uid);
           resolve({ code: "user-not-found" });
         }
       })
