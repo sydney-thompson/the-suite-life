@@ -1,29 +1,76 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, {useEffect, useState} from "react";
+import { StyleSheet, Text, View, ScrollView  } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
+import { auth, db } from "../../components/firebase/firebase";
+import * as paymentFunctions from "../../components/firebase/payments";
 
 import defaultStyles from "../../config/styles";
+import routes from "../../navigation/routes";
 
-export default function PaymentHistoryScreen() {
+export default function PaymentHistoryScreen({ navigation }) {
+  const [paymentsJSON, setPaymentsJSON] = useState('')
+  var paymentJSON = [];
+  //var lastJSON = [];
+
+  // navigate to add screen 
+  const navigate_to_add = () => {
+    navigation.navigate(routes.PAYMENT_ADD, {navigation})
+  }
+
+  const renderPayments = () => {
+    db.ref(`/suites/test123/payments`).once('value', snapshot => {
+      let data1 = snapshot.val()
+      if(data1 != "None"){
+        // grab payment data from firebase 
+        db.ref().child('suites').child('test123').child('payments').on('value', (snapshot)=>{
+          let data = snapshot.val();
+          let keys = Object.keys(data);
+          // loop through firebase data and add data to paymentsJSON for use in rendering elements
+          keys.forEach((key) => { 
+            paymentJSON.push({name: data[key].name, firebaseID: key, frequency: data[key].frequency})
+          });
+          const holder = paymentsJSON
+          if(JSON.stringify(holder) != JSON.stringify(paymentJSON)){
+            setPaymentsJSON(paymentJSON)
+          }
+        });
+      }
+    })
+  }
+
+  {renderPayments()}
+
+  // this causes a re render of the screen when you navigate back to it causing data to refresh
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // The screen is focused
+      renderPayments()
+    });
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <Screen style={styles.screen}>
-      <AppText style={defaultStyles.title}>Suitemate Payments</AppText>
-      <AppButton
-        title="Payment 1"
-        color="tertiary"
-        onPress={() => console.log("Payment 1 Tapped")}
-      ></AppButton>
-      <AppButton
-        title="Payment 2"
-        color="tertiary"
-        onPress={() => console.log("Payment 2 Tapped")}
-      ></AppButton>
-      <AppButton
-        title="Payment 2"
-        color="tertiary"
-        onPress={() => console.log("Payment 3 Tapped")}
+      <AppText style={defaultStyles.title}>Transactions</AppText>
+      <ScrollView
+        style={{width: '100%'}}>
+         {paymentJSON.map((item)=>(
+              <AppButton 
+                key= {item.firebaseID}
+                color="tertiary" 
+                title={ item.title + "\n Amount: " + item.amount }
+              > 
+              </AppButton>
+              )
+         )}
+     </ScrollView>
+     <AppButton
+        title="Add Transaction"
+        color="primary"
+        onPress={() => navigate_to_add()}
       ></AppButton>
     </Screen>
   );
@@ -34,3 +81,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+

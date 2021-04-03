@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import TextInput2 from "../../components/TextInput2";
 import Screen from "../../components/Screen";
+import { auth, db } from "../../components/firebase/firebase";
 import * as Yup from "yup";
 import * as paymentFunctions from "../../components/firebase/payments";
+import {disconnectFromSuitemates, getSuitemates} from "../../components/firebase/suites"; 
+import { getUserData } from "../../components/firebase/users";
 
 import defaultStyles from "../../config/styles";
 
@@ -24,6 +27,9 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function PaymentAddScreen({navigation}) {
+  const [user, setUser] = useState(null);
+  const [suitemates, setSuitemates] = useState([]);
+
   const AddTransaction = (values) => {
     // Send values to firebase and navigate back
 
@@ -37,8 +43,28 @@ export default function PaymentAddScreen({navigation}) {
     })
     navigation.goBack()
   }
+
   const housemates = [{id: 'id1', name: 'Name 1'}, {id: 'id2', name: 'Name 2'}];    // placeholders for reading in the housemates of that suite
   const initialhousemates = {'id1': false, 'id2': false};
+
+  const uid = auth.currentUser.uid; // this should work once the suite has a users field to read from
+  useEffect(() => {
+    getUserData(uid).then((val) => {
+      setUser(val);
+    });
+  }, [auth]);
+
+  useEffect(() => {
+    if (user) {
+      getSuitemates(setSuitemates, user.suiteID);
+      console.log("suitemates:", suitemates);
+    } else {
+      setSuitemates([]);
+    }
+    return () => {
+      disconnectFromSuitemates();
+    };
+  }, [user, setSuitemates]);
 
   return (
     <Screen style={styles.screen}>

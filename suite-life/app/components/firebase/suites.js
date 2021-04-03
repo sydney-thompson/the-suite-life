@@ -62,3 +62,43 @@ export function checkUserInSuite() {
   const user = db.ref("suites/");
   return user.suiteID === null;
 }
+
+export function getSuitemates(setSuitemates, suiteID, uid = null) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
+
+  let chores = [];
+  return db
+    .ref(`suites/${suiteID}/users`)
+    .orderByChild("uid")
+    .on(
+      "value",
+      (snapshot) => {
+        let suitemates = [];
+        if (snapshot.exists()) {
+          console.log('000000000');
+          snapshot.forEach((child) => {
+            const suitemate = child.val();
+            getUserData(suitemate.uid).then((val) => {
+              const newSuitemate = {
+                id: val.uid,
+                ...val,
+              };
+              suitemates.push(newSuitemate);
+              setSuitemates(suitemates);
+            });
+          });
+        }
+        setSuitemates(suitemates);
+      },
+      (err) => {
+        console.error(err);
+        setSuitemates([]);
+      }
+    );
+}
+
+export function disconnectFromSuitemates(suiteID) {
+  db.ref(`suites/${suiteID}/users`).off("value");
+}
