@@ -10,33 +10,6 @@ export function loadPaymentData (firebaseID){
     return returnData
   }
 
-// function to push new payment to firebase
-export function addNewPayment (info){
-    db.ref(`/suites/test123/payments`).once('value', snapshot => {
-      let data = snapshot.val()
-      if(data == "None"){
-        db.ref('/suites/test123/payments/').set({
-          amount: info.amount, 
-          completed: info.completed,
-          details: info.details,
-          payees: info.payees,
-          payer: info.payer,
-          title: info.title
-        });
-      }
-      else{
-        db.ref('/suites/test123/payments/').push({
-            amount: info.amount, 
-            completed: info.completed,
-            details: info.details,
-            payees: info.payees,
-            payer: info.payer,
-            title: info.title
-        });
-      }
-    });
-  }
-
 // function to update data in firebase
 export function updatePayment (info, firebaseID){
     db.ref(`/suites/test123/payments/${firebaseID}`).set({
@@ -54,3 +27,26 @@ export function deletePayment (toDeleteID){
     let toDelete = db.ref(`/suites/test123/payments/${toDeleteID}`)
     toDelete.remove()
   }
+
+  export async function get_suiteID (){
+    var uid = auth.currentUser.uid;
+    var data = null 
+  
+    await db.ref(`users/${uid}/suiteID/`).once('value').then(function(snapshot) {
+      data = snapshot.val(); 
+    });
+    return data 
+  }
+
+  // function to push new payment to firebase
+  export async function addNewPayment (info){
+    var suiteID = await get_suiteID();
+    await db.ref('/suites/' + suiteID + '/payments/').push({
+        amount: info.amount, 
+        completed: info.completed,
+        details: info.details,
+        payees: info.payees,
+        payer: info.payer,
+        title: info.title
+        });
+      }

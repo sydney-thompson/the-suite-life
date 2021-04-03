@@ -12,24 +12,24 @@ import routes from "../../navigation/routes";
 export default function PaymentHistoryScreen({ navigation }) {
   const [paymentsJSON, setPaymentsJSON] = useState('')
   var paymentJSON = [];
-  //var lastJSON = [];
 
   // navigate to add screen 
   const navigate_to_add = () => {
     navigation.navigate(routes.PAYMENT_ADD, {navigation})
   }
 
-  const renderPayments = () => {
-    db.ref(`/suites/test123/payments`).once('value', snapshot => {
+  const renderPayments = async () => {
+    var suiteID = await paymentFunctions.get_suiteID()
+    await db.ref(`/suites/${suiteID}/payments`).once('value', snapshot => {
       let data1 = snapshot.val()
       if(data1 != "None"){
         // grab payment data from firebase 
-        db.ref().child('suites').child('test123').child('payments').on('value', (snapshot)=>{
+        db.ref().child('suites').child(suiteID).child('payments').on('value', (snapshot)=>{
           let data = snapshot.val();
           let keys = Object.keys(data);
           // loop through firebase data and add data to paymentsJSON for use in rendering elements
           keys.forEach((key) => { 
-            paymentJSON.push({name: data[key].name, firebaseID: key, frequency: data[key].frequency})
+            paymentJSON.push({title: data[key].title, firebaseID: key, amount: data[key].amount})
           });
           const holder = paymentsJSON
           if(JSON.stringify(holder) != JSON.stringify(paymentJSON)){
@@ -57,7 +57,7 @@ export default function PaymentHistoryScreen({ navigation }) {
       <AppText style={defaultStyles.title}>Transactions</AppText>
       <ScrollView
         style={{width: '100%'}}>
-         {paymentJSON.map((item)=>(
+         {paymentsJSON.map((item)=>(
               <AppButton 
                 key= {item.firebaseID}
                 color="tertiary" 

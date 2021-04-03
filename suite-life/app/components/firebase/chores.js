@@ -10,32 +10,6 @@ export function loadChoreData (firebaseID){
     return returnData
   }
 
-// function to push new chore to firebase
-export function addNewChore (info){
-    db.ref(`/suites/test123/chores`).once('value', snapshot => {
-      let data = snapshot.val()
-      if(data == "None"){
-        db.ref('/suites/test123/chores/').set({
-          name: info.name, 
-          frequency: info.frequency,
-          assignees: info.assignees,
-          details: info.details,
-          completed: info.completed
-        });
-        choreFunctions.updateChore (info)
-      }
-      else{
-        db.ref('/suites/test123/chores/').push({
-          name: info.name, 
-          frequency: info.frequency,
-          assignees: info.assignees,
-          details: info.details,
-          completed: info.completed
-        });
-      }
-    });
-  }
-
 // function to update data in firebase
 export function updateChore (info, firebaseID){
     db.ref(`/suites/test123/chores/${firebaseID}`).set({
@@ -72,4 +46,26 @@ export function renderChoress(){
         //console.log("renderChoress 5")
     )
     return choreJSON1
+    }
+
+export async function get_suiteID (){
+  var uid = auth.currentUser.uid;
+  var data = null 
+
+  await db.ref(`users/${uid}/suiteID/`).once('value').then(function(snapshot) {
+    data = snapshot.val(); 
+  });
+  return data 
+}
+
+// function to push new chore to firebase
+export async function addNewChore (info){
+  var suiteID = await get_suiteID()
+  await db.ref('/suites/' + suiteID + '/chores/').push({
+        name: info.name, 
+        frequency: info.frequency,
+        assignees: info.assignees,
+        details: info.details,
+        completed: info.completed
+      });
     }

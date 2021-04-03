@@ -1,4 +1,6 @@
 import { auth, db } from "./firebase";
+import { getUserData } from "../firebase/users";
+
 
 // Creates a new suite
 export async function createSuite(suiteID, suiteName) {
@@ -67,29 +69,35 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
-
-  let chores = [];
+  console.log('---------------');
+  console.log('potato1');
   return db
     .ref(`suites/${suiteID}/users`)
     .orderByChild("uid")
     .on(
       "value",
       (snapshot) => {
+        console.log('potato2')
         let suitemates = [];
         if (snapshot.exists()) {
-          console.log('000000000');
+          console.log('realpotato');
+          console.log(snapshot);
           snapshot.forEach((child) => {
             const suitemate = child.val();
+            console.log('beforegetuserdata');
             getUserData(suitemate.uid).then((val) => {
               const newSuitemate = {
                 id: val.uid,
                 ...val,
               };
+              console.log('aftergetuserdata');
               suitemates.push(newSuitemate);
               setSuitemates(suitemates);
             });
+            console.log('laterlater');
           });
         }
+        console.log('potato3');
         setSuitemates(suitemates);
       },
       (err) => {
