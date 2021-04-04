@@ -1,3 +1,4 @@
+import { ref } from "yup";
 import { auth, db } from "./firebase";
 import { checkUserExists, getUserData } from "./users";
 
@@ -13,6 +14,8 @@ export async function createSuite(suiteID, suiteName) {
     name: suiteName,
     transactions: [],
     users: [],
+    rules:
+      "1. Be nice! \n2. Keep up with your chores every week.\n3. Log suite expenses in the app.\n4. Wait no more than 2 weeks to settle balances.\n5. Have a good time!",
   });
 }
 
@@ -29,20 +32,7 @@ export function checkSuiteExists(suiteID) {
         reject(error);
       }
     );
-  });
-}
-
-// Adds user with id uid to the suite associated with suiteID
-export async function addUserToSuite(suiteID, uid) {
-  Promise.all([checkSuiteExists(suiteID), checkUserExists(uid)])
-    .then((res) => {
-      const userListRef = db.ref(`suites/${suiteID}/users`);
-      const newUserRef = userListRef.push();
-      newUserRef.set({
-        uid: uid,
-      });
-    })
-    .catch((err) => console.error(err));
+  }).catch((err) => console.error(err));
 }
 
 /* Should change this function's name to be more descriptive */
@@ -60,6 +50,19 @@ export function checkSuite() {
 export function checkUserInSuite() {
   const user = db.ref("suites/");
   return user.suiteID === null;
+}
+
+// Adds user with id uid to the suite associated with suiteID
+export async function addUserToSuite(suiteID, uid) {
+  Promise.all([checkSuiteExists(suiteID), checkUserExists(uid)])
+    .then((res) => {
+      const userListRef = db.ref(`suites/${suiteID}/users`);
+      const newUserRef = userListRef.push();
+      newUserRef.set({
+        uid: uid,
+      });
+    })
+    .catch((err) => console.log(err));
 }
 
 export function getUserChores(setChores, suiteID, uid = null) {
@@ -136,4 +139,34 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
 
 export function disconnectFromSuitemates(suiteID) {
   db.ref(`suites/${suiteID}/users`).off("value");
+}
+
+export async function getRules() {
+  return new Promise((resolve, reject) => {
+    let uid = auth.currentUser.uid;
+    let suiteIDRef = db.ref(`users/${uid}/suiteID`);
+    suiteIDRef
+      .once("value", (snapshot) => {
+        let suiteID = snapshot.val();
+        let rulesRef = db.ref(`suites/${suiteID}/rules`);
+        rulesRef
+          .once("value", (snapshot2) => {
+            resolve(snapshot2.val());
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
+      .catch(function (error) {});
+  });
+}
+
+export function updateRules(rules) {
+  let uid = auth.currentUser.uid;
+  let suiteIDRef = db.ref(`users/${uid}/suiteID`);
+  suiteIDRef.once("value", (snapshot) => {
+    let suiteID = snapshot.val();
+    db.ref(`suites/${suiteID}/rules`).set(rules);
+  });
+  return true;
 }

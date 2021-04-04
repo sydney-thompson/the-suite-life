@@ -50,7 +50,6 @@ export default function JoinSuiteScreen({ route, navigation }) {
             values.suiteID
           );
           addUserToSuite(values.suiteID, uid);
-          setRegistered(true);
         } else if (userExists) {
           Alert.alert("An account with these credentials already exists.");
         } else if (!suiteExists) {
@@ -84,6 +83,7 @@ export default function JoinSuiteScreen({ route, navigation }) {
             initialValues={{ suiteID: "" }}
             onSubmit={(values) => {
               registerUser(values, setRegistered.setRegistered);
+              navigation.navigate(routes.RULES);
             }}
             validationSchema={validationSchema}
           >

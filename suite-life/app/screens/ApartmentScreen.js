@@ -15,7 +15,6 @@ import {
   disconnectFromChores,
   getUserChores,
 } from "../components/firebase/suites";
-import { db } from "../components/firebase/firebase";
 import { auth } from "firebase";
 
 export default function ApartmentScreen({ navigation }) {
@@ -24,14 +23,17 @@ export default function ApartmentScreen({ navigation }) {
 
   useEffect(() => {
     getUserData().then((val) => {
+      console.log("val:", val);
       setUser(val);
     });
   }, [auth]);
 
   useEffect(() => {
     if (user) {
+      console.log("found user");
       getUserChores(setChores, user.suiteID, user.uid);
     } else {
+      console.log("no user");
       setChores([]);
     }
 

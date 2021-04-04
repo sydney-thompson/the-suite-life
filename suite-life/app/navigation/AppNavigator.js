@@ -5,6 +5,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AccountNavigator from "./AccountNavigator";
 import ApartmentScreen from "../screens/ApartmentScreen";
 import ChoreNavigation from "./ChoreNavigation";
+import RulesNavigator from "./RulesNavigator";
 import HomeButton from "./HomeButton";
 import PaymentNavigation from "./PaymentNavigation";
 import routes from "./routes";
@@ -53,8 +54,8 @@ const AppNavigator = () => (
       })}
     />
     <Tab.Screen
-      name={routes.SUITE}
-      component={SuiteAccountScreen}
+      name={routes.RULES_NAV}
+      component={RulesNavigator}
       options={{
         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons

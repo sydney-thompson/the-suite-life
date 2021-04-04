@@ -64,10 +64,14 @@ export function updateUserDetails(uid, name, pronouns) {
 }
 
 export function getUserData(uid) {
-  if (!uid) {
-    uid = auth.currentUser.uid;
-  }
   return new Promise((resolve, reject) => {
+    if (!auth.currentUser) {
+      console.log("auth has no user");
+      reject();
+    }
+    if (!uid) {
+      uid = auth.currentUser.uid;
+    }
     const ref = db.ref(`users/${uid}`);
     ref
       .once("value", (snapshot) => {
@@ -75,7 +79,7 @@ export function getUserData(uid) {
           const userData = snapshot.val();
           resolve(userData);
         } else {
-          resolve({ code: "user-not-found" });
+          reject({ code: "user-not-found" });
         }
       })
       .catch(function (error) {
