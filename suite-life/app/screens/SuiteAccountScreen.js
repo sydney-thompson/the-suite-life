@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, FlatList } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 
+import AppText from "../components/AppText";
+import AppButton from "../components/AppButton";
 import AppTitle from "../components/AppTitle";
 import colors from "../config/colors";
 import HorizontalSpaceSeparator from "../components/HorizontalSpaceSeparator";
+import navigation from "../navigation/RulesNavigator";
+import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import Suitemate from "../components/Suitemate";
 import {
@@ -11,34 +15,17 @@ import {
   getSuitemates,
 } from "../components/firebase/suites";
 import { getUserData } from "../components/firebase/users";
-
-const defaultSuitemates = [
-  {
-    id: 1,
-    name: "Sydney",
-    pronouns: "she/her",
-  },
-  {
-    id: 2,
-    name: "Brynna",
-    pronouns: "xe/xim",
-  },
-  {
-    id: 3,
-    name: "Matt",
-    pronouns: "he/him",
-  },
-];
+import { auth } from "firebase";
 
 export default function AccountScreen() {
   const [user, setUser] = useState(null);
-  const [suitemates, setSuitemates] = useState(defaultSuitemates);
+  const [suitemates, setSuitemates] = useState([]);
 
   useEffect(() => {
     getUserData().then((val) => {
       setUser(val);
     });
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
     if (user) {
@@ -63,15 +50,25 @@ export default function AccountScreen() {
           <AppTitle style={styles.headerText}>{`Suite`}</AppTitle>
         )}
       </View>
+
       <View style={[styles.cardContainer, { flex: 1 }]}>
         <AppTitle style={styles.cardText}>{`Suitemates`}</AppTitle>
         <FlatList
           data={suitemates}
-          keyExtractor={(suitemate) => suitemate.id}
+          keyExtractor={(suitemate) => suitemate.id.toString()}
           renderItem={({ item }) => (
             <Suitemate name={item.name} pronouns={item.pronouns} />
           )}
           ItemSeparatorComponent={HorizontalSpaceSeparator}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <AppButton
+          title="View Rules"
+          color="primary"
+          onPress={() => {
+            navigation.navigate(routes.RULES, { navigation });
+          }}
         />
       </View>
     </Screen>
@@ -95,6 +92,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerContainer: {
+    paddingTop: 25,
     alignItems: "center",
     backgroundColor: colors.secondary,
     flex: 0,
@@ -104,5 +102,10 @@ const styles = StyleSheet.create({
   headerText: {
     color: colors.white,
     fontWeight: "600",
+  },
+  buttonContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+    width: "95%",
   },
 });

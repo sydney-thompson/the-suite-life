@@ -18,6 +18,7 @@ import {
   disconnectFromTransactions,
   getUserTransactions,
 } from "../components/firebase/suites";
+import { auth } from "firebase";
 import { db } from "../components/firebase/firebase";
 
 export default function ApartmentScreen({ navigation }) {
@@ -27,14 +28,17 @@ export default function ApartmentScreen({ navigation }) {
 
   useEffect(() => {
     getUserData().then((val) => {
+      console.log("val:", val);
       setUser(val);
     });
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
     if (user) {
+      console.log("found user");
       getUserChores(setChores, user.suiteID, user.uid);
     } else {
+      console.log("no user");
       setChores([]);
     }
 
@@ -74,7 +78,7 @@ export default function ApartmentScreen({ navigation }) {
           <FlatList
             data={chores}
             horizontal={true}
-            keyExtractor={(chore) => chore.id}
+            keyExtractor={(chore) => chore.id.toString()}
             renderItem={({ item }) => (
               <ChoreOverview
                 assigneeName={item.assignee_name}
