@@ -1,9 +1,20 @@
 import { auth, db } from "./firebase";
 
+export async function get_suiteID (){
+  var uid = auth.currentUser.uid;
+  var data = null 
+
+  await db.ref(`users/${uid}/suiteID/`).once('value').then(function(snapshot) {
+    data = snapshot.val(); 
+  });
+  return data 
+}
+
 // gets one payment's data from firebase 
-export function loadPaymentData (firebaseID){
+export async function loadPaymentData (firebaseID){
+    var suiteID = await get_suiteID()
     var returnData = []
-    db.ref(`/suites/test123/payments/${firebaseID}`).once('value', snapshot => {
+    await db.ref(`/suites/${suiteID}/payments/${firebaseID}`).once('value', snapshot => {
         let data = snapshot.val()
         returnData = {'amount': data.amount, 'completed': data.completed, 'details': data.details, 'payees': data.payees, 'payer': data.payer, 'title': data.title}
     });
@@ -11,21 +22,9 @@ export function loadPaymentData (firebaseID){
   }
 
 // function to push new payment to firebase
-export function addNewPayment (info){
-    db.ref(`/suites/test123/payments`).once('value', snapshot => {
-      let data = snapshot.val()
-      if(data == "None"){
-        db.ref('/suites/test123/payments/').set({
-          amount: info.amount, 
-          completed: info.completed,
-          details: info.details,
-          payees: info.payees,
-          payer: info.payer,
-          title: info.title
-        });
-      }
-      else{
-        db.ref('/suites/test123/payments/').push({
+export async function addNewPayment (info){
+    var suiteID = await get_suiteID()
+    await db.ref('/suites/' + suiteID + '/payments/').push({
             amount: info.amount, 
             completed: info.completed,
             details: info.details,
@@ -33,13 +32,12 @@ export function addNewPayment (info){
             payer: info.payer,
             title: info.title
         });
-      }
-    });
   }
 
 // function to update data in firebase
-export function updatePayment (info, firebaseID){
-    db.ref(`/suites/test123/payments/${firebaseID}`).set({
+export async function updatePayment (info, firebaseID){
+    var suiteID = await get_suiteID()
+    await db.ref(`/suites/${suiteID}/payments/${firebaseID}`).set({
         amount: info.amount, 
         completed: info.completed,
         details: info.details,
@@ -50,7 +48,8 @@ export function updatePayment (info, firebaseID){
   }
 
 // deletes payment from firebase 
-export function deletePayment (toDeleteID){
-    let toDelete = db.ref(`/suites/test123/payments/${toDeleteID}`)
-    toDelete.remove()
+export async function deletePayment (toDeleteID){
+    var suiteID = await get_suiteID()
+    let toDelete = await db.ref(`/suites/${suiteID}/payments/${toDeleteID}`)
+    await toDelete.remove()
   }
