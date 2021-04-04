@@ -63,7 +63,10 @@ export function updateUserDetails(uid, name, pronouns) {
   });
 }
 
-export function getUserData(uid) {
+export function getUserData(uid = null) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
   return new Promise((resolve, reject) => {
     const ref = db.ref(`users/${uid}`);
     ref

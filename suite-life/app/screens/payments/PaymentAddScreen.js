@@ -48,9 +48,8 @@ export default function PaymentAddScreen({navigation}) {
   //const housemates = [{id: 'id1', name: 'Name 1'}, {id: 'id2', name: 'Name 2'}];    // placeholders for reading in the housemates of that suite
   //const initialhousemates = {'id1': false, 'id2': false};
 
-  const uid = auth.currentUser.uid; // this should work once the suite has a users field to read from
   useEffect(() => {
-    getUserData(uid).then((val) => {
+    getUserData().then((val) => {
       setUser(val);
     });
   }, [auth]);

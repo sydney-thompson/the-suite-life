@@ -110,3 +110,38 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
 export function disconnectFromSuitemates(suiteID) {
   db.ref(`suites/${suiteID}/users`).off("value");
 }
+
+export function getUserTransactions(setTransactions, suiteID, uid = null) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
+
+  let transactions = [];
+  return db
+    .ref(`suites/${suiteID}/payments`)
+    .on(
+      "value",
+      (snapshot) => {
+        let transactions = [];
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const transaction = child.val();
+            const newTransaction = {
+              id: child.ref.key,
+              ...transaction,
+            };
+            transactions.push(newTransaction);
+          });
+        }
+        setTransactions(transactions);
+      },
+      (err) => {
+        console.error(err);
+        setTransactions([]);
+      }
+    );
+}
+
+export function disconnectFromTransactions(suiteID) {
+  db.ref(`suites/${suiteID}/payments`).off("value");
+}
