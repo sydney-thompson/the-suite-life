@@ -24,13 +24,13 @@ export default function ChoreEditScreen(choreInfo) {
   }
 
   // gets chore data from firebase and populates text fields with it 
-   const loadChoreData = () => {
+   const loadChoreData = async () => {
       if(choreRefresher != "True"){
-        setChoreRefresher("True")
-        const choreData = choreFunctions.loadChoreData(choreInfo.route.params.firebaseID)
-        setChoreName(choreData.name)
-        setFrequencyName(choreData.frequency)
-        setChoreAssignee(choreData.assignee)
+        await setChoreRefresher("True")
+        const choreData = await choreFunctions.loadChoreData(choreInfo.route.params.firebaseID)
+        await setChoreName(choreData.name)
+        await setFrequencyName(choreData.frequency)
+        await setChoreAssignee(choreData.assignee)
       }
   }
   loadChoreData()
