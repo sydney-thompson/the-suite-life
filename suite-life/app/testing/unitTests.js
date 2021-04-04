@@ -2,17 +2,20 @@ import * as choreFunctions from "../components/firebase/chores";
 import * as paymentFunctions from "../components/firebase/payments";
 import * as suiteFunctions from "../components/firebase/suites";
 import * as userFunctions from "../components/firebase/users";
+import { db } from "../components/firebase/firebase";
 
 
 // CHORES ******************************************************************************************************************************************
 
-const TestChores = () => {
+
+export function blank() {
+    console.log("blank")
 
     let TESTER_CHORE = {"name": "N_UT", "frequency": "FR_UT", "assignees": "ASS_UT", "details": "DET_UT", "completed": "CMP_UT"};
 
     // addNewChores 
     let C_TEST_ID = null;
-    choreFunctions.addNewChores(TESTER_CHORE);
+
     db.ref().child('suites').child('test123').child('chores').on('value', (snapshot)=>{
         let data = snapshot.val();
         let keys = Object.keys(data);
@@ -21,50 +24,78 @@ const TestChores = () => {
                 console.log("CHORES/addNewChores: PASSED");
                 C_TEST_ID = data[key].firebaseID;
             } else {
-                console.log("CHORES/addNewChores: FAILED");
+                //console.log("CHORES/addNewChores: FAILED");
             }
         });
     });
 
-    // loadChoreData
-    let test_loadChoreData = choreFunctions.loadChoreData(C_TEST_ID);
-    if (test_loadChoreData.name == "N_UT" && test_loadChoreData.frequency == "FR_UT" && test_loadChoreData.assignees == "ASS_UT" && test_loadChoreData.details == "DET_UT" && test_loadChoreData.completed == "CMP_UT") {
-        console.log("CHORES/loadChoreData: PASSED");
-    } else {
-        console.log("CHORES/loadChoreData: FAILED");
-    }
+    return;
+    
+}
 
-    // updateChore
-    let U_TESTER_CHORE = {"name": "U_N_UT", "frequency": "U_FR_UT", "assignees": "U_ASS_UT", "details": "U_DET_UT", "completed": "U_CMP_UT"};
-    choreFunctions.updateChore(U_TESTER_CHORE, C_TEST_ID);
+
+
+export function TestChores() {
+    console.log("Testing Chores...")
+    console.log("fuck");
+    var TESTER_CHORE = {"name": "N_UT", "frequency": "FR_UT", "assignees": "ASS_UT", "details": "DET_UT", "completed": "CMP_UT"};
+
+    // addNewChores 
+    //let C_TEST_ID = null;
+    console.log("here");
+    choreFunctions.addNewChore(TESTER_CHORE);
+    console.log("chore added")
     db.ref().child('suites').child('test123').child('chores').on('value', (snapshot)=>{
         let data = snapshot.val();
         let keys = Object.keys(data);
         keys.forEach((key) => { 
-            if (data[key].name == "U_N_UT" && data[key].frequency == "U_FR_UT" && data[key].assignees == "U_ASS_UT" && data[key].details == "U_DET_UT" && data[key].completed == "U_CMP_UT") {
-                console.log("CHORES/updateChore: PASSED");
+            if (data[key].name == "N_UT" && data[key].frequency == "FR_UT" && data[key].assignees == "ASS_UT" && data[key].details == "DET_UT" && data[key].completed == "CMP_UT") {
+                //console.log("CHORES/addNewChores: PASSED");
+                let C_TEST_ID = data[key].firebaseID;
+
+                let test_loadChoreData = choreFunctions.loadChoreData(C_TEST_ID);
+                if (test_loadChoreData.name == "N_UT" && test_loadChoreData.frequency == "FR_UT" && test_loadChoreData.assignees == "ASS_UT" && test_loadChoreData.details == "DET_UT" && test_loadChoreData.completed == "CMP_UT") {
+                    console.log("CHORES/loadChoreData: PASSED");
+
+                    let U_TESTER_CHORE = {"name": "U_N_UT", "frequency": "U_FR_UT", "assignees": "U_ASS_UT", "details": "U_DET_UT", "completed": "U_CMP_UT"};
+                    choreFunctions.updateChore(U_TESTER_CHORE, C_TEST_ID);
+                    db.ref().child('suites').child('test123').child('chores').on('value', (snapshot)=>{
+                        let data = snapshot.val();
+                        let keys = Object.keys(data);
+                        keys.forEach((key) => { 
+                            if (data[key].name == "U_N_UT" && data[key].frequency == "U_FR_UT" && data[key].assignees == "U_ASS_UT" && data[key].details == "U_DET_UT" && data[key].completed == "U_CMP_UT") {
+                                //console.log("CHORES/updateChore: PASSED");
+                                choreFunctions.deleteChore(C_TEST_ID);
+                                db.ref(`/suites/test123/chores/${C_TEST_ID}`).once('value', snapshot => {
+                                    let data = snapshot.val();
+                                    if(data == "None") {
+                                        console.log("CHORES/deleteChore: PASSED");
+                                    } else { 
+                                        console.log("CHORES/deleteChore: FAILED");
+                                    }
+                                });
+                            } else {
+                                //console.log("CHORES/updateChore: FAILED");
+                            }
+                        });
+                    });
+                } else {
+                    console.log("CHORES/loadChoreData: FAILED");
+                }
+
+
             } else {
-                console.log("CHORES/updateChore: FAILED");
+                //console.log("CHORES/addNewChores: FAILED");
             }
         });
-    });
-
-    // deleteChore
-    choreFunctions.deleteChore(C_TEST_ID);
-    db.ref(`/suites/test123/chores/${C_TEST_ID}`).once('value', snapshot => {
-        let data = snapshot.val();
-        if(data == "None") {
-            console.log("CHORES/deleteChore: PASSED");
-        } else { 
-            console.log("CHORES/deleteChore: FAILED");
-        }
     });
 }
 
 
+
 // PAYMENTS ******************************************************************************************************************************************
 
-const TestPayments = () => {
+export function TestPayments() {
 
     let TESTER_PAYMENT = {"amount": "AM_UT", "completed": "CMP_UT", "details": "DET_UT", "payees": "PYS_UT", "payer": "PYR_UT"};
 
@@ -122,7 +153,7 @@ const TestPayments = () => {
 
 // SUITES ******************************************************************************************************************************************
 
-const TestSuites = () => {
+export function TestSuites() {
 
     let S_TEST_ID = 99999999;
 
@@ -157,7 +188,7 @@ const TestSuites = () => {
     });
 
     // getRules()
-    getRules().then((rules) => {
+    suiteFunctions.getRules().then((rules) => {
         if (rules == "") {
             console.log("SUITES/getRules: FAILED");
         } else {
@@ -180,7 +211,7 @@ const TestSuites = () => {
 
 // USERS ******************************************************************************************************************************************
 
-const TestUsers = () => {
+export function TestUsers() {
 
     let U_TEST_UID = 'UID_UT';
     let U_TEST_NAME = 'NAME_UT';
@@ -189,69 +220,76 @@ const TestUsers = () => {
 
 
     // createUser(uid, name, pronouns, suiteID)
-    userFunctions.createUser(U_TEST_UID, U_TEST_NAME, U_TEST_PRONOUNS, U_TEST_SID);
-    db.ref(`/users/${U_TEST_UID}`).once('value', snapshot => {
-        let data = snapshot.val();
-        if(data.uid == U_TEST_UID && data.name == U_TEST_NAME && data.pronouns == U_TEST_PRONOUNS && data.suiteID == U_TEST_SID) {
-            console.log("USERS/createUser: PASSED");
-        } else { 
-            console.log("USERS/createUser: FAILED");
-        }
-    });
-    
-    // checkUserExists(uid)
-    if (userFunctions.checkUserExists(U_TEST_UID) == true) {
-        console.log("USERS/checkUserExists: PASSED");
-    } else {
-        console.log("USERS/checkUserExists: FAILED");
-    }
+    console.log("Testing users.js *************************************************************")
+    console.log("Tests to run: createUser(), checkUserExists(), updateUserSuite(), updateUserDetails(), getUserData(), deleteUser()...Failure will halt execution flow");
+    userFunctions.createUser(U_TEST_UID, U_TEST_NAME, U_TEST_PRONOUNS, U_TEST_SID).then(() => {
+        db.ref(`/users/${U_TEST_UID}`).once('value', snapshot => {
+            let data = snapshot.val();
+            if(data.uid == U_TEST_UID && data.name == U_TEST_NAME && data.pronouns == U_TEST_PRONOUNS && data.suiteID == U_TEST_SID) {
+                console.log("USERS/createUser: PASSED");
+                userFunctions.checkUserExists(U_TEST_UID).then((res) => {
+                    if (res) {
+                        console.log("USERS/checkUserExists: PASSED");
 
-    // updateUserSuite(uid, suiteID)
-    let U_TEST_SID_NEW = "U_SID_UT";
-    userFunctions.updateUserSuite(U_TEST_UID, U_TEST_SID);
-    db.ref(`/users/${U_TEST_UID}/suiteID`).once('value', snapshot => {
-        let data = snapshot.val();
-        if(data == U_TEST_SID_NEW) {
-            console.log("USERS/updateUserSuite: PASSED");
-        } else { 
-            console.log("USERS/updateUserSuite: FAILED");
-        }
-    });
+                        let U_TEST_SID_NEW = "U_SID_UT";
+                        userFunctions.updateUserSuite(U_TEST_UID, U_TEST_SID_NEW).then(() => {
+                            db.ref(`/users/${U_TEST_UID}/suiteID`).once('value', snapshot => {
+                                let data = snapshot.val();
+                                if(data == U_TEST_SID_NEW) {
+                                    console.log("USERS/updateUserSuite: PASSED");
 
-    // updateUserDetails(uid, name, pronouns)
-    let U_TEST_NAME_NEW = "NEW_NAME_UT";
-    let U_TEST_PRONOUNS_NEW = "NEW_PRONOUNS_UT";
-    userFunctions.updateUserDetails(U_TEST_UID, U_TEST_NAME_NEW, U_TEST_PRONOUNS_NEW);
-    db.ref(`/users/${U_TEST_UID}`).once('value', snapshot => {
-        let data = snapshot.val();
-        if(data.uid == U_TEST_UID && data.name == U_TEST_NAME_NEW && data.pronouns == U_TEST_PRONOUNS_NEW && data.suiteID == U_TEST_SID_NEW) {
-            console.log("USERS/updateUserDetails: PASSED");
-        } else { 
-            console.log("USERS/updateUserDetails: FAILED");
-        }
-    });
 
-    // getUserData(uid)
-    let data = userFunctions.getUserData(U_TEST_UID);
-    if(data.uid == U_TEST_UID && data.name == U_TEST_NAME_NEW && data.pronouns == U_TEST_PRONOUNS_NEW && data.suiteID == U_TEST_SID_NEW) {
-        console.log("USERS/getUserData: PASSED");
-    } else { 
-        console.log("USERS/getUserData: FAILED");
-    }
+                                    let U_TEST_NAME_NEW = "NEW_NAME_UT";
+                                    let U_TEST_PRONOUNS_NEW = "NEW_PRONOUNS_UT";
+                                    userFunctions.updateUserDetails(U_TEST_UID, U_TEST_NAME_NEW, U_TEST_PRONOUNS_NEW).then(() => {
+                                        db.ref(`/users/${U_TEST_UID}`).once('value', snapshot => {
+                                            let data = snapshot.val();
+                                            if(data.uid == U_TEST_UID && data.name == U_TEST_NAME_NEW && data.pronouns == U_TEST_PRONOUNS_NEW && data.suiteID == U_TEST_SID_NEW) {
+                                                console.log("USERS/updateUserDetails: PASSED");
 
-    // deleteUser(uid)
-    userFunctions.deleteUser(U_TEST_UID);
-    db.ref(`/users/${U_TEST_UID}`).once('value', snapshot => {
-        let data = snapshot.val();
-        if(data == "None") {
-            console.log("USERS/deleteUser: PASSED");
-        } else { 
-            console.log("USERS/deleteUser: FAILED");
-        }
+                                                userFunctions.getUserData(U_TEST_UID).then((data) => {
+                                                    if(data.uid == U_TEST_UID && data.name == U_TEST_NAME_NEW && data.pronouns == U_TEST_PRONOUNS_NEW && data.suiteID == U_TEST_SID_NEW) {
+                                                        console.log("USERS/getUserData: PASSED");
+
+                                                        userFunctions.deleteUser(U_TEST_UID);
+                                                        userFunctions.checkUserExists(U_TEST_UID).then((res) => {
+                                                            if (res) {
+                                                                console.log("USERS/deleteUser: FAILED");
+                                                            } else {
+                                                                console.log("USERS/deleteUser: PASSED\nTESTS COMPLETE");
+                                                            }
+                                                        });           
+
+                                                    } else { 
+                                                        console.log("USERS/getUserData: FAILED");
+                                                    }
+                                                });
+                                            } else { 
+                                                console.log("USERS/updateUserDetails: FAILED");
+                                            }
+                                        });
+
+                                    });
+
+
+                                } else { 
+                                    console.log("USERS/updateUserSuite: FAILED");
+                                }
+                            });
+                        });
+                        
+
+                    } else {
+                        console.log("USERS/checkUserExists: FAILED");
+                    }
+                })      
+            } else { 
+                console.log("USERS/createUser: FAILED");
+            }
+        });
+
+        
     });
 }
 
-PaymentChores();
-TestChores();
-TestSuites();
 TestUsers();
