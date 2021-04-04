@@ -8,33 +8,6 @@ import { db } from "../components/firebase/firebase";
 // CHORES ******************************************************************************************************************************************
 
 
-export function blank() {
-    console.log("blank")
-
-    let TESTER_CHORE = {"name": "N_UT", "frequency": "FR_UT", "assignees": "ASS_UT", "details": "DET_UT", "completed": "CMP_UT"};
-
-    // addNewChores 
-    let C_TEST_ID = null;
-
-    db.ref().child('suites').child('test123').child('chores').on('value', (snapshot)=>{
-        let data = snapshot.val();
-        let keys = Object.keys(data);
-        keys.forEach((key) => { 
-            if (data[key].name == "N_UT" && data[key].frequency == "FR_UT" && data[key].assignees == "ASS_UT" && data[key].details == "DET_UT" && data[key].completed == "CMP_UT") {
-                console.log("CHORES/addNewChores: PASSED");
-                C_TEST_ID = data[key].firebaseID;
-            } else {
-                //console.log("CHORES/addNewChores: FAILED");
-            }
-        });
-    });
-
-    return;
-    
-}
-
-
-
 export function TestChores() {
     console.log("Testing Chores...")
     console.log("fuck");
