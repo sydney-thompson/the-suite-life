@@ -57,7 +57,7 @@ export function updateUserDetails(uid, name, pronouns) {
         resolve();
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         reject();
       });
   });
@@ -65,13 +65,21 @@ export function updateUserDetails(uid, name, pronouns) {
 
 export function getUserData(uid) {
   return new Promise((resolve, reject) => {
+    if (!auth.currentUser) {
+      console.log("auth has no user");
+      reject();
+    }
+    if (!uid) {
+      uid = auth.currentUser.uid;
+    }
     const ref = db.ref(`users/${uid}`);
     ref
       .once("value", (snapshot) => {
         if (snapshot.exists()) {
-          resolve(snapshot.val());
+          const userData = snapshot.val();
+          resolve(userData);
         } else {
-          resolve({ code: "user-not-found" });
+          reject({ code: "user-not-found" });
         }
       })
       .catch(function (error) {
