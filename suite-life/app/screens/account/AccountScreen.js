@@ -25,36 +25,17 @@ import {TestChores, TestPayments, TestSuites, TestUsers} from "../../testing/uni
 export default function AccountScreen({ navigation }) {
   const [name, setName] = useState("");
   const [pronouns, setPronouns] = useState("");
-  const [testchores_res, setchores_res] = useState("");
-  const [testpayments_res, setpayments_res] = useState("");
-  const [testsuites_res, setsuites_res] = useState("");
-  const [testusers_res, setusers_res] = useState("");
 
   useEffect(() => {
-
     getUserData(auth.currentUser.uid).then((userData) => {
       console.log(userData);
       console.log("name:", userData.name);
       setName(userData.name);
       setPronouns(userData.pronouns);
     });
-
-      /*
-    TestChores().then((res)=> {
-      setchores_res(res);
-      TestPayments().then((res)=> {
-        setpayments_res(res);
-        TestSuites().then((res)=> {
-          setsuites_res(res);
-          TestUsers().then((res)=> {
-            setusers_res(res);
-          });
-        });
-      });
-    }); */
   });
 
-  async function change() {
+  async function runTests() {
     let chores_res = await TestChores();
     let payments_res = await TestPayments();
     let suites_res =  await TestSuites();
@@ -89,12 +70,7 @@ export default function AccountScreen({ navigation }) {
               style={styles.logout}
               title="Run Unit Testing"
               onPress={() => {
-                console.log(testchores_res);
-                console.log(testpayments_res);
-                console.log(testsuites_res);
-                console.log(testusers_res); 
-
-                change().then((res) => {
+                runTests().then((res) => {
                   navigation.navigate(routes.TESTING_RES, {
                     chores_res: res.chores_res,
                     payments_res: res.payments_res,
@@ -105,10 +81,6 @@ export default function AccountScreen({ navigation }) {
               }}
             />
           </View>
-          <View style={styles.bottomSpacer} />
-
-          <AppText style={styles.pronouns}>{pronouns}</AppText>
-          <View style={styles.spacer} />
           <View style={styles.logoutContainer}>
             <AppButton
               style={styles.logout}
@@ -155,6 +127,12 @@ const styles = StyleSheet.create({
   },
   logout: {
     alignSelf: "flex-end",
+  },
+  logout: {
+    alignSelf: "flex-end",
+  },
+  logoutContainer: {
+    width: "95%",
   },
   logoutContainer: {
     width: "95%",
