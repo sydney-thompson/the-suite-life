@@ -17,7 +17,7 @@ import {
 import { getUserData } from "../components/firebase/users";
 import { auth } from "firebase";
 
-export default function AccountScreen() {
+export default function AccountScreen({ navigation }) {
   const [user, setUser] = useState(null);
   const [suitemates, setSuitemates] = useState([]);
 
@@ -67,7 +67,7 @@ export default function AccountScreen() {
           title="View Rules"
           color="primary"
           onPress={() => {
-            navigation.navigate(routes.RULES, { navigation });
+            navigation.navigate(routes.RULES);
           }}
         />
       </View>
