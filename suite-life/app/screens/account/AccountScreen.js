@@ -28,8 +28,6 @@ export default function AccountScreen({ navigation }) {
 
   useEffect(() => {
     getUserData(auth.currentUser.uid).then((userData) => {
-      console.log(userData);
-      console.log("name:", userData.name);
       setName(userData.name);
       setPronouns(userData.pronouns);
     });
@@ -86,7 +84,7 @@ export default function AccountScreen({ navigation }) {
               style={styles.logout}
               title="Log Out"
               onPress={() => {
-                googleLogout;
+                googleLogout();
                 setRegistered.setRegistered(false);
               }}
             />

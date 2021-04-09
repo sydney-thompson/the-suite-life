@@ -1,33 +1,74 @@
-import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
+
 import AppText from "../components/AppText";
 import AppButton from "../components/AppButton";
+import AppTitle from "../components/AppTitle";
 import colors from "../config/colors";
+import HorizontalSpaceSeparator from "../components/HorizontalSpaceSeparator";
 import navigation from "../navigation/RulesNavigator";
 import routes from "../navigation/routes";
-
 import Screen from "../components/Screen";
-import defaultStyles from "../config/styles";
+import Suitemate from "../components/Suitemate";
+import {
+  disconnectFromSuitemates,
+  getSuitemates,
+} from "../components/firebase/suites";
+import { getUserData } from "../components/firebase/users";
+import { auth } from "firebase";
 
-export default function SuiteAccountScreen({ navigation }) {
+export default function AccountScreen() {
+  const [user, setUser] = useState(null);
+  const [suitemates, setSuitemates] = useState([]);
+
+  useEffect(() => {
+    getUserData().then((val) => {
+      setUser(val);
+    });
+  }, [auth]);
+
+  useEffect(() => {
+    if (user) {
+      getSuitemates(setSuitemates, user.suiteID);
+    } else {
+      setSuitemates([]);
+    }
+
+    return () => {
+      disconnectFromSuitemates();
+    };
+  }, [user, setSuitemates]);
+
   return (
     <Screen style={styles.screen}>
-      <View style={styles.container}>
-        <AppText style={defaultStyles.title}>Suitemates</AppText>
-        <View style={styles.suitematesContainer}>
-          <AppText>Suitemate 1</AppText>
-          <AppText>Suitemate 2</AppText>
-          <AppText>Suitemate 3</AppText>
-        </View>
+      <View style={[styles.cardContainer, styles.headerContainer]}>
+        {user ? (
+          <AppTitle
+            style={styles.headerText}
+          >{`Suite ${user.suiteID}`}</AppTitle>
+        ) : (
+          <AppTitle style={styles.headerText}>{`Suite`}</AppTitle>
+        )}
+      </View>
+
+      <View style={[styles.cardContainer, { flex: 1 }]}>
+        <AppTitle style={styles.cardText}>{`Suitemates`}</AppTitle>
+        <FlatList
+          data={suitemates}
+          keyExtractor={(suitemate) => suitemate.id.toString()}
+          renderItem={({ item }) => (
+            <Suitemate name={item.name} pronouns={item.pronouns} />
+          )}
+          ItemSeparatorComponent={HorizontalSpaceSeparator}
+        />
       </View>
       <View style={styles.buttonContainer}>
         <AppButton
-        title="View Rules"
-        color="primary"
-        
-        onPress={() => {
-          navigation.navigate(routes.RULES, {navigation})
-        }}
+          title="View Rules"
+          color="primary"
+          onPress={() => {
+            navigation.navigate(routes.RULES, { navigation });
+          }}
         />
       </View>
     </Screen>
@@ -35,25 +76,36 @@ export default function SuiteAccountScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    backgroundColor: colors.primary,
+    borderRadius: 20,
+    padding: 15,
+    width: "95%",
+    margin: "2%",
+  },
+  cardText: {
+    marginBottom: 10,
+    fontSize: 30,
+    fontWeight: "600",
+  },
   screen: {
     alignItems: "center",
   },
-  container: {
+  headerContainer: {
     paddingTop: 25,
     alignItems: "center",
+    backgroundColor: colors.secondary,
+    flex: 0,
+    height: "15%",
+    justifyContent: "center",
   },
-  image: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    resizeMode: "cover",
+  headerText: {
+    color: colors.white,
+    fontWeight: "600",
   },
-  suitematesContainer: {},
   buttonContainer: {
     alignItems: "center",
-    flex: 1,
-    justifyContent: "flex-end",
-    padding: 20,
-    width: "100%",
-   },
+    marginBottom: 20,
+    width: "95%",
+  },
 });
