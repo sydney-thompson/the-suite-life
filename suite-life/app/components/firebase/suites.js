@@ -71,6 +71,10 @@ export function deleteSuite (toDeleteID){
   toDelete.remove()
 }
 
+export function disconnectFromChores(suiteID) {
+  db.ref(`suites/${suiteID}/chores`).off("value");
+}
+
 export function getUserChores(setChores, suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
@@ -101,10 +105,6 @@ export function getUserChores(setChores, suiteID, uid = null) {
         setChores([]);
       }
     );
-}
-
-export function disconnectFromChores(suiteID) {
-  db.ref(`suites/${suiteID}/chores`).off("value");
 }
 
 export function getUserTransactions(setTransactions, suiteID, uid = null) {
@@ -145,6 +145,7 @@ export function disconnectFromTransactions(suiteID) {
 export function getSuitemates(setSuitemates, suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
+  }
   let chores = [];
   let transactions = [];
   return db
