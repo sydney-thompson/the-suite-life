@@ -1,5 +1,6 @@
 import { ref } from "yup";
 import { auth, db } from "./firebase";
+import * as userFunctions from "./users";
 
 // Creates a new suite
 export async function createSuite(suiteID, suiteName) {
@@ -36,7 +37,7 @@ export async function createSuite(suiteID, suiteName) {
   
   // Adds user with id uid to the suite associated with suiteID
   export async function addUserToSuite(suiteID, uid) {
-      Promise.all([checkSuiteExists(suiteID), checkUserExists(uid)])
+      Promise.all([checkSuiteExists(suiteID), userFunctions.checkUserExists(uid)])
         .then((res) => {
           const userListRef = db.ref(`suites/${suiteID}/users`);
           const newUserRef = userListRef.push();

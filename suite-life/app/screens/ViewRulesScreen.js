@@ -10,6 +10,7 @@ import RegistrationContext from "../components/auth/RegistrationContext";
 import { TextInput } from "react-native-gesture-handler";
 import { getRules, updateRules } from "../components/firebase/suites";
 import routes from "../navigation/routes";
+import * as testingFunctions from "../testing/unitTests";
 
 export default function ViewRulesScreen({ navigation }) {
   const [text, setText] = React.useState("");
