@@ -80,28 +80,58 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
-  goBackContainer: {
-    position: "absolute",
-    left: 10,
-  },
-  login: {
-    color: colors.primary,
-    justifyContent: "flex-end",
-  },
-  logo: {
-    width: 80,
-    height: 80,
-    alignSelf: "center",
-    marginTop: 50,
-    marginBottom: 20,
-  },
   screen: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: colors.primary,
+  },
+  buttonContainer: {
     alignItems: "center",
+    flex: 1,
+    justifyContent: "flex-end",
+    padding: 20,
+    width: "100%",
   },
-  spacer: {
-    height: 20,
+  buttonText: {
+    color: colors.black,
   },
-  title: {
-    marginBottom: 10,
+  inputContainer: {
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "flex-end",
+    padding: 10,
+    top: 200,
+  },
+  input: {
+    height: 425,
+    width: 300,
+    paddingTop: 30,
+    paddingBottom: 0,
+    paddingLeft: 25,
+    paddingRight: 25,
+    fontSize: 25,
+    borderWidth: 1,
+    borderRadius: 30,
+    alignItems: "stretch",
+    backgroundColor: "#FFFFF0",
+  },
+  tagline: {
+    color: colors.black,
+    fontSize: 50,
+    fontWeight: "bold",
+    lineHeight: 25,
+    paddingLeft: 40,
+    paddingTop: 75,
+  },
+  textTitle: {
+    color: colors.black,
+    fontSize: 18,
+    lineHeight: 15,
+    paddingLeft: 30,
+  },
+  titleContainer: {
+    alignItems: "flex-start",
+    position: "absolute",
+    top: 0,
   },
 });
