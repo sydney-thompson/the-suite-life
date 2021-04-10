@@ -1,21 +1,35 @@
 import { auth, db } from "./firebase";
 
 // gets one payment's data from firebase 
-export function loadPaymentData (firebaseID){
-    var returnData = []
-    db.ref(`/suites/test123/payments/${firebaseID}`).once('value', snapshot => {
-        let data = snapshot.val()
-        returnData = {'amount': data.amount, 'completed': data.completed, 'details': data.details, 'payees': data.payees, 'payer': data.payer, 'title': data.title}
+export async function loadPaymentData (firebaseID){
+    /*db.ref(`/suites/test123/payments/${firebaseID}`).once('value', snapshot => {
+        return snapshot.val();
+        console.log(data);
+        return {'amount': data.amount, 'completed': data.completed, 'details': data.details, 'payees': data.payees, 'payer': data.payer, 'title': data.title};
+    }); */
+
+    return new Promise((resolve, reject) => {
+      const ref =  db.ref(`/suites/test123/payments/${firebaseID}`);
+      ref
+        .once("value", (snapshot) => {
+          if (snapshot.exists()) {
+            resolve(snapshot.val());
+          } else {
+            resolve({ code: "payment-not-found" });
+          }
+        })
+        .catch(function (error) {
+          reject(error);
+        });
     });
-    return returnData
   }
 
 // function to push new payment to firebase
-export function addNewPayment (info){
-    db.ref(`/suites/test123/payments`).once('value', snapshot => {
+export async function addNewPayment (info){
+    await db.ref(`/suites/test123/payments`).once('value', snapshot => {
       let data = snapshot.val()
       if(data == "None"){
-        db.ref('/suites/test123/payments/').set({
+        return db.ref('/suites/test123/payments/').set({
           amount: info.amount, 
           completed: info.completed,
           details: info.details,
@@ -25,7 +39,7 @@ export function addNewPayment (info){
         });
       }
       else{
-        db.ref('/suites/test123/payments/').push({
+        return db.ref('/suites/test123/payments/').push({
             amount: info.amount, 
             completed: info.completed,
             details: info.details,
@@ -39,7 +53,7 @@ export function addNewPayment (info){
 
 // function to update data in firebase
 export function updatePayment (info, firebaseID){
-    db.ref(`/suites/test123/payments/${firebaseID}`).set({
+    return db.ref(`/suites/test123/payments/${firebaseID}`).set({
         amount: info.amount, 
         completed: info.completed,
         details: info.details,

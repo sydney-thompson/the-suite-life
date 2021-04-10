@@ -2,6 +2,7 @@ import { ref } from "yup";
 import { auth, db } from "./firebase";
 import { checkUserExists, getUserData } from "./users";
 
+
 // Creates a new suite
 export async function createSuite(suiteID, suiteName) {
   const suiteExists = await checkSuiteExists(suiteID);
@@ -65,11 +66,19 @@ export async function addUserToSuite(suiteID, uid) {
     .catch((err) => console.log(err));
 }
 
+export function deleteSuite (toDeleteID){
+  let toDelete = db.ref(`/suites/${toDeleteID}`)
+  toDelete.remove()
+}
+
+export function disconnectFromChores(suiteID) {
+  db.ref(`suites/${suiteID}/chores`).off("value");
+}
+
 export function getUserChores(setChores, suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
-
   let chores = [];
   return db
     .ref(`suites/${suiteID}/chores`)
@@ -96,10 +105,6 @@ export function getUserChores(setChores, suiteID, uid = null) {
         setChores([]);
       }
     );
-}
-
-export function disconnectFromChores(suiteID) {
-  db.ref(`suites/${suiteID}/chores`).off("value");
 }
 
 export function getUserTransactions(setTransactions, suiteID, uid = null) {
@@ -141,7 +146,6 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
-
   let chores = [];
   let transactions = [];
   return db
@@ -197,12 +201,15 @@ export async function getRules() {
   });
 }
 
-export function updateRules(rules) {
-  let uid = auth.currentUser.uid;
-  let suiteIDRef = db.ref(`users/${uid}/suiteID`);
-  suiteIDRef.once("value", (snapshot) => {
-    let suiteID = snapshot.val();
-    db.ref(`suites/${suiteID}/rules`).set(rules);
-  });
-  return true;
-}
+
+
+  // UNUSED
+  export function updateRules(rules) {
+    let uid = auth.currentUser.uid;
+    let suiteIDRef = db.ref(`users/${uid}/suiteID`);
+    suiteIDRef.once("value", (snapshot) => {
+      let suiteID = snapshot.val();
+      db.ref(`suites/${suiteID}/rules`).set(rules);
+    });
+    return true;
+  }

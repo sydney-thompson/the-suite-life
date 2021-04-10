@@ -13,6 +13,12 @@ export async function createUser(uid, name, pronouns, suiteID) {
   });
 }
 
+// Delete a user
+export function deleteUser (toDeleteID){
+  let toDelete = db.ref(`/users/${toDeleteID}`)
+  toDelete.remove()
+}
+
 // Checks if the uid is in the users database
 export function checkUserExists(uid = null) {
   return new Promise((resolve, reject) => {
