@@ -44,7 +44,7 @@ export default function PaymentHistoryScreen({ navigation }) {
         style={{width: '100%'}}>
          {transactions.map((item)=>(
               <AppButton 
-                key= {(transaction) => transaction.id}
+                key= {item.id}
                 color="tertiary" 
                 title={ item.title + "\n Amount: " + item.amount }
               > 
