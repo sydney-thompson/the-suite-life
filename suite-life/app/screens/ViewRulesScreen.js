@@ -11,31 +11,29 @@ import { TextInput } from "react-native-gesture-handler";
 import { getRules, updateRules } from "../components/firebase/suites";
 import routes from "../navigation/routes";
 
-export default function ViewRulesScreen({ navigation }) {
+export default function ViewRulesScreen({ route, navigation }) {
   const [text, setText] = React.useState("");
+  const [editable, seteditable] = React.useState("");
+  console.log(route.params.rules)
 
-  useEffect(() => {
-    getRules().then((rules) => {
-      //console.log(rules);
-      setText(rules);
-    });
-  });
-  // }, []);      couldn't figure out editability with race conditions
+  
 
   return (
     <RegistrationContext.Consumer>
         {(setRegistered) => (
             <Screen style={styles.screen}>
                 <View style={styles.titleContainer}>
-                  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                  <TouchableWithoutFeedback onPress={() => updateRules(text).then(() => {
+                    Keyboard.dismiss()
+                  })}>
                     <AppText style={styles.tagline}>House Rules</AppText>
                   </TouchableWithoutFeedback>
                 </View>
                 <View style={styles.inputContainer}>
                   <TextInput
-                    defaultValue={text}
+                    defaultValue={route.params.rules}
                     style={styles.input}
-                    editable={false}
+                    editable={true}
                     onChangeText={text => setText(text)}
                     multiline={true}
                   />

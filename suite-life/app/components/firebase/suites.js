@@ -201,13 +201,10 @@ export async function getRules() {
   });
 }
 
-
-
-  // UNUSED
-  export function updateRules(rules) {
+  export async function updateRules(rules) {
     let uid = auth.currentUser.uid;
     let suiteIDRef = db.ref(`users/${uid}/suiteID`);
-    suiteIDRef.once("value", (snapshot) => {
+    await suiteIDRef.once("value", (snapshot) => {
       let suiteID = snapshot.val();
       db.ref(`suites/${suiteID}/rules`).set(rules);
     });
