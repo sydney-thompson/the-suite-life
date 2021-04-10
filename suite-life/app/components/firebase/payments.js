@@ -21,6 +21,36 @@ export async function loadPaymentData (firebaseID){
     return returnData
   }
 
+// ID_of_main_person: 
+//     balances: 
+//         ID_of_sub_person: balance
+export async function get_balance (ID_of_main_person, ID_of_sub_person){
+  var curr_balance = 0
+  // update payer information
+    await db.ref(`users/${ID_of_main_person}/balances/${ID_of_sub_person}`).once('value').then(function(snapshot) {
+      curr_balance = snapshot.val(); 
+    });
+    return curr_balance
+  }
+
+  // ID_of_main_person: 
+  //     balances: 
+  //         ID_of_sub_person: balance
+  export async function update_balance (ID_of_main_person, ID_of_sub_person, new_amount){
+    await db.ref(`users/${ID_of_main_person}/balances/${ID_of_sub_person}`).set(new_amount)
+    }
+
+  export async function add_transaction_balance (payer_ID, payee_ID, payment_amount){
+    var curr_balance = 0
+    // update payer information
+    curr_balance = await get_balance (payer_ID, payee_ID)
+    update_balance (payer_ID, payee_ID, curr_balance+payment_amount)
+    // update payee information 
+    curr_balance = await get_balance (payee_ID, payer_ID)
+    update_balance (payee_ID, payer_ID, curr_balance-payment_amount)
+    }
+  
+
 // function to push new payment to firebase
 export async function addNewPayment (info){
     var suiteID = await get_suiteID()
@@ -32,6 +62,10 @@ export async function addNewPayment (info){
             payer: info.payer,
             title: info.title
         });
+    // loop through payees
+  //  info.payees.forEach(payee => {
+  //    add_transaction_balance (info.payer, payee, info.amount)
+  //  });
   }
 
 // function to update data in firebase
