@@ -17,6 +17,8 @@ import {
 import { getUserData } from "../components/firebase/users";
 import { auth } from "firebase";
 
+import { getRules, updateRules } from "../components/firebase/suites";
+
 export default function AccountScreen({ navigation }) {
   const [user, setUser] = useState(null);
   const [suitemates, setSuitemates] = useState([]);
@@ -67,7 +69,9 @@ export default function AccountScreen({ navigation }) {
           title="View Rules"
           color="primary"
           onPress={() => {
-            navigation.navigate(routes.RULES);
+            getRules().then((res) => {
+              navigation.navigate(routes.RULES, {rules: res});
+            });
           }}
         />
       </View>
