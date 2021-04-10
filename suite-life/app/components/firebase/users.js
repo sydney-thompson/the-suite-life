@@ -69,7 +69,10 @@ export function updateUserDetails(uid, name, pronouns) {
   });
 }
 
-export function getUserData(uid) {
+export function getUserData(uid = null) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
   return new Promise((resolve, reject) => {
     if (!auth.currentUser) {
       console.log("auth has no user");

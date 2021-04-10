@@ -1,45 +1,60 @@
 import { auth, db } from "./firebase";
 
+export async function get_suiteID (){
+  var uid = auth.currentUser.uid;
+  var data = null 
+
+  await db.ref(`users/${uid}/suiteID/`).once('value').then(function(snapshot) {
+    data = snapshot.val(); 
+  });
+  return data 
+}
+
 // gets one payment's data from firebase 
 export async function loadPaymentData (firebaseID){
-    /*db.ref(`/suites/test123/payments/${firebaseID}`).once('value', snapshot => {
-        return snapshot.val();
-        console.log(data);
-        return {'amount': data.amount, 'completed': data.completed, 'details': data.details, 'payees': data.payees, 'payer': data.payer, 'title': data.title};
-    }); */
-
-    return new Promise((resolve, reject) => {
-      const ref =  db.ref(`/suites/test123/payments/${firebaseID}`);
-      ref
-        .once("value", (snapshot) => {
-          if (snapshot.exists()) {
-            resolve(snapshot.val());
-          } else {
-            resolve({ code: "payment-not-found" });
-          }
-        })
-        .catch(function (error) {
-          reject(error);
-        });
+    var suiteID = await get_suiteID()
+    var returnData = []
+    await db.ref(`/suites/${suiteID}/payments/${firebaseID}`).once('value', snapshot => {
+        let data = snapshot.val()
+        returnData = {'amount': data.amount, 'completed': data.completed, 'details': data.details, 'payees': data.payees, 'payer': data.payer, 'title': data.title}
     });
+    return returnData;
   }
+
+// ID_of_main_person: 
+//     balances: 
+//         ID_of_sub_person: balance
+export async function get_balance (ID_of_main_person, ID_of_sub_person){
+  var curr_balance = 0
+  // update payer information
+    await db.ref(`users/${ID_of_main_person}/balances/${ID_of_sub_person}`).once('value').then(function(snapshot) {
+      curr_balance = snapshot.val(); 
+    });
+    return curr_balance
+  }
+
+  // ID_of_main_person: 
+  //     balances: 
+  //         ID_of_sub_person: balance
+  export async function update_balance (ID_of_main_person, ID_of_sub_person, new_amount){
+    await db.ref(`users/${ID_of_main_person}/balances/${ID_of_sub_person}`).set(new_amount)
+    }
+
+  export async function add_transaction_balance (payer_ID, payee_ID, payment_amount){
+    var curr_balance = 0
+    // update payer information
+    curr_balance = await get_balance (payer_ID, payee_ID)
+    update_balance (payer_ID, payee_ID, curr_balance+payment_amount)
+    // update payee information 
+    curr_balance = await get_balance (payee_ID, payer_ID)
+    update_balance (payee_ID, payer_ID, curr_balance-payment_amount)
+    }
+  
 
 // function to push new payment to firebase
 export async function addNewPayment (info){
-    await db.ref(`/suites/test123/payments`).once('value', snapshot => {
-      let data = snapshot.val()
-      if(data == "None"){
-        return db.ref('/suites/test123/payments/').set({
-          amount: info.amount, 
-          completed: info.completed,
-          details: info.details,
-          payees: info.payees,
-          payer: info.payer,
-          title: info.title
-        });
-      }
-      else{
-        return db.ref('/suites/test123/payments/').push({
+    var suiteID = await get_suiteID()
+    await db.ref('/suites/' + suiteID + '/payments/').push({
             amount: info.amount, 
             completed: info.completed,
             details: info.details,
@@ -47,13 +62,16 @@ export async function addNewPayment (info){
             payer: info.payer,
             title: info.title
         });
-      }
-    });
+    // loop through payees
+  //  info.payees.forEach(payee => {
+  //    add_transaction_balance (info.payer, payee, info.amount)
+  //  });
   }
 
 // function to update data in firebase
-export function updatePayment (info, firebaseID){
-    return db.ref(`/suites/test123/payments/${firebaseID}`).set({
+export async function updatePayment (info, firebaseID){
+    var suiteID = await get_suiteID()
+    await db.ref(`/suites/${suiteID}/payments/${firebaseID}`).set({
         amount: info.amount, 
         completed: info.completed,
         details: info.details,
@@ -64,7 +82,18 @@ export function updatePayment (info, firebaseID){
   }
 
 // deletes payment from firebase 
-export function deletePayment (toDeleteID){
-    let toDelete = db.ref(`/suites/test123/payments/${toDeleteID}`)
-    toDelete.remove()
+export async function deletePayment (toDeleteID){
+    var suiteID = await get_suiteID()
+    let toDelete = await db.ref(`/suites/${suiteID}/payments/${toDeleteID}`)
+    await toDelete.remove()
+  }
+
+  export async function get_suiteID (){
+    var uid = auth.currentUser.uid;
+    var data = null 
+  
+    await db.ref(`users/${uid}/suiteID/`).once('value').then(function(snapshot) {
+      data = snapshot.val(); 
+    });
+    return data 
   }
