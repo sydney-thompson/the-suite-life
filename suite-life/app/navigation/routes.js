@@ -18,5 +18,6 @@ export default Object.freeze({
   RULES: "Rules",
   RULES_NAV: "RulesNavigator",
   SUITE: "Suite",
+  TESTING_RES: "Testing",
   WELCOME: "Welcome",
 });

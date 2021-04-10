@@ -18,7 +18,7 @@ export async function loadPaymentData (firebaseID){
         let data = snapshot.val()
         returnData = {'amount': data.amount, 'completed': data.completed, 'details': data.details, 'payees': data.payees, 'payer': data.payer, 'title': data.title}
     });
-    return returnData
+    return returnData;
   }
 
 // ID_of_main_person: 

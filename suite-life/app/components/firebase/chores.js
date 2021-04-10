@@ -18,7 +18,22 @@ export async function loadChoreData (firebaseID){
         let data = snapshot.val()
         returnData = {'name': data.name, 'frequency': data.frequency, 'assignees': data.assignees, 'details': data.details, 'completed': data.completed}
     });
-    return returnData
+    return returnData;
+
+    /* return new Promise((resolve, reject) => {
+      const ref =  db.ref(`/suites/test123/chores/${firebaseID}`);
+      ref
+        .once("value", (snapshot) => {
+          if (snapshot.exists()) {
+            resolve(snapshot.val());
+          } else {
+            resolve({ code: "chore-not-found" });
+          }
+        })
+        .catch(function (error) {
+          reject(error);
+        });
+    }); */
   }
 
 // function to push new chore to firebase

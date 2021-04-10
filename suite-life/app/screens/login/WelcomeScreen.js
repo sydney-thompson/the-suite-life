@@ -18,23 +18,12 @@ export default function WelcomeScreen({ navigation }) {
         <AppText style={styles.tagline}>make living with others easy</AppText>
       </View>
       <View style={styles.buttonContainer}>
-        {/* <AppButton
-          title="Login"
-          textStyle={styles.buttonText}
-          color="white"
-          onPress={googleLogin}
-          //onPress={() => navigation.navigate(routes.REGISTER)}
-        /> */}
         <AppButton
           title="let's do this"
           textStyle={styles.buttonText}
           color="white"
-          // onPress={googleLogin}
           onPress={() => navigation.navigate(routes.REGISTER)}
         />
-        {/* <TouchableOpacity onPress={() => navigation.navigate(routes.REGISTER)}>
-          <AppText style={styles.createAccount}>Create Account</AppText>
-        </TouchableOpacity> */}
       </View>
     </Screen>
   );
