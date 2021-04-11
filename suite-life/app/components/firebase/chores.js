@@ -77,7 +77,8 @@ export async function addNewChore1 (info){
 
 // function to update data in firebase
 export async function updateChore (info, firebaseID){
-    var suiteID = await get_suiteID()
+  var suiteID = await get_suiteID()
+  console.log(info)
     await db.ref(`/suites/${suiteID}/chores/${firebaseID}`).set({
       name: info.name, 
       frequency: info.frequency,

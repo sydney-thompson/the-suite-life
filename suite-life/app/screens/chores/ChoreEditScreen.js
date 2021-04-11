@@ -1,20 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Alert } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
 import { TextInput } from 'react-native';
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
-import { db } from "../../components/firebase/firebase";
-import defaultStyles from "../../config/styles";
-import routes from "../../navigation/routes";
+import { auth, db } from "../../components/firebase/firebase";
 import * as choreFunctions from "../../components/firebase/chores";
+import * as Yup from "yup";
+import {disconnectFromSuitemates, getSuitemates} from "../../components/firebase/suites"; 
+import { getUserData } from "../../components/firebase/users";
+
+import defaultStyles from "../../config/styles";
+
+import {
+  AppForm as Form,
+  AppFormField as FormField,
+  AppFormFieldCheckbox as Checkbox,
+  SubmitButton,
+} from "../../components/forms";
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required().label("Name"),
+  frequency: Yup.string().required().label("Frequency"),
+  details: Yup.string().label("Details")
+});
 
 export default function ChoreEditScreen(choreInfo) {
-  const { choreID } = choreInfo.route.params.firebaseID;
+  const [user, setUser] = useState(null);
+  const [suitemates, setSuitemates] = useState([]);
+  const [initialhousemates, setIHmates] = useState({});
 
   const [choreName, setChoreName] = useState('')
   const [choreFrequency, setFrequencyName] = useState('')
-  const [choreAssignee, setChoreAssignee] = useState('')
+  const [choreAssignees, setChoreAssignees] = useState('')
+  const [choreDetails, setChoreDetails] = useState('')
+  const [choreCompleted, setChoreCompleted] = useState('')
   const [choreRefresher, setChoreRefresher] = useState('')
 
   // navigates back to main screen
@@ -30,60 +50,107 @@ export default function ChoreEditScreen(choreInfo) {
         const choreData = await choreFunctions.loadChoreData(choreInfo.route.params.firebaseID)
         await setChoreName(choreData.name)
         await setFrequencyName(choreData.frequency)
-        await setChoreAssignee(choreData.assignee)
+        await setChoreAssignees(choreData.assignees)
+        await setChoreDetails(choreData.details)
+        await setChoreCompleted(choreData.completed)
       }
   }
   loadChoreData()
 
-  // sends data to firebase and clears the textbox values 
-  const submitAndClear = () => {
-    if(choreName == "" || choreAssignee == "" || choreFrequency == ""){
-      Alert.alert(
-        "Warning: Missing Data",
-        "Please make sure all data fields have values.",
-        [{ text: "OK"}]
-      );
-    }
-    else{
-      const update_promise = new Promise((resolve, reject) => {
-        choreFunctions.updateChore(choreName, choreFrequency, choreAssignee, choreInfo.route.params.firebaseID)
-      })
-      update_promise.then(
-        setChoreRefresher("False"),
-        returnHome()
-      )
-    }
-  }
+  //const housemates = [{id: 'id1', name: 'Name 1'}, {id: 'id2', name: 'Name 2'}];    // placeholders for reading in the housemates of that suite
+  //const initialhousemates = {'id1': false, 'id2': false};
 
   // deletes chore from firebase then returns to main screen
-  const deleteChore = () => {
-    choreFunctions.deleteChore(choreInfo.route.params.firebaseID)
+const deleteChore = () => {
+  choreFunctions.deleteChore(choreInfo.route.params.firebaseID)
+  returnHome()
+}
+
+// sends data to firebase and clears the textbox values 
+  const submitAndClear = async (values) => {
+    await choreFunctions.updateChore(values, choreInfo.route.params.firebaseID)
+    setChoreRefresher("False")
     returnHome()
   }
+
+  useEffect(() => {
+    getUserData().then((val) => {
+      setUser(val);
+    });
+  }, [auth]);
+
+  useEffect(() => {
+    if (user) {
+      getSuitemates(setSuitemates, user.suiteID);
+      //console.log("suitemates:", suitemates);
+      let checkvalues = {};
+      suitemates.forEach((mate) => {
+        checkvalues[mate.id] = false;
+      })
+      setIHmates(checkvalues);
+    } else {
+      setSuitemates([]);
+      setIHmates({});
+    }
+    return () => {
+      disconnectFromSuitemates();
+    };
+  }, [user, setSuitemates, setIHmates]);
+
+  //const [choreAssignees, setChoreAssignees] = useState('')
 
   return (
     <Screen style={styles.screen}>
       <AppText style={defaultStyles.title}>Edit Chore</AppText>
-      <TextInput style = {styles.input}
-        placeholder = "Enter Chore Name"
-        onChangeText = {(text) => setChoreName(text)}
-        value={choreName}
+      <Form
+        initialValues={{ name: choreName, frequency: choreFrequency, assignees: initialhousemates, details: choreDetails}}
+        onSubmit={(values) => submitAndClear(values)}
+        validationSchema={validationSchema}
+      >
+        <ScrollView style={{width: '100%'}}>
+        <FormField
+          display="AppTextInputLabel"
+          label="Name"
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="name"
+          placeholder="Name of the chore"
         />
-      <TextInput style = {styles.input}
-        placeholder = "Enter Chore Frequency"
-        onChangeText = {(text) => setFrequencyName(text)}
-        value={choreFrequency}
+        <FormField
+          display="AppTextInputLabel"
+          label="Frequency"
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="frequency"
+          placeholder="One-time or weekly?"
         />
-      <TextInput style = {styles.input}
-        placeholder = "Enter Assigned Person"
-        onChangeText = {(text) => setChoreAssignee(text)}
-        value={choreAssignee}
+        <FormField
+          display="AppTextInputLabel"
+          label="Details"
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="details"
+          placeholder="Additional details"
         />
-      <AppButton
-        title="Submit Chore"
-        color="primary"
-        onPress={submitAndClear}
-      ></AppButton>
+        <AppText style={[{color: defaultStyles.colors.black}]}>Select housemates assigned:</AppText>
+        <View>
+        {suitemates.map((mate) => {
+          return (
+            <Checkbox
+              name="assignees"
+              specificName={mate.id}
+              key={mate.id}
+              checkedIcon='check-box'
+              iconType='material'
+              uncheckedIcon='check-box-outline-blank'
+              title={mate.name}
+            />
+          );
+        })}
+        </View>
+        </ScrollView>
+        <SubmitButton title="Save Chore" />
+      </Form>
       <AppButton
         title="Cancel"
         color="primary"
@@ -96,7 +163,7 @@ export default function ChoreEditScreen(choreInfo) {
       ></AppButton>
     </Screen>
   );
-}
+};
 
 const styles = StyleSheet.create({
   screen: {
