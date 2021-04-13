@@ -27,8 +27,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: defaultStyles.colors.white,
     borderRadius: 15,
-    // borderWidth: 1,
-    // borderColor: defaultStyles.colors.black,
     flexDirection: "row",
     width: "100%",
     padding: 5,
@@ -42,6 +40,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     width: "40%",
+    height: 60,
   },
   text: {
     color: colors.white,
