@@ -5,11 +5,18 @@ import AppText from "../../components/AppText";
 import BalanceDisplay from "../../components/BalanceDisplay";
 import Screen from "../../components/Screen";
 
+
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 
+// more styles
+import colors from "../../config/colors";
+import AppTitle from "../../components/AppTitle";
+
+
+
 export default function PaymentScreen({ navigation }) {
-  // Balances placeholder: populate by retrieving suite members and balances; 
+  // Balances placeholder: populate by retrieving suite members and balances;
   // color depending on sign of balance value
   const Balances = [
   {
@@ -25,28 +32,82 @@ export default function PaymentScreen({ navigation }) {
   ];
   return (
     <Screen style={styles.screen}>
-      <AppText style={defaultStyles.title}>Transactions</AppText>
-      {Balances.map((balance) => {
-        return (
-        <BalanceDisplay name={balance.name} key={balance.id} value={balance.value} />
-        );
-      })}
-      <AppButton
-        title="See history"
-        color="secondary"
-        onPress={() => navigation.navigate(routes.PAYMENT_HISTORY)}
-      ></AppButton>
-      <AppButton
-        title="Add transaction +"
-        color="secondary"
-        onPress={() => navigation.navigate(routes.PAYMENT_ADD)}
-      ></AppButton>
+      <View style={[styles.cardContainer, styles.headerContainer]}>
+        <AppText style={styles.headerText}>Balances</AppText>
+      </View>
+
+      <View style={[styles.cardContainer, { flex: 1 }]}>
+        <AppTitle style={styles.cardText}>{`Balances`}</AppTitle>
+        {Balances.map((balance) => {
+          return (
+          <BalanceDisplay name={balance.name} key={balance.id} value={balance.value} />
+          );
+        })}
+      </View>
+
+      <View style={styles.topButtonContainer}>
+          <AppButton
+            title="See history"
+            color="secondary"
+            onPress={() => navigation.navigate(routes.PAYMENT_HISTORY)}
+          ></AppButton>
+      </View>
+
+      <View style={styles.buttonContainer}>
+          <AppButton
+            title="Add transaction +"
+            color="secondary"
+            onPress={() => navigation.navigate(routes.PAYMENT_ADD)}
+          ></AppButton>
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+
+  // top
   screen: {
     alignItems: "center",
+  },
+  cardContainer: {
+    backgroundColor: colors.primary,
+    borderRadius: 20,
+    padding: 15,
+    width: "95%",
+    margin: "2%",
+  },
+  headerContainer: {
+    paddingTop: 10,
+    alignItems: "center",
+    backgroundColor: colors.secondary,
+    flex: 0,
+    height: "11%",
+    justifyContent: "center",
+  },
+  cardText: {
+    marginBottom: 10,
+    fontSize: 30,
+    fontWeight: "600",
+  },
+  headerText: {
+    color: colors.white,
+    fontWeight: "500",
+    fontSize: 50,
+  },
+
+  // Balances
+
+  // bottom
+  topButtonContainer: {
+    alignItems: "center",
+    marginBottom: -5,
+    width: "95%",
+  },
+
+  buttonContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+    width: "95%",
   },
 });

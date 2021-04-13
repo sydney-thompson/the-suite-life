@@ -87,13 +87,3 @@ export async function deletePayment (toDeleteID){
     let toDelete = await db.ref(`/suites/${suiteID}/payments/${toDeleteID}`)
     await toDelete.remove()
   }
-
-  // export async function get_suiteID (){
-  //   var uid = auth.currentUser.uid;
-  //   var data = null
-  //
-  //   await db.ref(`users/${uid}/suiteID/`).once('value').then(function(snapshot) {
-  //     data = snapshot.val();
-  //   });
-  //   return data
-  // }
