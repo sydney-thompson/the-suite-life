@@ -4,16 +4,10 @@ import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import BalanceDisplay from "../../components/BalanceDisplay";
 import Screen from "../../components/Screen";
-
-
+import AppTitle from "../../components/AppTitle";
+import colors from "../../config/colors";
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
-
-// more styles
-import colors from "../../config/colors";
-import AppTitle from "../../components/AppTitle";
-
-
 
 export default function PaymentScreen({ navigation }) {
   // Balances placeholder: populate by retrieving suite members and balances;
@@ -66,7 +60,6 @@ export default function PaymentScreen({ navigation }) {
 
 const styles = StyleSheet.create({
 
-  // top
   screen: {
     alignItems: "center",
   },
@@ -96,9 +89,6 @@ const styles = StyleSheet.create({
     fontSize: 50,
   },
 
-  // Balances
-
-  // bottom
   topButtonContainer: {
     alignItems: "center",
     marginBottom: -5,
