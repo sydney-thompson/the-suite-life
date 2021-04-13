@@ -26,17 +26,18 @@ const BalanceDisplay = ({ name, value }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: defaultStyles.colors.white,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: defaultStyles.colors.black,
+    borderRadius: 15,
+    // borderWidth: 1,
+    // borderColor: defaultStyles.colors.black,
     flexDirection: "row",
-    width: "90%",
+    width: "100%",
     padding: 5,
     marginVertical: 5,
     alignItems: "center",
+    height: 75,
   },
   button: {
-    borderRadius: 25,
+    borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
     padding: 10,
@@ -48,8 +49,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   text2: {
-    width: "50%", 
-    marginHorizontal: 10
+    width: "50%",
+    marginHorizontal: 15
   }
 });
 

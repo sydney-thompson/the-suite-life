@@ -33,7 +33,7 @@ export default function PaymentScreen({ navigation }) {
   return (
     <Screen style={styles.screen}>
       <View style={[styles.cardContainer, styles.headerContainer]}>
-        <AppText style={styles.headerText}>Balances</AppText>
+        <AppText style={styles.headerText}>Transactions</AppText>
       </View>
 
       <View style={[styles.cardContainer, { flex: 1 }]}>
