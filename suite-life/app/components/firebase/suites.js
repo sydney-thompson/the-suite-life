@@ -146,6 +146,28 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
     );
 }
 
+export async function getSuitematesList(suiteID, uid = null) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
+  let suitemates = []
+  await db.ref(`suites/${suiteID}/users`).orderByChild("name").on("value",
+  (snapshot) => {
+    if (snapshot.exists()) {
+      snapshot.forEach((child) => {
+        const suitemate = child.val();
+        suitemates.push(suitemate.uid)
+        //console.log(suitemate)
+      });
+    }
+  },
+    (err) => {
+      console.error(err);
+    }
+  );
+  return suitemates
+}
+
 export async function getRules() {
   return new Promise((resolve, reject) => {
     let uid = auth.currentUser.uid;
