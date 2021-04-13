@@ -211,83 +211,83 @@ export async function getRules() {
     return true;
  }
 
-export function getSuitemates(setSuitemates, suiteID, uid = null) {
-  if (!uid) {
-    uid = auth.currentUser.uid;
-  }
-  console.log('---------------');
-  console.log('potato1');
-  return db
-    .ref(`suites/${suiteID}/users`)
-    .orderByChild("uid")
-    .on(
-      "value",
-      (snapshot) => {
-        console.log('potato2')
-        let suitemates = [];
-        if (snapshot.exists()) {
-          console.log('realpotato');
-          console.log(snapshot);
-          snapshot.forEach((child) => {
-            const suitemate = child.val();
-            console.log('beforegetuserdata');
-            getUserData(suitemate.uid).then((val) => {
-              const newSuitemate = {
-                id: val.uid,
-                ...val,
-              };
-              console.log('aftergetuserdata');
-              suitemates.push(newSuitemate);
-              setSuitemates(suitemates);
-            });
-            console.log('laterlater');
-          });
-        }
-        console.log('potato3');
-        setSuitemates(suitemates);
-      },
-      (err) => {
-        console.error(err);
-        setSuitemates([]);
-      }
-    );
-}
+// export function getSuitemates(setSuitemates, suiteID, uid = null) {
+//   if (!uid) {
+//     uid = auth.currentUser.uid;
+//   }
+//   console.log('---------------');
+//   console.log('potato1');
+//   return db
+//     .ref(`suites/${suiteID}/users`)
+//     .orderByChild("uid")
+//     .on(
+//       "value",
+//       (snapshot) => {
+//         console.log('potato2')
+//         let suitemates = [];
+//         if (snapshot.exists()) {
+//           console.log('realpotato');
+//           console.log(snapshot);
+//           snapshot.forEach((child) => {
+//             const suitemate = child.val();
+//             console.log('beforegetuserdata');
+//             getUserData(suitemate.uid).then((val) => {
+//               const newSuitemate = {
+//                 id: val.uid,
+//                 ...val,
+//               };
+//               console.log('aftergetuserdata');
+//               suitemates.push(newSuitemate);
+//               setSuitemates(suitemates);
+//             });
+//             console.log('laterlater');
+//           });
+//         }
+//         console.log('potato3');
+//         setSuitemates(suitemates);
+//       },
+//       (err) => {
+//         console.error(err);
+//         setSuitemates([]);
+//       }
+//     );
+// }
 
-export function disconnectFromSuitemates(suiteID) {
-  db.ref(`suites/${suiteID}/users`).off("value");
-}
+// export function disconnectFromSuitemates(suiteID) {
+//   db.ref(`suites/${suiteID}/users`).off("value");
+// }
 
-export function getUserTransactions(setTransactions, suiteID, uid = null) {
-  if (!uid) {
-    uid = auth.currentUser.uid;
-  }
-
-  let transactions = [];
-  return db
-    .ref(`suites/${suiteID}/payments`)
-    .on(
-      "value",
-      (snapshot) => {
-        let transactions = [];
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            const transaction = child.val();
-            const newTransaction = {
-              id: child.ref.key,
-              ...transaction,
-            };
-            transactions.push(newTransaction);
-          });
-        }
-        setTransactions(transactions);
-      },
-      (err) => {
-        console.error(err);
-        setTransactions([]);
-      }
-    );
-}
-
-export function disconnectFromTransactions(suiteID) {
-  db.ref(`suites/${suiteID}/payments`).off("value");
-}
+// export function getUserTransactions(setTransactions, suiteID, uid = null) {
+//   if (!uid) {
+//     uid = auth.currentUser.uid;
+//   }
+//
+//   let transactions = [];
+//   return db
+//     .ref(`suites/${suiteID}/payments`)
+//     .on(
+//       "value",
+//       (snapshot) => {
+//         let transactions = [];
+//         if (snapshot.exists()) {
+//           snapshot.forEach((child) => {
+//             const transaction = child.val();
+//             const newTransaction = {
+//               id: child.ref.key,
+//               ...transaction,
+//             };
+//             transactions.push(newTransaction);
+//           });
+//         }
+//         setTransactions(transactions);
+//       },
+//       (err) => {
+//         console.error(err);
+//         setTransactions([]);
+//       }
+//     );
+// }
+//
+// export function disconnectFromTransactions(suiteID) {
+//   db.ref(`suites/${suiteID}/payments`).off("value");
+// }
