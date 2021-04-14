@@ -29,13 +29,10 @@ export default function ChoreEditScreen(choreInfo) {
   const [user, setUser] = useState(null);
   const [suitemates, setSuitemates] = useState([]);
   const [initialhousemates, setIHmates] = useState({});
-
-  const [choreName, setChoreName] = useState('')
-  const [choreFrequency, setFrequencyName] = useState('')
-  const [choreAssignees, setChoreAssignees] = useState('')
-  const [choreDetails, setChoreDetails] = useState('')
   const [choreCompleted, setChoreCompleted] = useState('')
   const [choreRefresher, setChoreRefresher] = useState('')
+
+  const [choreInitialValues, setChoreInitialValues] = useState({})
 
   // navigates back to main screen
   const returnHome = () => {
@@ -48,11 +45,11 @@ export default function ChoreEditScreen(choreInfo) {
       if(choreRefresher != "True"){
         await setChoreRefresher("True")
         const choreData = await choreFunctions.loadChoreData(choreInfo.route.params.firebaseID)
-        await setChoreName(choreData.name)
-        await setFrequencyName(choreData.frequency)
-        await setChoreAssignees(choreData.assignees)
-        await setChoreDetails(choreData.details)
         await setChoreCompleted(choreData.completed)
+        await setChoreInitialValues({name: choreData.name, 
+          frequency: choreData.frequency, 
+          assignees: choreData.assignees, 
+          details: choreData.details})
       }
   }
   loadChoreData()
@@ -103,7 +100,8 @@ const deleteChore = () => {
     <Screen style={styles.screen}>
       <AppText style={defaultStyles.title}>Edit Chore</AppText>
       <Form
-        initialValues={{ name: choreName, frequency: choreFrequency, assignees: initialhousemates, details: choreDetails}}
+        enableReinitialize={true}
+        initialValues={choreInitialValues}
         onSubmit={(values) => submitAndClear(values)}
         validationSchema={validationSchema}
       >
