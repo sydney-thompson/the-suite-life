@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from "react";
 import { StyleSheet, Text, View, ScrollView  } from "react-native";
 import AppButton from "../../components/AppButton";
+import ChoresButton from "../../components/ChoresButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
+import colors from "../../config/colors";
+
 import { auth, db } from "../../components/firebase/firebase";
 import * as choreFunctions from "../../components/firebase/chores";
 
@@ -14,20 +17,20 @@ export default function ChoreScreen({ navigation }) {
   const [choresJSON, setChoresJSON] = useState([])
   //var my_suiteID = choreFunctions.get_suiteID();
 
-  // navigate to add screen 
+  // navigate to add screen
   const navigate_to_add = () => {
     setChoreRefresh("False")
     navigation.navigate(routes.CHORE_ADD, {navigation})
   }
 
-  // navigate to edit screen 
+  // navigate to edit screen
   const navigate_to_edit = (firebaseID) => {
     setChoreRefresh("False")
     navigation.navigate(routes.CHORE_EDIT, {navigation, firebaseID})
   }
 
   const renderChores = async() => {
-   // var suiteID = get_suiteID() 
+   // var suiteID = get_suiteID()
     var suiteID = await choreFunctions.get_suiteID()
     await renderChores_helper(suiteID)
   }
@@ -36,10 +39,10 @@ export default function ChoreScreen({ navigation }) {
     var choreJSON = [];
     await db.ref(`/suites/${suiteID}/chores`).once('value', snapshot => {
        let data = snapshot.val()
-       if(data != "None"){ 
+       if(data != "None"){
           let keys = Object.keys(data);
            // loop through firebase data and add data to choreJSON for use in rendering elements
-           keys.forEach((key) => { 
+           keys.forEach((key) => {
              choreJSON.push({name: data[key].name, firebaseID: key, frequency: data[key].frequency})
            });
            var holder = choresJSON
@@ -70,26 +73,31 @@ export default function ChoreScreen({ navigation }) {
     return unsubscribe;
   }, [navigation]);
 
-  return ( 
+  return (
     <Screen style={styles.screen}>
-      <AppText style={defaultStyles.title}>Chores</AppText>
+      <View style={[styles.cardContainer, styles.headerContainer]}>
+        <AppText style={styles.headerText}>Chores</AppText>
+      </View>
       <ScrollView
-        style={{width: '100%'}}>
+        style={[styles.cardContainer, { flex: 1 }]}>
          {choresJSON.map((item)=>(
-              <AppButton 
+              <ChoresButton
                 key= {item.firebaseID}
-                color="tertiary" 
-                title={ item.name + "\n Frequency: " + item.frequency }
-                onPress={() => navigate_to_edit(item.firebaseID)}> 
-              </AppButton>
+                color="tertiary"
+                title={ item.name }
+                frequency={"\nFrequency: " + item.frequency }
+                onPress={() => navigate_to_edit(item.firebaseID)}>
+              </ChoresButton>
               )
          )}
      </ScrollView>
-     <AppButton
-        title="Add Chore"
-        color="primary"
-        onPress={() => navigate_to_add()}
-      ></AppButton>
+     <View style={styles.buttonContainer}>
+       <AppButton
+          title="Add Chore"
+          color="primary"
+          onPress={() => navigate_to_add()}
+        ></AppButton>
+      </View>
     </Screen>
   );
 }
@@ -97,5 +105,31 @@ export default function ChoreScreen({ navigation }) {
 const styles = StyleSheet.create({
   screen: {
     alignItems: "center",
+  },
+  cardContainer: {
+    backgroundColor: colors.primary,
+    borderRadius: 20,
+    padding: 15,
+    width: "95%",
+    margin: "2%",
+  },
+  headerContainer: {
+    paddingTop: 10,
+    alignItems: "center",
+    backgroundColor: colors.secondary,
+    flex: 0,
+    height: "11%",
+    justifyContent: "center",
+  },
+  headerText: {
+    color: colors.white,
+    fontWeight: "500",
+    fontSize: 50,
+  },
+
+  buttonContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+    width: "95%",
   },
 });
