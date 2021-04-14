@@ -26,7 +26,7 @@ export default function TransactionOverview({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.tertiary,
+    backgroundColor: colors.white,
     borderRadius: 10,
     flex: 1,
     justifyContent: "space-evenly",
