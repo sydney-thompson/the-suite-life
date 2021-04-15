@@ -1,15 +1,45 @@
-import { auth, db } from "./firebase";
+import { auth, db, suites } from "./firebase";
 
 // Creates a new user
 export async function createUser(uid, name, pronouns, suiteID) {
   const userExists = await checkUserExists(uid);
   if (userExists) throw new Error("User already exists");
+  
+  // get list of suitemates 
+  var suitemateList = suites.getSuitematesList(suiteID, uid)
+  var balancesJSON = []
+  await suitemateList.forEach((suitemate) => { 
+    // TO DO: make this the actual suitemate field as the key 
+    balancesJSON.push({suitemate : 0})
+
+    // get balances field of the suitemate
+    var balances = []
+    db.ref(`users/${suitemate}/balances`).once('value').then(function(snapshot) {
+      balances = snapshot.val(); 
+    });
+    // if balances do not exist, add balances field of the suitemate 
+    if (balances == "None"){
+      // TO DO: make this the actual suitemate field as the key 
+      db.ref(`users/${suitemate}/balances`).set([{uid : 0}])
+    }
+    else{
+    // set balances to balances.push(uid : 0)
+    // TO DO: make this the actual suitemate field as the key 
+      balances.push({uid : 0})
+      db.ref(`users/${suitemate}/balances`).set(balances)
+    }
+  });
+  if(suitemateList == []){
+    balancesJSON = "None"
+  }
+
   return db.ref(`users/${uid}`).set({
     // initialize to empty arrays by default
     uid: uid,
     name: name,
     pronouns: pronouns,
     suiteID: suiteID,
+    balances: balancesJSON,
   });
 }
 

@@ -5,6 +5,7 @@ import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
 import { auth, db } from "../../components/firebase/firebase";
 import * as choreFunctions from "../../components/firebase/chores";
+import * as suiteFunctions from "../../components/firebase/suites";
 
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
@@ -12,6 +13,7 @@ import routes from "../../navigation/routes";
 export default function ChoreScreen({ navigation }) {
   const [choreRefresh, setChoreRefresh] = useState('')
   const [choresJSON, setChoresJSON] = useState([])
+  const [vari, setVar] = useState([])
   //var my_suiteID = choreFunctions.get_suiteID();
 
   // navigate to add screen 
@@ -30,6 +32,19 @@ export default function ChoreScreen({ navigation }) {
    // var suiteID = get_suiteID() 
     var suiteID = await choreFunctions.get_suiteID()
     await renderChores_helper(suiteID)
+    //const ss =  await suiteFunctions.getSuitematess('74734846')
+    /*
+    const suitemateList = await suiteFunctions.getSuitematesList('74734846')
+    var balancesJSON = []
+    //balancesJSON.keys = suitemateList
+    suitemateList.forEach((suitemate) => { 
+      var new_pair = {suitemate : 0}
+      balancesJSON.push(new_pair)
+    });
+    balancesJSON.keys = suitemateList
+    console.log("before")
+    console.log(balancesJSON)
+    console.log("after")*/
   }
 
   const renderChores_helper = async (suiteID) => {
@@ -69,6 +84,7 @@ export default function ChoreScreen({ navigation }) {
     // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
   }, [navigation]);
+
 
   return ( 
     <Screen style={styles.screen}>
