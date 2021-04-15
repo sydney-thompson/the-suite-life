@@ -2,7 +2,6 @@ import { ref } from "yup";
 import { auth, db } from "./firebase";
 import { checkUserExists, getUserData } from "./users";
 
-
 // Creates a new suite
 export async function createSuite(suiteID, suiteName) {
   const suiteExists = await checkSuiteExists(suiteID);
@@ -66,45 +65,49 @@ export async function addUserToSuite(suiteID, uid) {
     .catch((err) => console.log(err));
 }
 
-export function deleteSuite (toDeleteID){
-  let toDelete = db.ref(`/suites/${toDeleteID}`)
-  toDelete.remove()
+export function deleteSuite(toDeleteID) {
+  let toDelete = db.ref(`/suites/${toDeleteID}`);
+  toDelete.remove();
 }
 
 export function disconnectFromChores(suiteID) {
   db.ref(`suites/${suiteID}/chores`).off("value");
 }
 
-export function getUserChores(setChores, suiteID, uid = null) {
+export async function getUserChores(setChores, suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
   let chores = [];
-  return db
-    .ref(`suites/${suiteID}/chores`)
-    .orderByChild("assignee")
-    .equalTo(uid)
-    .on(
-      "value",
-      (snapshot) => {
-        let chores = [];
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            const chore = child.val();
-            const newChore = {
-              id: child.ref.key,
-              ...chore,
-            };
-            chores.push(newChore);
-          });
+  return (
+    db
+      .ref(`suites/${suiteID}/chores`)
+      // .orderByChild("assignee")
+      // .equalTo(uid)
+      .on(
+        "value",
+        (snapshot) => {
+          let chores = [];
+          if (snapshot.exists()) {
+            snapshot.forEach((child) => {
+              const chore = child.val();
+              if (chore["assignees"][uid] && !chore.completed) {
+                const newChore = {
+                  id: child.ref.key,
+                  ...chore,
+                };
+                chores.push(newChore);
+              }
+            });
+          }
+          setChores(chores);
+        },
+        (err) => {
+          console.error(err);
+          setChores([]);
         }
-        setChores(chores);
-      },
-      (err) => {
-        console.error(err);
-        setChores([]);
-      }
-    );
+      )
+  );
 }
 
 export function disconnectFromTransactions(suiteID) {
@@ -117,6 +120,7 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
   }
   let chores = [];
   let transactions = [];
+  console.log("suiteID:", suiteID);
   return db
     .ref(`suites/${suiteID}/users`)
     .orderByChild("name")
@@ -150,22 +154,26 @@ export async function getSuitematesList(suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
-  let suitemates = []
-  await db.ref(`suites/${suiteID}/users`).orderByChild("name").on("value",
-  (snapshot) => {
-    if (snapshot.exists()) {
-      snapshot.forEach((child) => {
-        const suitemate = child.val();
-        suitemates.push(suitemate.uid)
-        //console.log(suitemate)
-      });
-    }
-  },
-    (err) => {
-      console.error(err);
-    }
-  );
-  return suitemates
+  let suitemates = [];
+  await db
+    .ref(`suites/${suiteID}/users`)
+    .orderByChild("name")
+    .on(
+      "value",
+      (snapshot) => {
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const suitemate = child.val();
+            suitemates.push(suitemate.uid);
+            //console.log(suitemate)
+          });
+        }
+      },
+      (err) => {
+        console.error(err);
+      }
+    );
+  return suitemates;
 }
 
 export async function getRules() {
@@ -188,15 +196,15 @@ export async function getRules() {
   });
 }
 
-  export async function updateRules(rules) {
-    let uid = auth.currentUser.uid;
-    let suiteIDRef = db.ref(`users/${uid}/suiteID`);
-    await suiteIDRef.once("value", (snapshot) => {
-      let suiteID = snapshot.val();
-      db.ref(`suites/${suiteID}/rules`).set(rules);
-    });
-    return true;
- }
+export async function updateRules(rules) {
+  let uid = auth.currentUser.uid;
+  let suiteIDRef = db.ref(`users/${uid}/suiteID`);
+  await suiteIDRef.once("value", (snapshot) => {
+    let suiteID = snapshot.val();
+    db.ref(`suites/${suiteID}/rules`).set(rules);
+  });
+  return true;
+}
 
 export function disconnectFromSuitemates(suiteID) {
   db.ref(`suites/${suiteID}/users`).off("value");
@@ -208,27 +216,28 @@ export function getUserTransactions(setTransactions, suiteID, uid = null) {
   }
 
   let transactions = [];
-  return db
-    .ref(`suites/${suiteID}/payments`)
-    .on(
-      "value",
-      (snapshot) => {
-        let transactions = [];
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            const transaction = child.val();
+  return db.ref(`suites/${suiteID}/payments`).on(
+    "value",
+    (snapshot) => {
+      let transactions = [];
+      if (snapshot.exists()) {
+        snapshot.forEach((child) => {
+          const transaction = child.val();
+          if (transaction.payer == uid || transaction.payees[uid]) {
             const newTransaction = {
               id: child.ref.key,
+              color: transaction.payer == uid ? "danger" : "secondary",
               ...transaction,
             };
             transactions.push(newTransaction);
-          });
-        }
-        setTransactions(transactions);
-      },
-      (err) => {
-        console.error(err);
-        setTransactions([]);
+          }
+        });
       }
-    );
+      setTransactions(transactions);
+    },
+    (err) => {
+      console.error(err);
+      setTransactions([]);
+    }
+  );
 }

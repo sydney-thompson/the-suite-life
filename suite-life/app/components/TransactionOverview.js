@@ -5,21 +5,30 @@ import AppText from "./AppText";
 
 export default function TransactionOverview({
   amount,
-  name,
+  color = "secondary",
+  details,
+  title,
   style = null,
   textStyle = null,
 }) {
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  });
   return (
     <View style={[styles.container, style]}>
       <AppText style={styles.title} numberOfLines={1}>
-        {name}
+        {title}
       </AppText>
       <View style={styles.icon}>
-        <AppText style={[styles.text, styles.money]}>
-          {amount}
+        <AppText style={[styles.text, styles.money, { color: colors[color] }]}>
+          {formatter.format(amount)}
         </AppText>
       </View>
-      <AppText style={styles.text}>{`details`}</AppText>
+      <AppText style={styles.detailsText} numberOfLines={2}>
+        {details}
+      </AppText>
     </View>
   );
 }
@@ -30,8 +39,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flex: 1,
     justifyContent: "space-evenly",
-    padding: 10,
-    width: 140,
+    padding: 5,
+    width: 150,
   },
   icon: {
     margin: 10,
@@ -57,6 +66,11 @@ const styles = StyleSheet.create({
   text: {
     color: colors.black,
     fontSize: 20,
-    alignSelf: "flex-end"
+    alignSelf: "flex-end",
+  },
+  detailsText: {
+    color: colors.secondary,
+    fontSize: 20,
+    alignSelf: "flex-end",
   },
 });
