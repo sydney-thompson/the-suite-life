@@ -127,7 +127,7 @@ export async function getUserChores(setChores, suiteID, uid = null) {
 }
 
 export function disconnectFromTransactions(suiteID) {
-  db.ref(`suites/${suiteID}/transactions`).off("value");
+  db.ref(`suites/${suiteID}/payments`).off("value");
 }
 
 export function getSuitemates(setSuitemates, suiteID, uid = null) {
