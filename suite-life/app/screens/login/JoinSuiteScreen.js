@@ -57,7 +57,7 @@ export default function JoinSuiteScreen({ route, navigation }) {
         }
       })
       .catch((err) => {
-        console.log("Registration Error:", err);
+        console.error("Registration Error:", err);
       });
   }
 
@@ -83,7 +83,7 @@ export default function JoinSuiteScreen({ route, navigation }) {
             initialValues={{ suiteID: "" }}
             onSubmit={(values) => {
               registerUser(values, setRegistered.setRegistered);
-              navigation.navigate(routes.RULES);
+              // navigation.navigate(routes.RULES);
             }}
             validationSchema={validationSchema}
           >

@@ -28,17 +28,14 @@ export default function ApartmentScreen({ navigation }) {
 
   useEffect(() => {
     getUserData().then((val) => {
-      console.log("val:", val);
       setUser(val);
     });
   }, [auth]);
 
   useEffect(() => {
     if (user) {
-      console.log("found user");
       getUserChores(setChores, user.suiteID, user.uid);
     } else {
-      console.log("no user");
       setChores([]);
     }
 
