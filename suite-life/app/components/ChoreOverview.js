@@ -4,12 +4,23 @@ import colors from "../config/colors";
 import AppText from "./AppText";
 
 export default function ChoreOverview({
-  assigneeName,
+  day,
+  details,
   frequency,
   name,
   style = null,
   textStyle = null,
 }) {
+  const frequencyAbbreviations = {
+    Monday: "M",
+    Tuesday: "T",
+    Wednesday: "W",
+    Thursday: "Th",
+    Friday: "F",
+    Saturday: "Sa",
+    Sunday: "Su",
+  };
+
   return (
     <View style={[styles.container, style]}>
       <AppText style={styles.title} numberOfLines={1}>
@@ -17,10 +28,14 @@ export default function ChoreOverview({
       </AppText>
       <View style={styles.icon}>
         <AppText style={[styles.text, styles.iconText]}>
-          {assigneeName[0]}
+          {frequencyAbbreviations[day]}
         </AppText>
       </View>
-      <AppText style={styles.text}>{`${frequency}`}</AppText>
+      {/* <AppText style={styles.text}>{`${frequency}`}</AppText> */}
+      <AppText
+        style={styles.detailsText}
+        numberOfLines={2}
+      >{`${details}`}</AppText>
     </View>
   );
 }
@@ -32,7 +47,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-evenly",
     padding: 10,
-    width: 140,
+    width: 150,
   },
   icon: {
     margin: 20,
@@ -57,5 +72,9 @@ const styles = StyleSheet.create({
   text: {
     color: colors.black,
     fontSize: 22,
+  },
+  detailsText: {
+    color: colors.secondary,
+    fontSize: 20,
   },
 });

@@ -1,5 +1,13 @@
 import React, { useEffect, componentDidMount } from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 
 import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
@@ -14,44 +22,41 @@ import routes from "../navigation/routes";
 export default function ViewRulesScreen({ route, navigation }) {
   const [text, setText] = React.useState("");
   const [editable, seteditable] = React.useState("");
-  console.log(route.params.rules)
-
-  
+  console.log(route.params.rules);
 
   return (
-    <RegistrationContext.Consumer>
-        {(setRegistered) => (
-            <Screen style={styles.screen}>
-                <View style={styles.titleContainer}>
-                  <TouchableWithoutFeedback onPress={() => updateRules(text).then(() => {
-                    Keyboard.dismiss()
-                  })}>
-                    <AppText style={styles.tagline}>House Rules</AppText>
-                  </TouchableWithoutFeedback>
-                </View>
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    defaultValue={route.params.rules}
-                    style={styles.input}
-                    editable={true}
-                    onChangeText={text => setText(text)}
-                    multiline={true}
-                  />
-                </View>
-                <View style={styles.buttonContainer}>
-                    <AppButton
-                    title="OK"
-                    textStyle={styles.buttonText}
-                    color="white"
-                    
-                    onPress={() => {
-                        navigation.navigate(routes.SUITE, {navigation})
-                    }}
-                    />
-                </View>
-            </Screen>
-        )}
-    </RegistrationContext.Consumer>
+    <Screen style={styles.screen}>
+      <View style={styles.titleContainer}>
+        <TouchableWithoutFeedback
+          onPress={() =>
+            updateRules(text).then(() => {
+              Keyboard.dismiss();
+            })
+          }
+        >
+          <AppText style={styles.tagline}>House Rules</AppText>
+        </TouchableWithoutFeedback>
+      </View>
+      <View style={styles.inputContainer}>
+        <TextInput
+          defaultValue={route.params.rules}
+          style={styles.input}
+          editable={true}
+          onChangeText={(text) => setText(text)}
+          multiline={true}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <AppButton
+          title="OK"
+          textStyle={styles.buttonText}
+          color="white"
+          onPress={() => {
+            navigation.navigate(routes.SUITE, { navigation });
+          }}
+        />
+      </View>
+    </Screen>
   );
 }
 

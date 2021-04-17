@@ -20,7 +20,12 @@ import colors from "../../config/colors";
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 
-import {TestChores, TestPayments, TestSuites, TestUsers} from "../../testing/unitTests";
+import {
+  TestChores,
+  TestPayments,
+  TestSuites,
+  TestUsers,
+} from "../../testing/unitTests";
 
 export default function AccountScreen({ navigation }) {
   const [name, setName] = useState("");
@@ -36,9 +41,14 @@ export default function AccountScreen({ navigation }) {
   async function runTests() {
     let chores_res = await TestChores();
     let payments_res = await TestPayments();
-    let suites_res =  await TestSuites();
+    let suites_res = await TestSuites();
     let users_res = await TestUsers();
-    return {"chores_res": chores_res, "payments_res": payments_res, "suites_res": suites_res, "users_res": users_res};
+    return {
+      chores_res: chores_res,
+      payments_res: payments_res,
+      suites_res: suites_res,
+      users_res: users_res,
+    };
   }
 
   return (
@@ -74,7 +84,7 @@ export default function AccountScreen({ navigation }) {
                     payments_res: res.payments_res,
                     suites_res: res.suites_res,
                     users_res: res.users_res,
-                  }); 
+                  });
                 });
               }}
             />
@@ -84,8 +94,7 @@ export default function AccountScreen({ navigation }) {
               style={styles.logout}
               title="Log Out"
               onPress={() => {
-                googleLogout();
-                setRegistered.setRegistered(false);
+                googleLogout(setRegistered.setRegistered);
               }}
             />
           </View>

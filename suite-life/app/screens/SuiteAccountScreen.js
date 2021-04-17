@@ -6,7 +6,6 @@ import AppButton from "../components/AppButton";
 import AppTitle from "../components/AppTitle";
 import colors from "../config/colors";
 import HorizontalSpaceSeparator from "../components/HorizontalSpaceSeparator";
-import navigation from "../navigation/RulesNavigator";
 import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import Suitemate from "../components/Suitemate";
@@ -70,7 +69,7 @@ export default function AccountScreen({ navigation }) {
           color="primary"
           onPress={() => {
             getRules().then((res) => {
-              navigation.navigate(routes.RULES, {rules: res});
+              navigation.navigate(routes.RULES, { rules: res });
             });
           }}
         />

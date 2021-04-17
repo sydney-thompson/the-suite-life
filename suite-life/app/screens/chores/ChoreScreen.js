@@ -5,7 +5,6 @@ import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
 import { auth, db } from "../../components/firebase/firebase";
 import * as choreFunctions from "../../components/firebase/chores";
-import * as suiteFunctions from "../../components/firebase/suites";
 
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
