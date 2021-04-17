@@ -74,22 +74,6 @@ export function disconnectFromChores(suiteID) {
   db.ref(`suites/${suiteID}/chores`).off("value");
 }
 
-export function switchSuiteID() {
-  db.ref(`suites/1111111`).on(
-    "value",
-    (snapshot) => {
-      values = snapshot.val();
-      console.log("values:", values);
-
-      db.ref(`suites/12345678`).set(values);
-    },
-    (err) => {
-      console.error(err);
-      setChores([]);
-    }
-  );
-}
-
 export async function getUserChores(setChores, suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;

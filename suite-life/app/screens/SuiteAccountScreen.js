@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { Alert, FlatList, StyleSheet, View } from "react-native";
 
 import AppText from "../components/AppText";
 import AppButton from "../components/AppButton";
@@ -65,6 +65,17 @@ export default function AccountScreen({ navigation }) {
       </View>
       <View style={styles.buttonContainer}>
         <AppButton
+          title="Invite New Suitemate"
+          color="primary"
+          onPress={() => {
+            getRules().then((res) => {
+              Alert.alert(`Suite Code: ${user.suiteID}`);
+            });
+          }}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <AppButton
           title="View Rules"
           color="primary"
           onPress={() => {
@@ -93,6 +104,7 @@ const styles = StyleSheet.create({
   },
   screen: {
     alignItems: "center",
+    paddingBottom: 20,
   },
   headerContainer: {
     paddingTop: 25,
@@ -108,7 +120,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: "center",
-    marginBottom: 20,
     width: "95%",
   },
 });
