@@ -32,7 +32,7 @@ export async function createUser(uid, name, pronouns, suiteID) {
   let emptyBalances = {};
   suitemateList.forEach((suitemate) => {
     // TO DO: make this the actual suitemate field as the key
-    emptyBalances[suitemate] = 0;
+    emptyBalances[suitemate] = 0
   });
   if (suitemateList == []) {
     emptyBalances = "None";
