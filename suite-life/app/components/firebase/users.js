@@ -1,36 +1,41 @@
-import { auth, db, suites } from "./firebase";
+import { auth, db } from "./firebase";
+
+export async function getSuitematesList(suiteID, uid = null) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
+  let suitemates = [];
+  db.ref(`suites/${suiteID}/users`).on(
+    "value",
+    (snapshot) => {
+      if (snapshot.exists()) {
+        snapshot.forEach((child) => {
+          const suitemate = child.val();
+          suitemates.push(suitemate.uid);
+        });
+      }
+    },
+    (err) => {
+      console.error(err);
+    }
+  );
+  return suitemates;
+}
 
 // Creates a new user
 export async function createUser(uid, name, pronouns, suiteID) {
   const userExists = await checkUserExists(uid);
   if (userExists) throw new Error("User already exists");
-  
-  // get list of suitemates 
-  var suitemateList = suites.getSuitematesList(suiteID, uid)
-  var balancesJSON = []
-  await suitemateList.forEach((suitemate) => { 
-    // TO DO: make this the actual suitemate field as the key 
-    balancesJSON.push({suitemate : 0})
 
-    // get balances field of the suitemate
-    var balances = []
-    db.ref(`users/${suitemate}/balances`).once('value').then(function(snapshot) {
-      balances = snapshot.val(); 
-    });
-    // if balances do not exist, add balances field of the suitemate 
-    if (balances == "None"){
-      // TO DO: make this the actual suitemate field as the key 
-      db.ref(`users/${suitemate}/balances`).set([{uid : 0}])
-    }
-    else{
-    // set balances to balances.push(uid : 0)
-    // TO DO: make this the actual suitemate field as the key 
-      balances.push({uid : 0})
-      db.ref(`users/${suitemate}/balances`).set(balances)
-    }
+  // get list of suitemates
+  const suitemateList = await getSuitematesList(suiteID, uid);
+  let emptyBalances = {};
+  suitemateList.forEach((suitemate) => {
+    // TO DO: make this the actual suitemate field as the key
+    emptyBalances[suitemate] = 0;
   });
-  if(suitemateList == []){
-    balancesJSON = "None"
+  if (suitemateList == []) {
+    emptyBalances = "None";
   }
 
   return db.ref(`users/${uid}`).set({
@@ -39,14 +44,14 @@ export async function createUser(uid, name, pronouns, suiteID) {
     name: name,
     pronouns: pronouns,
     suiteID: suiteID,
-    balances: balancesJSON,
+    balances: emptyBalances,
   });
 }
 
 // Delete a user
-export function deleteUser (toDeleteID){
-  let toDelete = db.ref(`/users/${toDeleteID}`)
-  toDelete.remove()
+export function deleteUser(toDeleteID) {
+  let toDelete = db.ref(`/users/${toDeleteID}`);
+  toDelete.remove();
 }
 
 // Checks if the uid is in the users database
@@ -54,7 +59,11 @@ export function checkUserExists(uid = null) {
   return new Promise((resolve, reject) => {
     try {
       if (!uid) {
-        uid = auth.currentUser.uid;
+        if (!auth.currentUser.uid) {
+          reject("no user id");
+        } else {
+          uid = auth.currentUser.uid;
+        }
       }
       const ref = db.ref(`users/${uid}`);
       ref.once(
@@ -63,7 +72,7 @@ export function checkUserExists(uid = null) {
           resolve(!(snapshot.val() === null));
         },
         (error) => {
-          console.log("USER EXISTS ERROR: ", error);
+          console.error("USER EXISTS ERROR: ", error);
           reject(error);
         }
       );
@@ -105,7 +114,7 @@ export function getUserData(uid = null) {
   }
   return new Promise((resolve, reject) => {
     if (!auth.currentUser) {
-      console.log("auth has no user");
+      console.error("auth has no user");
       reject();
     }
     if (!uid) {
