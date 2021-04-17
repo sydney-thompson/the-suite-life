@@ -23,6 +23,10 @@ import routes from "../../navigation/routes";
 import Screen from "../../components/Screen";
 import RegistrationContext from "../../components/auth/RegistrationContext";
 import { checkUserExists } from "../../components/firebase/users";
+import {
+  createTestSuite,
+  switchSuiteID,
+} from "../../components/firebase/suites";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
@@ -32,7 +36,7 @@ const validationSchema = Yup.object().shape({
 export default function RegisterScreen({ navigation }) {
   return (
     <RegistrationContext.Consumer>
-      {(setRegistered) => (
+      {(context) => (
         <Screen style={styles.container}>
           <View style={styles.headerContainer}>
             <View style={styles.deleteIconContainer}>
@@ -51,18 +55,18 @@ export default function RegisterScreen({ navigation }) {
               <TouchableWithoutFeedback
                 onPress={() => {
                   const failureCallback = () => {};
-                  googleLogin().then(() => {
-                    checkUserExists()
+                  googleLogin().then((res) => {
+                    checkUserExists(res.user.uid)
                       .then((res) => {
                         if (res) {
-                          setRegistered.setRegistered(true);
+                          context.setRegistered(true);
                         } else {
                           googleLogout();
                           Alert.alert("This account does not exist.");
                         }
                       })
                       .catch((err) => {
-                        console.log(err);
+                        console.error(err);
                       });
                   }, failureCallback);
                 }}
