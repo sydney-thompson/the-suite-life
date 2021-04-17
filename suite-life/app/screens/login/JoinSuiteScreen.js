@@ -50,14 +50,18 @@ export default function JoinSuiteScreen({ route, navigation }) {
             values.suiteID
           );
           addUserToSuite(values.suiteID, uid);
+          return true;
         } else if (userExists) {
           Alert.alert("An account with these credentials already exists.");
+          return false;
         } else if (!suiteExists) {
           Alert.alert("Invalid suite code - suite does not exist.");
+          return false;
         }
       })
       .catch((err) => {
         console.error("Registration Error:", err);
+        return false;
       });
   }
 
@@ -82,8 +86,13 @@ export default function JoinSuiteScreen({ route, navigation }) {
           <Form
             initialValues={{ suiteID: "" }}
             onSubmit={(values) => {
-              registerUser(values, setRegistered.setRegistered);
-              // navigation.navigate(routes.RULES);
+              const registered = registerUser(
+                values,
+                setRegistered.setRegistered
+              );
+              if (registered) {
+                navigation.navigate(routes.RULES);
+              }
             }}
             validationSchema={validationSchema}
           >
