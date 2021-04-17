@@ -11,7 +11,9 @@ export async function getSuitematesList(suiteID, uid = null) {
       if (snapshot.exists()) {
         snapshot.forEach((child) => {
           const suitemate = child.val();
-          suitemates.push(suitemate.uid);
+          if (suitemate.uid != uid) {
+            suitemates.push(suitemate.uid);
+          }
         });
       }
     },
@@ -47,6 +49,26 @@ export async function createUser(uid, name, pronouns, suiteID) {
     balances: emptyBalances,
   });
 }
+
+// ONE-TIME USE initialize balance for all test users to zero
+/* export async function temporary_InitBalances() {
+
+  const testsuite_ids = ["3W6ZDlPdDhWmPxvPGVBSa9U3A4l2", "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2",
+  "IdIiDUvCu9bnb5QkdwmThJoAi863", "SbyVXqeCisX8IvEnZosxFHytqw53",
+  "b3q3PcKIfdgUapdHbkCLgsUtWQ83", "mJNOAnpK4ZTF5v9MeLSFa5nqCrH3",
+  "oiZtBtU47TW3C6UA7tFq5KV5UW12", "yjGDsdtY9jNjjpyMaEWHFFzhQa43",
+  "z0Ax8ZANZdSZNFdr3o7TeDdDAal2"];
+
+  testsuite_ids.forEach((suitemate) => {
+    let emptyBalances = {};
+    testsuite_ids.forEach((sub_suitemate) => {
+      if (sub_suitemate != suitemate) {
+        emptyBalances[sub_suitemate] = 0
+      }
+    });
+    db.ref(`users/${suitemate}/balances`).set(emptyBalances);
+  });
+}  */
 
 // Delete a user
 export function deleteUser(toDeleteID) {

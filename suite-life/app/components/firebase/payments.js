@@ -56,22 +56,9 @@ export async function update_balance(
   ID_of_sub_person,
   new_amount
 ) {
-  var balances = null;
   await db
-    .ref(`users/${ID_of_main_person}/balances/`)
-    .once("value")
-    .then(function (snapshot) {
-      balances = snapshot.val();
-      balances.forEach((balance_info) => {
-        id = balance_info.userid;
-        if (id == ID_of_sub_person) {
-          db.ref(`users/${ID_of_main_person}/balances/${balance_info}`).set({
-            userid: id,
-            amount: new_amount,
-          });
-        }
-      });
-    });
+    .ref(`users/${ID_of_main_person}/balances/${ID_of_sub_person}`)
+    .set(new_amount);
 }
 
 export async function add_transaction_balance(
@@ -100,8 +87,10 @@ export async function addNewPayment(info) {
     title: info.title,
   });
   // loop through payees
+  const num_payees = info.payees.keys().length;
+  const payee_amount = floor(info.amount / (num_payees + 1));
   //  info.payees.forEach(payee => {
-  //    add_transaction_balance (info.payer, payee, info.amount)
+  //    add_transaction_balance (info.payer, payee, payee_amount)
   //  });
 }
 
