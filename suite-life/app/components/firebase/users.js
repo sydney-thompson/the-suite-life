@@ -11,7 +11,9 @@ export async function getSuitematesList(suiteID, uid = null) {
       if (snapshot.exists()) {
         snapshot.forEach((child) => {
           const suitemate = child.val();
-          suitemates.push(suitemate.uid);
+          if (suitemate.uid != uid) {
+            suitemates.push(suitemate.uid);
+          }
         });
       }
     },
