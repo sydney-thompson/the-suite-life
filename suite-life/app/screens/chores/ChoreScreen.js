@@ -14,20 +14,20 @@ export default function ChoreScreen({ navigation }) {
   const [choresJSON, setChoresJSON] = useState([])
   //var my_suiteID = choreFunctions.get_suiteID();
 
-  // navigate to add screen 
+  // navigate to add screen
   const navigate_to_add = () => {
     setChoreRefresh("False")
     navigation.navigate(routes.CHORE_ADD, {navigation})
   }
 
-  // navigate to edit screen 
+  // navigate to edit screen
   const navigate_to_edit = (firebaseID) => {
     setChoreRefresh("False")
     navigation.navigate(routes.CHORE_EDIT, {navigation, firebaseID})
   }
 
   const renderChores = async() => {
-   // var suiteID = get_suiteID() 
+   // var suiteID = get_suiteID()
     var suiteID = await choreFunctions.get_suiteID()
     await renderChores_helper(suiteID)
   }
@@ -36,10 +36,10 @@ export default function ChoreScreen({ navigation }) {
     var choreJSON = [];
     await db.ref(`/suites/${suiteID}/chores`).once('value', snapshot => {
        let data = snapshot.val()
-       if(data != "None"){ 
+       if(data != "None"){
           let keys = Object.keys(data);
            // loop through firebase data and add data to choreJSON for use in rendering elements
-           keys.forEach((key) => { 
+           keys.forEach((key) => {
              choreJSON.push({name: data[key].name, firebaseID: key, frequency: data[key].frequency})
            });
            var holder = choresJSON
@@ -70,17 +70,17 @@ export default function ChoreScreen({ navigation }) {
     return unsubscribe;
   }, [navigation]);
 
-  return ( 
+  return (
     <Screen style={styles.screen}>
       <AppText style={defaultStyles.title}>Chores</AppText>
       <ScrollView
         style={{width: '100%'}}>
          {choresJSON.map((item)=>(
-              <AppButton 
+              <AppButton
                 key= {item.firebaseID}
-                color="tertiary" 
+                color="tertiary"
                 title={ item.name + "\n Frequency: " + item.frequency }
-                onPress={() => navigate_to_edit(item.firebaseID)}> 
+                onPress={() => navigate_to_edit(item.firebaseID)}>
               </AppButton>
               )
          )}

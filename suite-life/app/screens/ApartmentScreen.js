@@ -81,9 +81,10 @@ export default function ApartmentScreen({ navigation }) {
             keyExtractor={(chore) => chore.id.toString()}
             renderItem={({ item }) => (
               <ChoreOverview
-                assigneeName={item.assignee_name}
+                day={item.day}
+                details={item.details}
                 frequency={item.frequency}
-                name={item.name}
+                name={item.title}
               />
             )}
             ItemSeparatorComponent={VerticalSpaceSeparator}
@@ -93,20 +94,22 @@ export default function ApartmentScreen({ navigation }) {
 
       <View style={styles.cardContainer}>
         <AppTitle style={styles.cardText}>{`Transactions`}</AppTitle>
-          {<FlatList
+        {
+          <FlatList
             data={transactions}
             horizontal={true}
             keyExtractor={(transaction) => transaction.id}
             renderItem={({ item }) => (
               <TransactionOverview
-                name={item.name}
                 amount={item.amount}
+                color={item.color}
+                details={item.details}
+                title={item.title}
               />
             )}
             ItemSeparatorComponent={VerticalSpaceSeparator}
           />
-         }
-
+        }
       </View>
     </Screen>
   );
