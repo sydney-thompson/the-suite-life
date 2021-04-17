@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Alert,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { TextInput } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
@@ -12,6 +19,7 @@ import {
   getSuitemates,
 } from "../../components/firebase/suites";
 import { getUserData } from "../../components/firebase/users";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import defaultStyles from "../../config/styles";
 
@@ -19,21 +27,38 @@ import {
   AppForm as Form,
   AppFormField as FormField,
   AppFormFieldCheckbox as Checkbox,
+  AppFormPicker as FormPicker,
+  AppFormRadioButton as RadioButton,
   SubmitButton,
 } from "../../components/forms";
+import colors from "../../config/colors";
+import AppTitle from "../../components/AppTitle";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
-  frequency: Yup.string().required().label("Frequency"),
   details: Yup.string().label("Details"),
+  // day: Yup.string().required().label("Day of Week"),
 });
+
+const daysOfWeek = [
+  { id: 1, label: "Monday" },
+  { id: 2, label: "Tuesday" },
+  { id: 3, label: "Wednesday" },
+  { id: 4, label: "Thursday" },
+  { id: 5, label: "Friday" },
+  { id: 6, label: "Saturday" },
+  { id: 7, label: "Sunday" },
+];
 
 export default function ChoreEditScreen(choreInfo) {
   const [user, setUser] = useState(null);
   const [suitemates, setSuitemates] = useState([]);
   const [initialhousemates, setIHmates] = useState({});
   const [chore, setChore] = useState(choreInfo.route.params.chore);
-  console.log("chore:", chore);
+
+  const initialDay = daysOfWeek.filter((item) => {
+    return item.label === chore.day;
+  })[0];
 
   // navigates back to main screen
   const returnHome = () => {
@@ -43,13 +68,13 @@ export default function ChoreEditScreen(choreInfo) {
 
   // deletes chore from firebase then returns to main screen
   const deleteChore = () => {
-    choreFunctions.deleteChore(chore.firebaseID);
+    choreFunctions.deleteChore(chore.id);
     returnHome();
   };
 
   // sends data to firebase and clears the textbox values
   const submitAndClear = async (values) => {
-    await choreFunctions.updateChore(values, choreInfo.route.params.firebaseID);
+    await choreFunctions.updateChore(values, chore.id);
     setChoreRefresher("False");
     returnHome();
   };
@@ -79,15 +104,38 @@ export default function ChoreEditScreen(choreInfo) {
 
   return (
     <Screen style={styles.screen}>
-      <AppText style={defaultStyles.title}>Edit Chore</AppText>
+      <View style={styles.headerContainer}>
+        <View style={styles.deleteIconContainer}>
+          <TouchableWithoutFeedback onPress={returnHome}>
+            <MaterialCommunityIcons
+              name="close"
+              color={colors.medium}
+              size={30}
+            />
+          </TouchableWithoutFeedback>
+        </View>
+        <AppTitle style={defaultStyles.title}>Edit Chore</AppTitle>
+        <View style={styles.saveContainer}>
+          <TouchableWithoutFeedback onPress={deleteChore}>
+            <MaterialCommunityIcons
+              name="delete"
+              color={colors.danger}
+              size={30}
+            />
+          </TouchableWithoutFeedback>
+        </View>
+      </View>
       <Form
         initialValues={{
+          details: chore.details,
           name: chore.name,
-          frequency: chore.frequency,
-          // assignees: initialhousemates,
-          details: choreDetails,
+          assignees: chore.assignees,
+          recurring: chore.recurring,
+          day: initialDay,
         }}
-        onSubmit={(values) => submitAndClear(values)}
+        onSubmit={(values) => {
+          console.log("values:", values);
+        }}
         validationSchema={validationSchema}
       >
         <ScrollView style={{ width: "100%" }}>
@@ -97,15 +145,7 @@ export default function ChoreEditScreen(choreInfo) {
             autoCapitalize="none"
             autoCorrect={false}
             name="name"
-            placeholder="Name of the chore"
-          />
-          <FormField
-            display="AppTextInputLabel"
-            label="Frequency"
-            autoCapitalize="none"
-            autoCorrect={false}
-            name="frequency"
-            placeholder="One-time or weekly?"
+            placeholder="Chore Name"
           />
           <FormField
             display="AppTextInputLabel"
@@ -114,44 +154,69 @@ export default function ChoreEditScreen(choreInfo) {
             autoCorrect={false}
             name="details"
             placeholder="Additional details"
+            multiline
           />
-          <AppText style={[{ color: defaultStyles.colors.black }]}>
-            Select housemates assigned:
+          <FormPicker
+            name="day"
+            label="Day of Week"
+            items={daysOfWeek}
+            placeholder="Day of Week"
+          />
+          <RadioButton label="Repeat Weekly" name="recurring" />
+          <AppText style={styles.suitemates}>
+            Select suitemates assigned:
           </AppText>
           <View>
-            {suitemates.map((mate) => {
+            {suitemates.map((suitemate) => {
+              console.log("len(suitemates):", suitemates.length);
               return (
                 <Checkbox
                   name="assignees"
-                  specificName={mate.id}
-                  key={mate.id}
+                  suitemate={suitemate.id}
+                  key={suitemate.id}
                   checkedIcon="check-box"
                   iconType="material"
                   uncheckedIcon="check-box-outline-blank"
-                  title={mate.name}
+                  title={suitemate.name}
                 />
               );
             })}
           </View>
         </ScrollView>
-        <SubmitButton title="Save Chore" />
+        <SubmitButton title="Save" />
       </Form>
-      <AppButton
-        title="Cancel"
-        color="primary"
-        onPress={returnHome}
-      ></AppButton>
-      <AppButton
-        title="Delete Chore"
-        color="secondary"
-        onPress={deleteChore}
-      ></AppButton>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
+  deleteIconContainer: {
+    position: "absolute",
+    left: 10,
+  },
+  save: {
+    color: colors.primary,
+    justifyContent: "flex-end",
+  },
+  saveContainer: {
+    position: "absolute",
+    right: 10,
+  },
   screen: {
     alignItems: "center",
+    backgroundColor: colors.white,
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  suitemates: {
+    margin: 10,
+    color: defaultStyles.colors.black,
   },
 });

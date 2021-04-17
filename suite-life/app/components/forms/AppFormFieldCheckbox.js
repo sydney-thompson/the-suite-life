@@ -1,25 +1,39 @@
 import React from "react";
+import { StyleSheet, View } from "react-native";
 import { useFormikContext } from "formik";
-import ErrorMessage from "./ErrorMessage";
 import { CheckBox } from "react-native-elements";
 
-export default function AppFormFieldCheckbox({ name, specificName, ...otherProps }) {
+import ErrorMessage from "./ErrorMessage";
+import defaultStyles from "../../config/styles";
+
+export default function AppFormFieldCheckbox({
+  name,
+  suitemate,
+  ...otherProps
+}) {
   const { setFieldValue, values } = useFormikContext();
 
   const updateValue = () => {
-    const specvalues = values[name];
-    const specCurrent = values[name][specificName];
-    specvalues[specificName] = !specCurrent;
-    setFieldValue(name, specvalues);
-  }
+    let currentValues = values[name];
+    currentValues[suitemate] = !values[name][suitemate];
+    setFieldValue(name, currentValues);
+  };
 
   return (
     <>
       <CheckBox
-        checked={values[name][specificName]}
+        checked={values[name][suitemate]}
         onPress={() => updateValue()}
+        textStyle={[defaultStyles.text, styles.text]}
         {...otherProps}
       />
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  text: {
+    color: defaultStyles.colors.black,
+    fontWeight: "normal",
+  },
+});

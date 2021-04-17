@@ -74,39 +74,6 @@ export function disconnectFromChores(suiteID) {
   db.ref(`suites/${suiteID}/chores`).off("value");
 }
 
-export async function getSuiteChores(setChores, suiteID, uid = null) {
-  let chores = [];
-  return (
-    db
-      .ref(`suites/${suiteID}/chores`)
-      // .orderByChild("assignee")
-      // .equalTo(uid)
-      .on(
-        "value",
-        (snapshot) => {
-          let chores = [];
-          if (snapshot.exists()) {
-            snapshot.forEach((child) => {
-              const chore = child.val();
-              if (!chore.completed) {
-                const newChore = {
-                  id: child.ref.key,
-                  ...chore,
-                };
-                chores.push(newChore);
-              }
-            });
-          }
-          setChores(chores);
-        },
-        (err) => {
-          console.error(err);
-          setChores([]);
-        }
-      )
-  );
-}
-
 export async function getUserChores(setChores, suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
