@@ -10,7 +10,10 @@ export async function createUser(uid, name, pronouns, suiteID) {
   var balancesJSON = []
   await suitemateList.forEach((suitemate) => { 
     // TO DO: make this the actual suitemate field as the key 
-    balancesJSON.push({suitemate : 0})
+    balancesJSON.push({
+      userid: suitemate,
+      balance: 0
+    });
 
     // get balances field of the suitemate
     var balances = []
@@ -20,12 +23,18 @@ export async function createUser(uid, name, pronouns, suiteID) {
     // if balances do not exist, add balances field of the suitemate 
     if (balances == "None"){
       // TO DO: make this the actual suitemate field as the key 
-      db.ref(`users/${suitemate}/balances`).set([{uid : 0}])
+      db.ref(`users/${suitemate}/balances`).set([{
+        userid: uid,
+        balance: 0
+      }]);
     }
     else{
     // set balances to balances.push(uid : 0)
     // TO DO: make this the actual suitemate field as the key 
-      balances.push({uid : 0})
+      balances.push({
+        userid: uid,
+        balance: 0
+      });
       db.ref(`users/${suitemate}/balances`).set(balances)
     }
   });

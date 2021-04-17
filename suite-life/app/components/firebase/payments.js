@@ -21,23 +21,42 @@ export async function loadPaymentData (firebaseID){
     return returnData;
   }
 
-// ID_of_main_person: 
-//     balances: 
-//         ID_of_sub_person: balance
+  // ID_of_main_person: 
+  //     balances: 
+  //         userid: ID_of_sub_person
+  //         balance: balance 
 export async function get_balance (ID_of_main_person, ID_of_sub_person){
-  var curr_balance = 0
-  // update payer information
-    await db.ref(`users/${ID_of_main_person}/balances/${ID_of_sub_person}`).once('value').then(function(snapshot) {
-      curr_balance = snapshot.val(); 
+    var balances = null;
+    var balance_data = null;
+    await db.ref(`users/${ID_of_main_person}/balances/`).once('value').then(function(snapshot) {
+      balances = snapshot.val();
+      balances.forEach(balance_info => {
+        id = balance_info.userid;
+        if (id == ID_of_sub_person) {
+          balance_data = {'userid': id, 'balance': balance_info.balance};
+        }
+      });
     });
-    return curr_balance
+    return balance_data;
   }
 
   // ID_of_main_person: 
   //     balances: 
-  //         ID_of_sub_person: balance
+  //         userid: ID_of_sub_person
+  //         balance: balance
   export async function update_balance (ID_of_main_person, ID_of_sub_person, new_amount){
-    await db.ref(`users/${ID_of_main_person}/balances/${ID_of_sub_person}`).set(new_amount)
+    var balances = null;
+    await db.ref(`users/${ID_of_main_person}/balances/`).once('value').then(function(snapshot) {
+      balances = snapshot.val();
+      balances.forEach(balance_info => {
+        id = balance_info.userid;
+        if (id == ID_of_sub_person) {
+          await db.ref(`users/${ID_of_main_person}/balances/${balance_info}`).set({
+            userid: id, 
+            amount: new_amount});
+        }
+      });
+    });
     }
 
   export async function add_transaction_balance (payer_ID, payee_ID, payment_amount){

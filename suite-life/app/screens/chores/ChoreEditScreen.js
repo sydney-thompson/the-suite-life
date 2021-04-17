@@ -32,14 +32,43 @@ export default function ChoreEditScreen(choreInfo) {
   const [user, setUser] = useState(null);
   const [suitemates, setSuitemates] = useState([]);
   const [initialhousemates, setIHmates] = useState({});
+<<<<<<< HEAD
   const [chore, setChore] = useState(choreInfo.route.params.chore);
   console.log("chore:", chore);
+=======
+  const [choreCompleted, setChoreCompleted] = useState('')
+  const [choreRefresher, setChoreRefresher] = useState('')
+>>>>>>> d53f01bd0f0d1fdd5bb26e5259a05887c4088143
+
+  const [choreInitialValues, setChoreInitialValues] = useState({})
 
   // navigates back to main screen
   const returnHome = () => {
     const navigator = choreInfo.route.params.navigation;
+<<<<<<< HEAD
     navigator.goBack();
   };
+=======
+    navigator.goBack()
+  }
+
+  // gets chore data from firebase and populates text fields with it 
+   const loadChoreData = async () => {
+      if(choreRefresher != "True"){
+        await setChoreRefresher("True")
+        const choreData = await choreFunctions.loadChoreData(choreInfo.route.params.firebaseID)
+        await setChoreCompleted(choreData.completed)
+        await setChoreInitialValues({name: choreData.name, 
+          frequency: choreData.frequency, 
+          assignees: choreData.assignees, 
+          details: choreData.details})
+      }
+  }
+  loadChoreData()
+
+  //const housemates = [{id: 'id1', name: 'Name 1'}, {id: 'id2', name: 'Name 2'}];    // placeholders for reading in the housemates of that suite
+  //const initialhousemates = {'id1': false, 'id2': false};
+>>>>>>> d53f01bd0f0d1fdd5bb26e5259a05887c4088143
 
   // deletes chore from firebase then returns to main screen
   const deleteChore = () => {
@@ -84,12 +113,17 @@ export default function ChoreEditScreen(choreInfo) {
     <Screen style={styles.screen}>
       <AppText style={defaultStyles.title}>Edit Chore</AppText>
       <Form
+<<<<<<< HEAD
         initialValues={{
           name: choreName,
           frequency: choreFrequency,
           assignees: initialhousemates,
           details: choreDetails,
         }}
+=======
+        enableReinitialize={true}
+        initialValues={choreInitialValues}
+>>>>>>> d53f01bd0f0d1fdd5bb26e5259a05887c4088143
         onSubmit={(values) => submitAndClear(values)}
         validationSchema={validationSchema}
       >
