@@ -62,7 +62,7 @@ export async function addUserToSuite(suiteID, uid) {
         uid: uid,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.error(err));
 }
 
 export function deleteSuite(toDeleteID) {
@@ -72,6 +72,22 @@ export function deleteSuite(toDeleteID) {
 
 export function disconnectFromChores(suiteID) {
   db.ref(`suites/${suiteID}/chores`).off("value");
+}
+
+export function switchSuiteID() {
+  db.ref(`suites/1111111`).on(
+    "value",
+    (snapshot) => {
+      values = snapshot.val();
+      console.log("values:", values);
+
+      db.ref(`suites/12345678`).set(values);
+    },
+    (err) => {
+      console.error(err);
+      setChores([]);
+    }
+  );
 }
 
 export async function getUserChores(setChores, suiteID, uid = null) {
@@ -120,7 +136,6 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
   }
   let chores = [];
   let transactions = [];
-  console.log("suiteID:", suiteID);
   return db
     .ref(`suites/${suiteID}/users`)
     .orderByChild("name")
@@ -148,32 +163,6 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
         setSuitemates([]);
       }
     );
-}
-
-export async function getSuitematesList(suiteID, uid = null) {
-  if (!uid) {
-    uid = auth.currentUser.uid;
-  }
-  let suitemates = [];
-  await db
-    .ref(`suites/${suiteID}/users`)
-    .orderByChild("name")
-    .on(
-      "value",
-      (snapshot) => {
-        if (snapshot.exists()) {
-          snapshot.forEach((child) => {
-            const suitemate = child.val();
-            suitemates.push(suitemate.uid);
-            //console.log(suitemate)
-          });
-        }
-      },
-      (err) => {
-        console.error(err);
-      }
-    );
-  return suitemates;
 }
 
 export async function getRules() {
@@ -240,4 +229,165 @@ export function getUserTransactions(setTransactions, suiteID, uid = null) {
       setTransactions([]);
     }
   );
+}
+
+export function createTestSuite() {
+  const values = {
+    chores: {
+      "-MVDhXxMKjp4Zgmx4_DT": {
+        assignees: {
+          "3W6ZDlPdDhWmPxvPGVBSa9U3A4l2": false,
+          "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2": false,
+          IdIiDUvCu9bnb5QkdwmThJoAi863: true,
+          SbyVXqeCisX8IvEnZosxFHytqw53: false,
+          b3q3PcKIfdgUapdHbkCLgsUtWQ83: false,
+          mJNOAnpK4ZTF5v9MeLSFa5nqCrH3: false,
+          oiZtBtU47TW3C6UA7tFq5KV5UW12: true,
+          yjGDsdtY9jNjjpyMaEWHFFzhQa43: true,
+        },
+        completed: false,
+        day: "Tuesday",
+        details: "do that laundry!",
+        frequency: "once",
+        title: "Laundry",
+      },
+      "-MVDhdgzPAbOSfwDlSwc": {
+        assignees: {
+          "3W6ZDlPdDhWmPxvPGVBSa9U3A4l2": false,
+          "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2": false,
+          IdIiDUvCu9bnb5QkdwmThJoAi863: false,
+          SbyVXqeCisX8IvEnZosxFHytqw53: false,
+          b3q3PcKIfdgUapdHbkCLgsUtWQ83: false,
+          mJNOAnpK4ZTF5v9MeLSFa5nqCrH3: false,
+          oiZtBtU47TW3C6UA7tFq5KV5UW12: true,
+          yjGDsdtY9jNjjpyMaEWHFFzhQa43: true,
+        },
+        completed: false,
+        day: "Sunday",
+        details: "they moldy",
+        frequency: "weekly",
+        title: "Dishes",
+      },
+      "-MXT4ccMMN8ShLVzW-xB": {
+        assignees: {
+          "3W6ZDlPdDhWmPxvPGVBSa9U3A4l2": false,
+          "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2": false,
+          IdIiDUvCu9bnb5QkdwmThJoAi863: true,
+          SbyVXqeCisX8IvEnZosxFHytqw53: false,
+          b3q3PcKIfdgUapdHbkCLgsUtWQ83: false,
+          mJNOAnpK4ZTF5v9MeLSFa5nqCrH3: false,
+          oiZtBtU47TW3C6UA7tFq5KV5UW12: true,
+          yjGDsdtY9jNjjpyMaEWHFFzhQa43: false,
+        },
+        completed: false,
+        day: "Saturday",
+        details: "they dusty",
+        frequency: "weekly",
+        title: "Vaccuum",
+      },
+    },
+    id: 12345678,
+    name: "Test Suite",
+    payments: {
+      "-MXOKMzicMEWNJebAzFy": {
+        amount: 100.01,
+        completed: false,
+        details: "Some payment details",
+        payees: {
+          "3W6ZDlPdDhWmPxvPGVBSa9U3A4l2": false,
+          "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2": true,
+          IdIiDUvCu9bnb5QkdwmThJoAi863: false,
+          SbyVXqeCisX8IvEnZosxFHytqw53: false,
+          b3q3PcKIfdgUapdHbkCLgsUtWQ83: false,
+          mJNOAnpK4ZTF5v9MeLSFa5nqCrH3: false,
+          oiZtBtU47TW3C6UA7tFq5KV5UW12: false,
+          yjGDsdtY9jNjjpyMaEWHFFzhQa43: false,
+        },
+        payer: "z0Ax8ZANZdSZNFdr3o7TeDdDAal2",
+        title: "so many groceries",
+      },
+      "-MXPC4kLU4IKZhB0OCg0": {
+        amount: 350.52,
+        completed: false,
+        details: "april rent details here is some more details",
+        payees: {
+          "3W6ZDlPdDhWmPxvPGVBSa9U3A4l2": true,
+          "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2": false,
+          IdIiDUvCu9bnb5QkdwmThJoAi863: true,
+          SbyVXqeCisX8IvEnZosxFHytqw53: false,
+          b3q3PcKIfdgUapdHbkCLgsUtWQ83: false,
+          mJNOAnpK4ZTF5v9MeLSFa5nqCrH3: false,
+          oiZtBtU47TW3C6UA7tFq5KV5UW12: false,
+          yjGDsdtY9jNjjpyMaEWHFFzhQa43: false,
+        },
+        payer: "IdIiDUvCu9bnb5QkdwmThJoAi863",
+        title: "rent April",
+      },
+      "-MXTH1vRGc_bIWQRYBgr": {
+        amount: 150,
+        completed: false,
+        details: "March rent details",
+        payees: {
+          "3W6ZDlPdDhWmPxvPGVBSa9U3A4l2": true,
+          "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2": true,
+          IdIiDUvCu9bnb5QkdwmThJoAi863: true,
+          b3q3PcKIfdgUapdHbkCLgsUtWQ83: true,
+          mJNOAnpK4ZTF5v9MeLSFa5nqCrH3: false,
+          oiZtBtU47TW3C6UA7tFq5KV5UW12: false,
+          yjGDsdtY9jNjjpyMaEWHFFzhQa43: false,
+          z0Ax8ZANZdSZNFdr3o7TeDdDAal2: false,
+        },
+        payer: "SbyVXqeCisX8IvEnZosxFHytqw53",
+        title: "rent March",
+      },
+      "-MXTHCMyhxQJ2O2PtGse": {
+        amount: 57,
+        completed: false,
+        details: "it was a delicious dinner",
+        payees: {
+          "3W6ZDlPdDhWmPxvPGVBSa9U3A4l2": true,
+          "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2": true,
+          IdIiDUvCu9bnb5QkdwmThJoAi863: true,
+          SbyVXqeCisX8IvEnZosxFHytqw53: false,
+          b3q3PcKIfdgUapdHbkCLgsUtWQ83: false,
+          mJNOAnpK4ZTF5v9MeLSFa5nqCrH3: false,
+          yjGDsdtY9jNjjpyMaEWHFFzhQa43: false,
+          z0Ax8ZANZdSZNFdr3o7TeDdDAal2: false,
+        },
+        payer: "oiZtBtU47TW3C6UA7tFq5KV5UW12",
+        title: "dinner Friday",
+      },
+    },
+    rules: "Rule 1\nRule2\nRule3",
+    users: {
+      111: {
+        uid: "3W6ZDlPdDhWmPxvPGVBSa9U3A4l2",
+      },
+      112: {
+        uid: "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2",
+      },
+      113: {
+        uid: "IdIiDUvCu9bnb5QkdwmThJoAi863",
+      },
+      114: {
+        uid: "SbyVXqeCisX8IvEnZosxFHytqw53",
+      },
+      115: {
+        uid: "b3q3PcKIfdgUapdHbkCLgsUtWQ83",
+      },
+      116: {
+        uid: "mJNOAnpK4ZTF5v9MeLSFa5nqCrH3",
+      },
+      117: {
+        uid: "oiZtBtU47TW3C6UA7tFq5KV5UW12",
+      },
+      118: {
+        uid: "yjGDsdtY9jNjjpyMaEWHFFzhQa43",
+      },
+      119: {
+        uid: "z0Ax8ZANZdSZNFdr3o7TeDdDAal2",
+      },
+    },
+  };
+  db.ref("suites/12345678").set(values);
 }
