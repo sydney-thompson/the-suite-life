@@ -74,10 +74,21 @@ export default function ChoreEditScreen(choreInfo) {
   };
 
   // sends data to firebase and clears the textbox values
-  const submitEdits = async (values) => {
-    await choreFunctions.updateChore(values, chore.id);
-    returnHome();
-  };
+  function submitEdits(values) {
+    if (user) {
+      choreFunctions
+        .updateChore(values, chore.id, user.suiteID)
+        .then((res) => {
+          returnHome();
+        })
+        .catch((err) => {
+          console.error("HERE:", err);
+          Alert.alert("Something went wrong in here. Try again.");
+        });
+    } else {
+      Alert.alert("Something went wrong. Try again.");
+    }
+  }
 
   useEffect(() => {
     getUserData().then((val) => {
@@ -128,8 +139,7 @@ export default function ChoreEditScreen(choreInfo) {
           day: initialDay,
         }}
         onSubmit={(values) => {
-          console.log("values:", values);
-          // submitEdits(values);
+          submitEdits(values);
         }}
         validationSchema={validationSchema}
       >

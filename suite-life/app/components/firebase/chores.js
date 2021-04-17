@@ -86,15 +86,32 @@ export async function addNewChore1(info) {
 }
 
 // function to update data in firebase
-export async function updateChore(info, firebaseID) {
-  var suiteID = await get_suiteID();
-  console.log(info);
-  await db.ref(`/suites/${suiteID}/chores/${firebaseID}`).set({
-    name: info.name,
-    frequency: info.frequency,
-    assignees: info.assignees,
-    details: info.details,
-    completed: info.completed,
+export function updateChore(chore, choreID, suiteID) {
+  return new Promise((resolve, reject) => {
+    const choreUpdate = {
+      name: chore.name,
+      recurring: chore.recurring,
+      assignees: chore.assignees,
+      details: chore.details,
+      day: chore.day.label,
+    };
+    console.log("updated chore:", chore);
+    console.log("choreUpdate:", choreUpdate);
+    console.log("suite id:", suiteID);
+    console.log("ref:", `/suites/${suiteID}/chores/${choreID}`);
+    db.ref(`/suites/${suiteID}/chores/${choreID}`).update(
+      choreUpdate,
+      (error) => {
+        if (error) {
+          // The write failed...
+          console.error("error:", error);
+          reject();
+        } else {
+          // Data saved successfully!
+          resolve();
+        }
+      }
+    );
   });
 }
 
