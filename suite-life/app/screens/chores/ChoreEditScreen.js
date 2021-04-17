@@ -6,6 +6,7 @@ import {
   ScrollView,
   Alert,
   TouchableWithoutFeedback,
+  FlatList,
 } from "react-native";
 import { TextInput } from "react-native";
 import AppButton from "../../components/AppButton";
@@ -33,6 +34,7 @@ import {
 } from "../../components/forms";
 import colors from "../../config/colors";
 import AppTitle from "../../components/AppTitle";
+import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
@@ -53,7 +55,6 @@ const daysOfWeek = [
 export default function ChoreEditScreen(choreInfo) {
   const [user, setUser] = useState(null);
   const [suitemates, setSuitemates] = useState([]);
-  const [initialhousemates, setIHmates] = useState({});
   const [chore, setChore] = useState(choreInfo.route.params.chore);
 
   const initialDay = daysOfWeek.filter((item) => {
@@ -73,9 +74,8 @@ export default function ChoreEditScreen(choreInfo) {
   };
 
   // sends data to firebase and clears the textbox values
-  const submitAndClear = async (values) => {
+  const submitEdits = async (values) => {
     await choreFunctions.updateChore(values, chore.id);
-    setChoreRefresher("False");
     returnHome();
   };
 
@@ -88,19 +88,13 @@ export default function ChoreEditScreen(choreInfo) {
   useEffect(() => {
     if (user) {
       getSuitemates(setSuitemates, user.suiteID);
-      let checkvalues = {};
-      suitemates.forEach((mate) => {
-        checkvalues[mate.id] = false;
-      });
-      setIHmates(checkvalues);
     } else {
       setSuitemates([]);
-      setIHmates({});
     }
     return () => {
       disconnectFromSuitemates();
     };
-  }, [user, setSuitemates, setIHmates]);
+  }, [user, setSuitemates]);
 
   return (
     <Screen style={styles.screen}>
@@ -135,54 +129,53 @@ export default function ChoreEditScreen(choreInfo) {
         }}
         onSubmit={(values) => {
           console.log("values:", values);
+          // submitEdits(values);
         }}
         validationSchema={validationSchema}
       >
-        <ScrollView style={{ width: "100%" }}>
-          <FormField
-            display="AppTextInputLabel"
-            label="Name"
-            autoCapitalize="none"
-            autoCorrect={false}
-            name="name"
-            placeholder="Chore Name"
+        <FormField
+          display="AppTextInputLabel"
+          label="Name"
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="name"
+          placeholder="Chore Name"
+        />
+        <FormField
+          display="AppTextInputLabel"
+          label="Details"
+          autoCapitalize="none"
+          autoCorrect={false}
+          name="details"
+          placeholder="Additional details"
+          multiline
+        />
+        <FormPicker
+          name="day"
+          label="Day of Week"
+          items={daysOfWeek}
+          placeholder="Day of Week"
+        />
+        <RadioButton label="Repeat Weekly" name="recurring" />
+        <AppText style={styles.suitemates}>Select suitemates assigned:</AppText>
+        <View style={styles.checklistContainer}>
+          <FlatList
+            data={suitemates}
+            keyExtractor={(suitemate) => suitemate.id.toString()}
+            renderItem={({ item }) => (
+              <Checkbox
+                name="assignees"
+                suitemate={item.id}
+                key={item.id}
+                checkedIcon="check-box"
+                iconType="material"
+                uncheckedIcon="check-box-outline-blank"
+                title={item.name}
+              />
+            )}
+            ItemSeparatorComponent={HorizontalSpaceSeparator}
           />
-          <FormField
-            display="AppTextInputLabel"
-            label="Details"
-            autoCapitalize="none"
-            autoCorrect={false}
-            name="details"
-            placeholder="Additional details"
-            multiline
-          />
-          <FormPicker
-            name="day"
-            label="Day of Week"
-            items={daysOfWeek}
-            placeholder="Day of Week"
-          />
-          <RadioButton label="Repeat Weekly" name="recurring" />
-          <AppText style={styles.suitemates}>
-            Select suitemates assigned:
-          </AppText>
-          <View>
-            {suitemates.map((suitemate) => {
-              console.log("len(suitemates):", suitemates.length);
-              return (
-                <Checkbox
-                  name="assignees"
-                  suitemate={suitemate.id}
-                  key={suitemate.id}
-                  checkedIcon="check-box"
-                  iconType="material"
-                  uncheckedIcon="check-box-outline-blank"
-                  title={suitemate.name}
-                />
-              );
-            })}
-          </View>
-        </ScrollView>
+        </View>
         <SubmitButton title="Save" />
       </Form>
     </Screen>
@@ -190,6 +183,10 @@ export default function ChoreEditScreen(choreInfo) {
 }
 
 const styles = StyleSheet.create({
+  checklistContainer: {
+    flex: 1,
+    width: "100%",
+  },
   headerContainer: {
     flexDirection: "row",
     justifyContent: "center",
@@ -209,7 +206,7 @@ const styles = StyleSheet.create({
     right: 10,
   },
   screen: {
-    alignItems: "center",
+    alignItems: "flex-start",
     backgroundColor: colors.white,
     paddingTop: 10,
     paddingLeft: 10,
