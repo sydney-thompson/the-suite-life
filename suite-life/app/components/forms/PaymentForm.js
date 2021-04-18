@@ -25,9 +25,11 @@ const validationSchema = Yup.object().shape({
   // day: Yup.string().required().label("Day of Week"),
 });
 
-export default function ChoreForm({ initialValues, onSubmit }) {
+export default function PaymentForm({ initialValues, onSubmit }) {
   const [user, setUser] = useState(null);
   const [suitemates, setSuitemates] = useState([]);
+
+  console.log("initialValues:", initialValues);
 
   useEffect(() => {
     getUserData().then((val) => {
@@ -38,7 +40,6 @@ export default function ChoreForm({ initialValues, onSubmit }) {
   useEffect(() => {
     if (user) {
       getSuitemates(setSuitemates, user.suiteID);
-      console.log("suitemates:", suitemates.length);
     } else {
       setSuitemates([]);
     }
@@ -49,6 +50,7 @@ export default function ChoreForm({ initialValues, onSubmit }) {
 
   return (
     <Form
+      enableReinitialize={true}
       initialValues={initialValues}
       onSubmit={(values) => {
         onSubmit(values);
@@ -57,11 +59,11 @@ export default function ChoreForm({ initialValues, onSubmit }) {
     >
       <FormField
         display="AppTextInputLabel"
-        label="Name"
+        label="Title"
         autoCapitalize="none"
         autoCorrect={false}
-        name="name"
-        placeholder="Chore Name"
+        name="title"
+        placeholder="What is this for?"
       />
       <FormField
         display="AppTextInputLabel"
@@ -74,12 +76,11 @@ export default function ChoreForm({ initialValues, onSubmit }) {
         numberOfLines={6}
       />
       <FormPicker
-        name="day"
-        label="Day of Week"
-        items={daysOfWeek}
-        placeholder="Day of Week"
+        name="payer"
+        label="Payer"
+        items={suitemates}
+        placeholder="Who paid?"
       />
-      <RadioButton label="Repeat Weekly" name="recurring" />
       <AppText style={styles.suitemates}>Select suitemates assigned:</AppText>
       <View style={styles.checklistContainer}>
         <FlatList
@@ -87,7 +88,7 @@ export default function ChoreForm({ initialValues, onSubmit }) {
           keyExtractor={(suitemate) => suitemate.id.toString()}
           renderItem={({ item }) => (
             <Checkbox
-              name="assignees"
+              name="payees"
               suitemate={item.id}
               key={item.id}
               checkedIcon="check-box"
