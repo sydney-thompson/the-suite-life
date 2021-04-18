@@ -112,6 +112,27 @@ export function updateChore(chore, choreID, suiteID) {
   });
 }
 
+export function completeChore(choreID, suiteID) {
+  return new Promise((resolve, reject) => {
+    const choreUpdate = {
+      completed: true,
+    };
+    db.ref(`/suites/${suiteID}/chores/${choreID}`).update(
+      choreUpdate,
+      (error) => {
+        if (error) {
+          // The write failed...
+          console.error("error:", error);
+          reject();
+        } else {
+          // Data saved successfully!
+          resolve();
+        }
+      }
+    );
+  });
+}
+
 // deletes chore from firebase
 export async function deleteChore(toDeleteID) {
   var suiteID = await get_suiteID();

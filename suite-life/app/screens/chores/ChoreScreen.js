@@ -6,12 +6,14 @@ import {
   ScrollView,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
 import { auth, db } from "../../components/firebase/firebase";
 import * as choreFunctions from "../../components/firebase/chores";
+import Swipeable from "react-native-gesture-handler/Swipeable";
 
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
@@ -25,6 +27,7 @@ import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator"
 import colors from "../../config/colors";
 import Chore from "../../components/Chore";
 import AppTitle from "../../components/AppTitle";
+import CompleteChoreAction from "../../components/CompleteChoreAction";
 
 export default function ChoreScreen({ navigation }) {
   const [choreRefresh, setChoreRefresh] = useState("");
@@ -67,6 +70,13 @@ export default function ChoreScreen({ navigation }) {
     navigation.navigate(routes.CHORE_EDIT, { navigation, chore });
   };
 
+  function handleComplete(item) {
+    choreFunctions.completeChore(item.id, user.suiteID).catch((err) => {
+      console.error(error);
+      Alert.alert("Something went wrong - please try again.");
+    });
+  }
+
   useEffect(() => {
     getUserData().then((val) => {
       setUser(val);
@@ -103,15 +113,21 @@ export default function ChoreScreen({ navigation }) {
               data={chores}
               keyExtractor={(chore) => chore.id.toString()}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => navigate_to_edit(item)}>
-                  <Chore
-                    assignees={item.assignees}
-                    day={item.day}
-                    details={item.details}
-                    name={item.name}
-                    recurring={item.recurring}
-                  />
-                </TouchableOpacity>
+                <Swipeable
+                  renderRightActions={() => (
+                    <CompleteChoreAction onPress={() => handleComplete(item)} />
+                  )}
+                >
+                  <TouchableOpacity onPress={() => navigate_to_edit(item)}>
+                    <Chore
+                      assignees={item.assignees}
+                      day={item.day}
+                      details={item.details}
+                      name={item.name}
+                      recurring={item.recurring}
+                    />
+                  </TouchableOpacity>
+                </Swipeable>
               )}
               ItemSeparatorComponent={HorizontalSpaceSeparator}
             />
