@@ -69,7 +69,11 @@ export async function add_transaction_balance(
   var curr_balance = 0;
   // update payer information
   curr_balance = await get_balance(payer_ID, payee_ID);
-  update_balance(payer_ID, payee_ID, (Number(curr_balance) + Number(payment_amount)));
+  update_balance(
+    payer_ID,
+    payee_ID,
+    Number(curr_balance) + Number(payment_amount)
+  );
   // update payee information
   curr_balance = await get_balance(payee_ID, payer_ID);
   update_balance(payee_ID, payer_ID, curr_balance - payment_amount);
@@ -78,16 +82,16 @@ export async function add_transaction_balance(
 // function to push new payment to firebase
 export async function addNewPayment(info) {
   var suiteID = await get_suiteID();
-  
+
   // get number of payees
   const num_payees = info.payees.length;
   //const num_payees = info.payees.keys().length;
   // get amount each person pays
   var payee_amount = Number(info.amount) / (num_payees + 1);
-  payee_amount = payee_amount.toFixed(2)
+  payee_amount = payee_amount.toFixed(2);
 
-  // loop through payees sending a transaction for each 
-  await info.payees.forEach(payee => {
+  // loop through payees sending a transaction for each
+  await info.payees.forEach((payee) => {
     db.ref("/suites/" + suiteID + "/payments/").push({
       amount: payee_amount,
       completed: info.completed,
@@ -98,9 +102,9 @@ export async function addNewPayment(info) {
     });
   });
 
-  // loop through payees updating transaction 
-  await info.payees.forEach(payee => {
-    add_transaction_balance (info.payer, payee, payee_amount)
+  // loop through payees updating transaction
+  await info.payees.forEach((payee) => {
+    add_transaction_balance(info.payer, payee, payee_amount);
   });
 }
 
@@ -118,27 +122,27 @@ export async function get_name(user_id) {
 
 export async function check_payer(info) {
   var suiteID = await get_suiteID();
-  var data = []
-  // get list of users in a suite 
+  var data = [];
+  // get list of users in a suite
   await db
     .ref(`suites/${suiteID}/users`)
     .once("value")
     .then(function (snapshot) {
       data = snapshot.val();
     });
-    // for each user id in suite/suiteID/users
-    for (var suitemate in data ) {
-      var suitemate_uid = data[suitemate]["uid"]
-      // get name to compare 
-      var this_name = await get_name(suitemate_uid)
-      // check if names are the same 
-      if(this_name.toLowerCase() == info.payer.toLowerCase()){
-        // return user id if names the same 
-        return suitemate_uid
-      }
+  // for each user id in suite/suiteID/users
+  for (var suitemate in data) {
+    var suitemate_uid = data[suitemate]["uid"];
+    // get name to compare
+    var this_name = await get_name(suitemate_uid);
+    // check if names are the same
+    if (this_name.toLowerCase() == info.payer.toLowerCase()) {
+      // return user id if names the same
+      return suitemate_uid;
     }
-    // return "" if no matching name found
-    return ""
+  }
+  // return "" if no matching name found
+  return "";
 }
 
 // function to update data in firebase

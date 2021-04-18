@@ -68,13 +68,6 @@ export default function ChoreScreen({ navigation }) {
     });
   }, [suitemates, setInitialAssignees]);
 
-  function handleComplete(item) {
-    choreFunctions.completeChore(item.id, user.suiteID).catch((err) => {
-      console.error(error);
-      Alert.alert("Something went wrong - please try again.");
-    });
-  }
-
   useEffect(() => {
     getUserData().then((val) => {
       setUser(val);
@@ -92,6 +85,13 @@ export default function ChoreScreen({ navigation }) {
       disconnectFromChores();
     };
   }, [user, setChores]);
+
+  function handleComplete(item) {
+    choreFunctions.completeChore(item.id, user.suiteID).catch((err) => {
+      console.error(error);
+      Alert.alert("Something went wrong - please try again.");
+    });
+  }
 
   function addChore(values) {
     // Send values to firebase and navigate back
@@ -145,6 +145,7 @@ export default function ChoreScreen({ navigation }) {
           <ChoreForm initialValues={initialValues} onSubmit={onPress} />
         </Screen>
       </Modal>
+
       <View style={[styles.cardContainer, styles.headerContainer]}>
         <AppText style={styles.headerText}>Chores</AppText>
       </View>

@@ -138,6 +138,7 @@ export function getSuitemates(
             getUserData(suitemate.uid).then((val) => {
               const newSuitemate = {
                 id: val.uid,
+                label: val.name,
                 ...val,
               };
               if (filter) {
