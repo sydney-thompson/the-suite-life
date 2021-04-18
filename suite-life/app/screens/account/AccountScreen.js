@@ -28,15 +28,13 @@ import {
 } from "../../testing/unitTests";
 
 export default function AccountScreen({ navigation }) {
-  const [name, setName] = useState("");
-  const [pronouns, setPronouns] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    getUserData(auth.currentUser.uid).then((userData) => {
-      setName(userData.name);
-      setPronouns(userData.pronouns);
+    getUserData().then((val) => {
+      setUser(val);
     });
-  });
+  }, [auth]);
 
   async function runTests() {
     let chores_res = await TestChores();
@@ -55,23 +53,32 @@ export default function AccountScreen({ navigation }) {
     <RegistrationContext.Consumer>
       {(setRegistered) => (
         <Screen style={styles.screen}>
+          {user && (
+            <Image
+              source={{
+                uri: user.photoURL,
+              }}
+              style={styles.image}
+              resizeMode={"contain"}
+            />
+          )}
+          <View style={styles.editContainer}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                navigation.navigate(routes.ACCOUNT_EDIT, {
+                  name: user.name,
+                  pronouns: user.pronouns,
+                });
+              }}
+            >
+              <AppText style={styles.edit}>Edit</AppText>
+            </TouchableWithoutFeedback>
+          </View>
           <View style={styles.headerContainer}>
-            <AppTitle style={styles.title}>{name}</AppTitle>
-            <View style={styles.loginContainer}>
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  navigation.navigate(routes.ACCOUNT_EDIT, {
-                    name: name,
-                    pronouns: pronouns,
-                  });
-                }}
-              >
-                <AppText style={styles.edit}>Edit</AppText>
-              </TouchableWithoutFeedback>
-            </View>
+            <AppTitle style={styles.title}>{user ? user.name : ""}</AppTitle>
           </View>
 
-          <AppText style={styles.pronouns}>{pronouns}</AppText>
+          <AppText style={styles.pronouns}>{user ? user.pronouns : ""}</AppText>
           <View style={styles.spacer} />
           <View style={styles.logoutContainer}>
             <AppButton
@@ -117,8 +124,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   edit: {
+    position: "absolute",
+    right: 20,
+    top: 20,
     color: colors.primary,
-    justifyContent: "flex-end",
+    // justifyContent: "flex-end",
   },
   headerContainer: {
     flexDirection: "row",
@@ -131,6 +141,8 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 100,
     resizeMode: "cover",
+    marginTop: 10,
+    marginBottom: 10,
   },
   logout: {
     alignSelf: "flex-end",
@@ -144,7 +156,7 @@ const styles = StyleSheet.create({
   logoutContainer: {
     width: "95%",
   },
-  loginContainer: {
+  editContainer: {
     position: "absolute",
     right: 20,
   },
