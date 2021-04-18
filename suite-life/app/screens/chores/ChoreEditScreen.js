@@ -35,22 +35,14 @@ import {
 import colors from "../../config/colors";
 import AppTitle from "../../components/AppTitle";
 import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator";
+import ChoreForm from "../../components/forms/ChoreForm";
+import daysOfWeek from "../../config/daysOfWeek";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
   details: Yup.string().label("Details"),
   // day: Yup.string().required().label("Day of Week"),
 });
-
-const daysOfWeek = [
-  { id: 1, label: "Monday" },
-  { id: 2, label: "Tuesday" },
-  { id: 3, label: "Wednesday" },
-  { id: 4, label: "Thursday" },
-  { id: 5, label: "Friday" },
-  { id: 6, label: "Saturday" },
-  { id: 7, label: "Sunday" },
-];
 
 export default function ChoreEditScreen(choreInfo) {
   const [user, setUser] = useState(null);
@@ -60,6 +52,13 @@ export default function ChoreEditScreen(choreInfo) {
   const initialDay = daysOfWeek.filter((item) => {
     return item.label === chore.day;
   })[0];
+  const initialValues = {
+    details: chore.details,
+    name: chore.name,
+    assignees: chore.assignees,
+    recurring: chore.recurring,
+    day: initialDay,
+  };
 
   // navigates back to main screen
   const returnHome = () => {
@@ -130,7 +129,8 @@ export default function ChoreEditScreen(choreInfo) {
           </TouchableWithoutFeedback>
         </View>
       </View>
-      <Form
+      <ChoreForm initialValues={initialValues} onSubmit={submitEdits} />
+      {/* <Form
         initialValues={{
           details: chore.details,
           name: chore.name,
@@ -188,7 +188,7 @@ export default function ChoreEditScreen(choreInfo) {
           />
         </View>
         <SubmitButton title="Save" />
-      </Form>
+      </Form> */}
     </Screen>
   );
 }
