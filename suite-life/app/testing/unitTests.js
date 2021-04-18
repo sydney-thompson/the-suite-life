@@ -153,16 +153,26 @@ export function TestSuites() {
                                                 console.log("SUITES/getRules: FAILED");
                                             } else {
                                                 console.log("SUITES/getRules: PASSED");
-
-                                                suiteFunctions.deleteSuite(S_TEST_ID);
-                                                suiteFunctions.checkSuiteExists(S_TEST_ID).then((res) => {
-                                                    if (res) {
-                                                        console.log("SUITES/deleteSuite: FAILED");
-                                                    } else {
-                                                        console.log("SUITES/deleteSuite: PASSED\nTESTS COMPLETE");
-                                                        resolve(true);
-                                                    }
-                                                });        
+                                                let S_TEST_URULES = 'updated rules';
+                                                suiteFunctions.updateRules(S_TEST_URULES).then((res) => {
+                                                    suiteFunctions.getRules().then((rules_up) => {
+                                                        if (rules_up == S_TEST_URULES && res == true) {
+                                                            console.log("SUITES/updateRules: PASSED");
+                                                            suiteFunctions.deleteSuite(S_TEST_ID);
+                                                            suiteFunctions.checkSuiteExists(S_TEST_ID).then((res) => {
+                                                                if (res) {
+                                                                    console.log("SUITES/deleteSuite: FAILED");
+                                                                } else {
+                                                                    console.log("SUITES/deleteSuite: PASSED\nTESTS COMPLETE");
+                                                                    resolve(true);
+                                                                }
+                                                            });  
+                                                        } else {
+                                                            console.log("SUITES/updateRules: FAILED");
+                                                        }
+                                                    });
+                                                    
+                                                });   
                                             }
                                         });
                                     }
@@ -191,15 +201,16 @@ export function TestUsers() {
         let U_TEST_NAME = 'NAME_UT';
         let U_TEST_PRONOUNS = 'PRONOUNS_UT';
         let U_TEST_SID = 'SID_UT';
+        let U_TEST_PURL = 'https://i.picsum.photos/id/565/200/200.jpg?hmac=QvKo8qgzFFNcZoXCpT0CNMDTwWd3ynwqLXxrzK2o8fw';
 
 
         // createUser(uid, name, pronouns, suiteID)
         console.log("Testing users.js *************************************************************")
         console.log("Tests to run: createUser(), checkUserExists(), updateUserSuite(), updateUserDetails(), getUserData(), deleteUser()...Failure will halt execution flow");
-        userFunctions.createUser(U_TEST_UID, U_TEST_NAME, U_TEST_PRONOUNS, U_TEST_SID).then(() => {
+        userFunctions.createUser(U_TEST_UID, U_TEST_NAME, U_TEST_PRONOUNS, U_TEST_PURL, U_TEST_SID).then(() => {
             db.ref(`/users/${U_TEST_UID}`).once('value', snapshot => {
                 let u_data = snapshot.val();
-                if(u_data.uid == U_TEST_UID && u_data.name == U_TEST_NAME && u_data.pronouns == U_TEST_PRONOUNS && u_data.suiteID == U_TEST_SID) {
+                if(u_data.uid == U_TEST_UID && u_data.name == U_TEST_NAME && u_data.pronouns == U_TEST_PRONOUNS && u_data.suiteID == U_TEST_SID && u_data.photoURL == U_TEST_PURL) {
                     console.log("USERS/createUser: PASSED");
                     userFunctions.checkUserExists(U_TEST_UID).then((res) => {
                         if (res) {
