@@ -37,13 +37,13 @@ export default function AccountScreen({ navigation }) {
   }, [auth]);
 
   async function runTests() {
-    let chores_res = await TestChores();
-    let payments_res = await TestPayments();
+    //let chores_res = await TestChores();
+    //let payments_res = await TestPayments();
     let suites_res = await TestSuites();
     let users_res = await TestUsers();
     return {
-      chores_res: chores_res,
-      payments_res: payments_res,
+      //chores_res: chores_res,
+      //payments_res: payments_res,
       suites_res: suites_res,
       users_res: users_res,
     };
@@ -87,8 +87,8 @@ export default function AccountScreen({ navigation }) {
               onPress={() => {
                 runTests().then((res) => {
                   navigation.navigate(routes.TESTING_RES, {
-                    chores_res: res.chores_res,
-                    payments_res: res.payments_res,
+                    //chores_res: res.chores_res,
+                    //payments_res: res.payments_res,
                     suites_res: res.suites_res,
                     users_res: res.users_res,
                   });
