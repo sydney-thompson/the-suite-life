@@ -84,6 +84,7 @@ export default function AccountScreen({ navigation }) {
             <AppButton
               style={styles.logout}
               title="Run Unit Testing"
+              color="secondary"
               onPress={() => {
                 runTests().then((res) => {
                   navigation.navigate(routes.TESTING_RES, {
@@ -100,6 +101,7 @@ export default function AccountScreen({ navigation }) {
             <AppButton
               style={styles.logout}
               title="Log Out"
+              color="secondary"
               onPress={() => {
                 googleLogout(setRegistered.setRegistered);
               }}
@@ -143,9 +145,6 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     marginTop: 10,
     marginBottom: 10,
-  },
-  logout: {
-    alignSelf: "flex-end",
   },
   logout: {
     alignSelf: "flex-end",

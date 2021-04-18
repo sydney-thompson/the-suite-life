@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   headerText: {
     color: colors.white,
     fontWeight: "500",
-    fontSize: 50,
+    fontSize: 40,
   },
 
   topButtonContainer: {
