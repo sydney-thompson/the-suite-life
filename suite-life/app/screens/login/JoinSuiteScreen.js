@@ -36,35 +36,49 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function JoinSuiteScreen({ route, navigation }) {
+  function addUserToFirebase(uid, name, pronouns, suiteID) {
+    return new Promise((resolve, reject) => {
+      createUser(uid, name, pronouns, suiteID);
+      addUserToSuite(suiteID, uid);
+    });
+  }
+
   function registerUser(values, setRegistered) {
     const uid = auth.currentUser.uid;
     const photoURL = auth.currentUser.photoURL;
-    Promise.all([checkSuiteExists(values.suiteID), checkUserExists(uid)])
-      .then((res) => {
-        const suiteExists = res[0];
-        const userExists = res[1];
-        if (suiteExists && !userExists) {
-          createUser(
-            uid,
-            route.params.name,
-            route.params.pronouns,
-            photoURL,
-            values.suiteID
-          );
-          addUserToSuite(values.suiteID, uid);
-          return true;
-        } else if (userExists) {
-          Alert.alert("An account with these credentials already exists.");
-          return false;
-        } else if (!suiteExists) {
-          Alert.alert("Invalid suite code - suite does not exist.");
-          return false;
-        }
-      })
-      .catch((err) => {
-        console.error("Registration Error:", err);
-        return false;
-      });
+    return new Promise((resolve, reject) => {
+      Promise.all([checkSuiteExists(values.suiteID), checkUserExists(uid)])
+        .then((res) => {
+          const suiteExists = res[0];
+          const userExists = res[1];
+          if (suiteExists && !userExists) {
+            console.log("creating user");
+            createUser(
+              uid,
+              route.params.name,
+              route.params.pronouns,
+              photoURL,
+              values.suiteID
+            ).then((res) => {
+              console.log("adding user to suite");
+              addUserToSuite(values.suiteID, uid).then((res) => {
+                console.log("user added");
+              });
+              resolve(true);
+            });
+          } else if (userExists) {
+            Alert.alert("An account with these credentials already exists.");
+            reject(false);
+          } else if (!suiteExists) {
+            Alert.alert("Invalid suite code - suite does not exist.");
+            reject(false);
+          }
+        })
+        .catch((err) => {
+          console.error("Registration Error:", err);
+          reject(false);
+        });
+    });
   }
 
   return (
@@ -88,13 +102,14 @@ export default function JoinSuiteScreen({ route, navigation }) {
           <Form
             initialValues={{ suiteID: "" }}
             onSubmit={(values) => {
-              const registered = registerUser(
-                values,
-                setRegistered.setRegistered
-              );
-              if (registered) {
-                navigation.navigate(routes.RULES);
-              }
+              registerUser(values, setRegistered.setRegistered)
+                .then((res) => {
+                  console.log("res:", res);
+                  navigation.navigate(routes.RULES);
+                })
+                .catch((err) => {
+                  console.log("err:", err);
+                });
             }}
             validationSchema={validationSchema}
           >

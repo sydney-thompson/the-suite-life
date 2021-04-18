@@ -114,7 +114,12 @@ export function disconnectFromTransactions(suiteID) {
   db.ref(`suites/${suiteID}/transactions`).off("value");
 }
 
-export function getSuitemates(setSuitemates, suiteID, uid = null) {
+export function getSuitemates(
+  setSuitemates,
+  suiteID,
+  uid = null,
+  filter = null
+) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
@@ -136,8 +141,15 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
                 id: val.uid,
                 ...val,
               };
-              suitemates.push(newSuitemate);
-              setSuitemates(suitemates);
+              if (filter) {
+                if (filter[newSuitemate.id]) {
+                  suitemates.push(newSuitemate);
+                  setSuitemates(suitemates);
+                }
+              } else {
+                suitemates.push(newSuitemate);
+                setSuitemates(suitemates);
+              }
             });
           });
         }

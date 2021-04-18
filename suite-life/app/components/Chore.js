@@ -29,23 +29,23 @@ export default function Chore({
     });
   }, [auth]);
 
-  useEffect(() => {
-    for (const [key, value] of Object.entries(assignees)) {
-      if (value) {
-        setAssigneesList([
-          ...assigneesList,
-          {
-            id: key,
-            color: value ? colors.secondary : colors.medium,
-          },
-        ]);
-      }
-    }
-  }, []);
+  //   useEffect(() => {
+  //     for (const [key, value] of Object.entries(assignees)) {
+  //       if (value) {
+  //         setAssigneesList([
+  //           ...assigneesList,
+  //           {
+  //             id: key,
+  //             color: value ? colors.secondary : colors.medium,
+  //           },
+  //         ]);
+  //       }
+  //     }
+  //   }, []);
 
   useEffect(() => {
     if (user) {
-      getSuitemates(setSuitemates, user.suiteID);
+      getSuitemates(setSuitemates, user.suiteID, null, assignees);
     } else {
       setSuitemates([]);
     }
@@ -54,89 +54,25 @@ export default function Chore({
     };
   }, [user, setSuitemates]);
 
-  //   useEffect(() => {
-  //     // setAssigneeData([]);
-  //     for (const [key, value] of Object.entries(assignees)) {
-  //       getUserData(key)
-  //         .then((userData) => {
-  //           console.log("userData:", userData);
-  //           if (value) {
-  //             setAssigneeData([
-  //               ...assigneeData,
-  //               {
-  //                 id: key,
-  //                 name: userData.name,
-  //                 color: value ? colors.secondary : colors.medium,
-  //               },
-  //             ]);
-  //           }
-  //         })
-  //         .catch((err) => {
-  //           console.error(err);
-  //         });
-  //     }
-  //     console.log("assigneeData:", assigneeData);
-  //     return () => {
-  //       //   cleanup
-  //       console.log("cleaning");
-  //     };
-  //   }, [assignees, assigneeData, setAssigneeData]);
-
   return (
     <View style={[styles.container, style]}>
       <AppText style={styles.title} numberOfLines={1}>
         {name}
       </AppText>
       <View style={styles.listContainer}>
-        {/* <FlatList
-          data={assigneesList}
-          horizontal={true}
-          keyExtractor={(assignee) => assignee.id.toString()}
-          renderItem={({ item }) => (
-            <View style={[styles.icon, { backgroundColor: item.color }]}>
-              <AppText style={[styles.text, styles.iconText]}>
-                {item.id in suitemates
-                  ? suitemates[item.id].name[0]
-                  : item.id[0]}
-              </AppText>
-            </View>
-          )}
-          ItemSeparatorComponent={VerticalSpaceSeparator}
-        /> */}
         <FlatList
           data={suitemates}
           keyExtractor={(suitemate) => suitemate.id.toString()}
-          numColumns={3}
-          renderItem={
-            ({ item }) => {
-              if (assignees[item.id]) {
-                return (
-                  <Image
-                    source={{
-                      uri: item.photoURL,
-                    }}
-                    style={styles.iconImage}
-                    resizeMode={"contain"}
-                  />
-                );
-              }
-            }
-
-            // <View
-            //   style={[
-            //     styles.icon,
-            //     {
-            //       backgroundColor: assignees[item.id]
-            //         ? colors.secondary
-            //         : colors.medium,
-            //     },
-            //   ]}
-            // >
-            //   <AppText style={[styles.text, styles.iconText]}>
-            //     {item.name[0]}
-            //   </AppText>
-            // </View>
-          }
+          numColumns={8}
+          renderItem={({ item }) => (
+            <Image
+              source={{
+                uri: item.photoURL,
+              }}
+              style={styles.iconImage}
+              resizeMode={"contain"}
+            />
+          )}
           ItemSeparatorComponent={HorizontalSpaceSeparator}
         />
       </View>
