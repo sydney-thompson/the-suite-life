@@ -108,7 +108,6 @@ export default function ChoreScreen({ navigation }) {
   useEffect(() => {
     if (user) {
       choreFunctions.getSuiteChores(setChores, user.suiteID);
-      console.log("chores:", chores);
     } else {
       setChores([]);
     }
@@ -169,18 +168,6 @@ export default function ChoreScreen({ navigation }) {
           onPress={() => navigate_to_add()}
         ></AppButton>
       </View>
-
-      {/* <FlatList style={{ width: "100%" }}>
-        {choresJSON.map((chore) => {
-          console.log("chore:", chore);
-          <AppButton
-          key={chore.id}
-          color="secondary"
-          title={chore.name + "\n Frequency: " + chore.frequency}
-          onPress={() => navigate_to_edit(chore)}
-          ></AppButton>;
-        })}
-      </FlatList> */}
     </Screen>
   );
 }

@@ -50,13 +50,7 @@ export async function loadChoreData(firebaseID) {
 // function to push new chore to firebase
 export async function addNewChore(info) {
   var suiteID = await get_suiteID();
-  await db.ref("/suites/" + suiteID + "/chores/").push({
-    name: info.name,
-    frequency: info.frequency,
-    assignees: info.assignees,
-    details: info.details,
-    completed: info.completed,
-  });
+  await db.ref(`/suites/${suiteID}/chores/`).push(info);
 }
 
 // function to push new chore to firebase
@@ -95,10 +89,6 @@ export function updateChore(chore, choreID, suiteID) {
       details: chore.details,
       day: chore.day.label,
     };
-    console.log("updated chore:", chore);
-    console.log("choreUpdate:", choreUpdate);
-    console.log("suite id:", suiteID);
-    console.log("ref:", `/suites/${suiteID}/chores/${choreID}`);
     db.ref(`/suites/${suiteID}/chores/${choreID}`).update(
       choreUpdate,
       (error) => {
@@ -144,12 +134,8 @@ export async function renderChoress() {
           });
         });
       });
-    //console.log(choreJSON1)
   });
-  render_promise
-    .then
-    //console.log("renderChoress 5")
-    ();
+  render_promise.then();
   return choreJSON1;
 }
 

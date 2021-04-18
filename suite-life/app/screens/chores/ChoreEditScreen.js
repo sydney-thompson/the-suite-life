@@ -130,65 +130,6 @@ export default function ChoreEditScreen(choreInfo) {
         </View>
       </View>
       <ChoreForm initialValues={initialValues} onSubmit={submitEdits} />
-      {/* <Form
-        initialValues={{
-          details: chore.details,
-          name: chore.name,
-          assignees: chore.assignees,
-          recurring: chore.recurring,
-          day: initialDay,
-        }}
-        onSubmit={(values) => {
-          submitEdits(values);
-        }}
-        validationSchema={validationSchema}
-      >
-        <FormField
-          display="AppTextInputLabel"
-          label="Name"
-          autoCapitalize="none"
-          autoCorrect={false}
-          name="name"
-          placeholder="Chore Name"
-        />
-        <FormField
-          display="AppTextInputLabel"
-          label="Details"
-          autoCapitalize="none"
-          autoCorrect={false}
-          name="details"
-          placeholder="Additional details"
-          multiline
-          numberOfLines={6}
-        />
-        <FormPicker
-          name="day"
-          label="Day of Week"
-          items={daysOfWeek}
-          placeholder="Day of Week"
-        />
-        <RadioButton label="Repeat Weekly" name="recurring" />
-        <AppText style={styles.suitemates}>Select suitemates assigned:</AppText>
-        <View style={styles.checklistContainer}>
-          <FlatList
-            data={suitemates}
-            keyExtractor={(suitemate) => suitemate.id.toString()}
-            renderItem={({ item }) => (
-              <Checkbox
-                name="assignees"
-                suitemate={item.id}
-                key={item.id}
-                checkedIcon="check-box"
-                iconType="material"
-                uncheckedIcon="check-box-outline-blank"
-                title={item.name}
-              />
-            )}
-            ItemSeparatorComponent={HorizontalSpaceSeparator}
-          />
-        </View>
-        <SubmitButton title="Save" />
-      </Form> */}
     </Screen>
   );
 }

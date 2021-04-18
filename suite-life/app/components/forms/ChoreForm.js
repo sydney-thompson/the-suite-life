@@ -1,24 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Alert,
-  TouchableWithoutFeedback,
-  FlatList,
-} from "react-native";
-import { TextInput } from "react-native";
-import AppText from "../AppText";
-import Screen from "../Screen";
-import { auth, db } from "../firebase/firebase";
+import { StyleSheet, View, FlatList } from "react-native";
 import * as Yup from "yup";
-import { disconnectFromSuitemates, getSuitemates } from "../firebase/suites";
-import { getUserData } from "../firebase/users";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import defaultStyles from "../../config/styles";
-
+import AppText from "../AppText";
+import { auth } from "../firebase/firebase";
 import {
   AppForm as Form,
   AppFormField as FormField,
@@ -28,9 +13,11 @@ import {
   SubmitButton,
 } from "./";
 import colors from "../../config/colors";
-import AppTitle from "../AppTitle";
-import HorizontalSpaceSeparator from "../HorizontalSpaceSeparator";
 import daysOfWeek from "../../config/daysOfWeek";
+import defaultStyles from "../../config/styles";
+import HorizontalSpaceSeparator from "../HorizontalSpaceSeparator";
+import { disconnectFromSuitemates, getSuitemates } from "../firebase/suites";
+import { getUserData } from "../firebase/users";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
