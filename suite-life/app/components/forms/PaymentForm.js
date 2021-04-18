@@ -30,8 +30,6 @@ export default function PaymentForm({ initialValues, onSubmit }) {
   const [user, setUser] = useState(null);
   const [suitemates, setSuitemates] = useState([]);
 
-  console.log("initialValues:", initialValues);
-
   useEffect(() => {
     getUserData().then((val) => {
       setUser(val);

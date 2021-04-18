@@ -146,7 +146,6 @@ export default function PaymentScreen({ navigation }) {
               details: "",
             }}
             onSubmit={(values) => {
-              console.log("values:", values);
               addPayment(values);
             }}
           />
