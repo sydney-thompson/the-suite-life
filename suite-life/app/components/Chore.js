@@ -19,7 +19,6 @@ export default function Chore({
   style = null,
   textStyle = null,
 }) {
-  const [assigneesList, setAssigneesList] = useState([]);
   const [suitemates, setSuitemates] = useState([]);
   const [user, setUser] = useState(null);
 
@@ -28,20 +27,6 @@ export default function Chore({
       setUser(val);
     });
   }, [auth]);
-
-  //   useEffect(() => {
-  //     for (const [key, value] of Object.entries(assignees)) {
-  //       if (value) {
-  //         setAssigneesList([
-  //           ...assigneesList,
-  //           {
-  //             id: key,
-  //             color: value ? colors.secondary : colors.medium,
-  //           },
-  //         ]);
-  //       }
-  //     }
-  //   }, []);
 
   useEffect(() => {
     if (user) {

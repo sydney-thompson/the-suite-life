@@ -40,7 +40,6 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function ChoreAddScreen({ route }) {
-  console.log("route:", route);
   const initialValues = {
     details: "",
     name: "",
@@ -50,16 +49,8 @@ export default function ChoreAddScreen({ route }) {
   };
 
   function addChore(values) {
-    console.log("values:", values);
     // Send values to firebase and navigate back
-    choreFunctions.addNewChore({
-      assignees: values.assignees,
-      completed: false,
-      day: values.day.label,
-      details: values.details,
-      name: values.name,
-      recurring: values.recurring,
-    });
+    choreFunctions.addNewChore(values);
     route.params.navigation.goBack();
   }
 

@@ -50,7 +50,14 @@ export async function loadChoreData(firebaseID) {
 // function to push new chore to firebase
 export async function addNewChore(info) {
   var suiteID = await get_suiteID();
-  await db.ref(`/suites/${suiteID}/chores/`).push(info);
+  await db.ref(`/suites/${suiteID}/chores/`).push({
+    assignees: info.assignees,
+    completed: false,
+    day: info.day.label,
+    details: info.details,
+    name: info.name,
+    recurring: info.recurring,
+  });
 }
 
 // function to push new chore to firebase
