@@ -135,7 +135,6 @@ export default function ChoreScreen({ navigation }) {
       </View>
 
       <View style={[styles.cardContainer, { flex: 1 }]}>
-        <AppTitle style={styles.cardText}>{`Balances`}</AppTitle>
         {chores.length === 0 ? (
           <View style={styles.clearedContainer}>
             <AppText style={styles.clearedText}>{"All cleared!"}</AppText>
@@ -149,10 +148,11 @@ export default function ChoreScreen({ navigation }) {
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => navigate_to_edit(item)}>
                   <Chore
+                    assignees={item.assignees}
                     day={item.day}
                     details={item.details}
-                    frequency={item.frequency}
-                    name={item.title}
+                    name={item.name}
+                    recurring={item.recurring}
                   />
                 </TouchableOpacity>
               )}

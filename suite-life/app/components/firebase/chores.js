@@ -155,32 +155,30 @@ export async function renderChoress() {
 
 export async function getSuiteChores(setChores, suiteID) {
   let chores = [];
-  return (
-    db
-      .ref(`suites/${suiteID}/chores`)
-      // .orderByChild("day")
-      .on(
-        "value",
-        (snapshot) => {
-          let chores = [];
-          if (snapshot.exists()) {
-            snapshot.forEach((child) => {
-              const chore = child.val();
-              if (!chore.completed) {
-                const newChore = {
-                  id: child.ref.key,
-                  ...chore,
-                };
-                chores.push(newChore);
-              }
-            });
-          }
-          setChores(chores);
-        },
-        (err) => {
-          console.error(err);
-          setChores([]);
+  return db
+    .ref(`suites/${suiteID}/chores`)
+    .orderByChild("day")
+    .on(
+      "value",
+      (snapshot) => {
+        let chores = [];
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const chore = child.val();
+            if (!chore.completed) {
+              const newChore = {
+                id: child.ref.key,
+                ...chore,
+              };
+              chores.push(newChore);
+            }
+          });
         }
-      )
-  );
+        setChores(chores);
+      },
+      (err) => {
+        console.error(err);
+        setChores([]);
+      }
+    );
 }

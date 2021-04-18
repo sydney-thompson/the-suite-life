@@ -159,6 +159,7 @@ export default function ChoreEditScreen(choreInfo) {
           name="details"
           placeholder="Additional details"
           multiline
+          numberOfLines={6}
         />
         <FormPicker
           name="day"

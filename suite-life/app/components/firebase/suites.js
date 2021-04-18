@@ -128,6 +128,7 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
       (snapshot) => {
         let suitemates = [];
         if (snapshot.exists()) {
+          console.log("snapshot:", snapshot.val());
           snapshot.forEach((child) => {
             const suitemate = child.val();
             getUserData(suitemate.uid).then((val) => {
