@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
-import { color } from "react-native-reanimated";
+import { StyleSheet, Text, View, Image, FlatList } from "react-native";
+
 import colors from "../config/colors";
 import AppText from "./AppText";
 import { auth } from "./firebase/firebase";
 import { disconnectFromSuitemates, getSuitemates } from "./firebase/suites";
 import { getUserData } from "./firebase/users";
 import HorizontalSpaceSeparator from "./HorizontalSpaceSeparator";
-import VerticalSpaceSeparator from "./VerticalSpaceSeparator";
 
 export default function Chore({
   assignees,
@@ -37,7 +35,7 @@ export default function Chore({
     return () => {
       disconnectFromSuitemates();
     };
-  }, [user, setSuitemates]);
+  }, [user, assignees, setSuitemates]);
 
   return (
     <View style={[styles.container, style]}>
