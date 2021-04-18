@@ -15,7 +15,11 @@ import * as choreFunctions from "../../components/firebase/chores";
 
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
-import { disconnectFromChores } from "../../components/firebase/suites";
+import {
+  disconnectFromChores,
+  disconnectFromSuitemates,
+  getSuitemates,
+} from "../../components/firebase/suites";
 import { getUserData } from "../../components/firebase/users";
 import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator";
 import colors from "../../config/colors";
@@ -28,11 +32,33 @@ export default function ChoreScreen({ navigation }) {
   const [chores, setChores] = useState([]);
   const [vari, setVar] = useState([]);
   const [user, setUser] = useState(null);
+  const [suitemates, setSuitemates] = useState([]);
+
+  useEffect(() => {
+    getUserData().then((val) => {
+      setUser(val);
+    });
+  }, [auth]);
+
+  useEffect(() => {
+    if (user) {
+      getSuitemates(setSuitemates, user.suiteID);
+    } else {
+      setSuitemates([]);
+    }
+    return () => {
+      disconnectFromSuitemates();
+    };
+  }, [user, setSuitemates]);
 
   // navigate to add screen
   const navigate_to_add = () => {
-    setChoreRefresh("False");
-    navigation.navigate(routes.CHORE_ADD, { navigation });
+    let initialAssignees = {};
+    suitemates.forEach((item) => {
+      initialAssignees[item.id] = false;
+    });
+    console.log("initialAssignees:", initialAssignees);
+    navigation.navigate(routes.CHORE_ADD, { navigation, initialAssignees });
   };
 
   // navigate to edit screen

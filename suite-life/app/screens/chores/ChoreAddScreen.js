@@ -39,20 +39,12 @@ const validationSchema = Yup.object().shape({
   details: Yup.string().label("Details"),
 });
 
-export default function ChoreAddScreen({ navigation }) {
+export default function ChoreAddScreen({ route }) {
+  console.log("route:", route);
   const initialValues = {
     details: "",
     name: "",
-    assignees: {
-      "3W6ZDlPdDhWmPxvPGVBSa9U3A4l2": false,
-      "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2": false,
-      IdIiDUvCu9bnb5QkdwmThJoAi863: false,
-      SbyVXqeCisX8IvEnZosxFHytqw53: false,
-      b3q3PcKIfdgUapdHbkCLgsUtWQ83: false,
-      mJNOAnpK4ZTF5v9MeLSFa5nqCrH3: false,
-      yjGDsdtY9jNjjpyMaEWHFFzhQa43: false,
-      z0Ax8ZANZdSZNFdr3o7TeDdDAal2: false,
-    },
+    assignees: route.params.initialAssignees,
     recurring: false,
     day: null,
   };
@@ -68,14 +60,16 @@ export default function ChoreAddScreen({ navigation }) {
       name: values.name,
       recurring: values.recurring,
     });
-    navigation.goBack();
+    route.params.navigation.goBack();
   }
 
   return (
     <Screen style={styles.screen}>
       <View style={styles.headerContainer}>
         <View style={styles.deleteIconContainer}>
-          <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+          <TouchableWithoutFeedback
+            onPress={() => route.params.navigation.goBack()}
+          >
             <MaterialCommunityIcons
               name="close"
               color={colors.medium}
