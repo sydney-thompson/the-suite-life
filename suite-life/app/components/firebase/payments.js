@@ -87,8 +87,8 @@ export async function addNewPayment(info) {
     title: info.title,
   });
   // loop through payees
-  const num_payees = info.payees.keys().length;
-  const payee_amount = floor(info.amount / (num_payees + 1));
+  const num_payees = Object.keys(info.payees).length;
+  // const payee_amount = floor(info.amount / (num_payees + 1));
   //  info.payees.forEach(payee => {
   //    add_transaction_balance (info.payer, payee, payee_amount)
   //  });

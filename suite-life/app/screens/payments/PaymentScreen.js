@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   View,
   Modal,
+  Alert,
 } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
@@ -27,6 +28,7 @@ import {
   disconnectFromSuitemates,
   getSuitemates,
 } from "../../components/firebase/suites";
+import { addNewPayment } from "../../components/firebase/payments";
 
 export default function PaymentScreen({ navigation }) {
   const [user, setUser] = useState(null);
@@ -64,16 +66,36 @@ export default function PaymentScreen({ navigation }) {
   }, [user, setSuitemates]);
 
   useEffect(() => {
-    console.log("suitemates:", suitemates.length);
-    console.log("suitemates[0]:", suitemates[0]);
     if (suitemates.length > 0) {
       for (const [key, value] of Object.entries(suitemates[0].balances)) {
         initialPayees[key] = false;
         setInitialPayees(initialPayees);
       }
-      console.log("initial payees:", initialPayees);
     }
   }, [suitemates, setInitialPayees]);
+
+  const addPayment = (values) => {
+    const payerID = values.payer.id;
+    if (values.payees[payerID]) {
+      Alert.alert("You cannot add the payer to the assigned suitemates");
+    } else {
+      addNewPayment({
+        title: values.title,
+        amount: values.amount,
+        payer: values.payer.id,
+        payees: values.payees,
+        details: values.details,
+        completed: false,
+      })
+        .then(() => {
+          setModalVisible(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          Alert.alert("Something went wrong, please try again.");
+        });
+    }
+  };
 
   // Balances placeholder: populate by retrieving suite members and balances;
   // color depending on sign of balance value
@@ -120,10 +142,13 @@ export default function PaymentScreen({ navigation }) {
               title: "",
               amount: "",
               payer: "",
-              payees: hardInitialPayees,
+              payees: initialPayees,
               details: "",
             }}
-            onSubmit={(values) => console.log("values:", values)}
+            onSubmit={(values) => {
+              console.log("values:", values);
+              addPayment(values);
+            }}
           />
         </Screen>
       </Modal>

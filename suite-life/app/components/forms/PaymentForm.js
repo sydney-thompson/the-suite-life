@@ -20,9 +20,10 @@ import { disconnectFromSuitemates, getSuitemates } from "../firebase/suites";
 import { getUserData } from "../firebase/users";
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required().label("Name"),
+  title: Yup.string().required().label("Title"),
+  amount: Yup.number().required().positive().label("Amount"),
+  payer: Yup.object().required().label("Payer"),
   details: Yup.string().label("Details"),
-  // day: Yup.string().required().label("Day of Week"),
 });
 
 export default function PaymentForm({ initialValues, onSubmit }) {
@@ -50,7 +51,6 @@ export default function PaymentForm({ initialValues, onSubmit }) {
 
   return (
     <Form
-      enableReinitialize={true}
       initialValues={initialValues}
       onSubmit={(values) => {
         onSubmit(values);
@@ -64,6 +64,14 @@ export default function PaymentForm({ initialValues, onSubmit }) {
         autoCorrect={false}
         name="title"
         placeholder="What is this for?"
+      />
+      <FormField
+        display="AppTextInputLabel"
+        label="Amount"
+        autoCapitalize="none"
+        autoCorrect={false}
+        name="amount"
+        placeholder="Amount payed"
       />
       <FormField
         display="AppTextInputLabel"
