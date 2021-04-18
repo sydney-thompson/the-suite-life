@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { color } from "react-native-reanimated";
 import colors from "../config/colors";
@@ -106,26 +106,37 @@ export default function Chore({
         <FlatList
           data={suitemates}
           keyExtractor={(suitemate) => suitemate.id.toString()}
-          numColumns={7}
-          renderItem={({ item }) => (
-            <View
-              style={[
-                styles.icon,
-                {
-                  backgroundColor: assignees[item.id]
-                    ? colors.secondary
-                    : colors.medium,
-                },
-              ]}
-            >
-              <AppText style={[styles.text, styles.iconText]}>
-                {/* {item.id in suitemates
-                  ? suitemates[item.id].name[0]
-                  : item.id[0]} */}
-                {item.name[0]}
-              </AppText>
-            </View>
-          )}
+          numColumns={3}
+          renderItem={
+            ({ item }) => {
+              if (assignees[item.id]) {
+                return (
+                  <Image
+                    source={{
+                      uri: item.photoURL,
+                    }}
+                    style={styles.iconImage}
+                    resizeMode={"contain"}
+                  />
+                );
+              }
+            }
+
+            // <View
+            //   style={[
+            //     styles.icon,
+            //     {
+            //       backgroundColor: assignees[item.id]
+            //         ? colors.secondary
+            //         : colors.medium,
+            //     },
+            //   ]}
+            // >
+            //   <AppText style={[styles.text, styles.iconText]}>
+            //     {item.name[0]}
+            //   </AppText>
+            // </View>
+          }
           ItemSeparatorComponent={HorizontalSpaceSeparator}
         />
       </View>
@@ -153,6 +164,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     backgroundColor: colors.secondary,
+    borderRadius: 20,
+    height: 40,
+    justifyContent: "center",
+    marginRight: 5,
+    width: 40,
+  },
+  iconImage: {
+    alignItems: "center",
+    alignSelf: "center",
     borderRadius: 20,
     height: 40,
     justifyContent: "center",

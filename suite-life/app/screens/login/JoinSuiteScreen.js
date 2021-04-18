@@ -38,6 +38,7 @@ const validationSchema = Yup.object().shape({
 export default function JoinSuiteScreen({ route, navigation }) {
   function registerUser(values, setRegistered) {
     const uid = auth.currentUser.uid;
+    const photoURL = auth.currentUser.photoURL;
     Promise.all([checkSuiteExists(values.suiteID), checkUserExists(uid)])
       .then((res) => {
         const suiteExists = res[0];
@@ -47,6 +48,7 @@ export default function JoinSuiteScreen({ route, navigation }) {
             uid,
             route.params.name,
             route.params.pronouns,
+            photoURL,
             values.suiteID
           );
           addUserToSuite(values.suiteID, uid);

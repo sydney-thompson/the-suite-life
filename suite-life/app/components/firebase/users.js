@@ -25,7 +25,7 @@ export async function getSuitematesList(suiteID, uid = null) {
 }
 
 // Creates a new user
-export async function createUser(uid, name, pronouns, suiteID) {
+export async function createUser(uid, name, pronouns, photoURL, suiteID) {
   const userExists = await checkUserExists(uid);
   if (userExists) throw new Error("User already exists");
 
@@ -34,7 +34,7 @@ export async function createUser(uid, name, pronouns, suiteID) {
   let emptyBalances = {};
   suitemateList.forEach((suitemate) => {
     // TO DO: make this the actual suitemate field as the key
-    emptyBalances[suitemate] = 0
+    emptyBalances[suitemate] = 0;
   });
   if (suitemateList == []) {
     emptyBalances = "None";
@@ -42,11 +42,12 @@ export async function createUser(uid, name, pronouns, suiteID) {
 
   return db.ref(`users/${uid}`).set({
     // initialize to empty arrays by default
-    uid: uid,
+    balances: emptyBalances,
     name: name,
+    photoURL: photoURL,
     pronouns: pronouns,
     suiteID: suiteID,
-    balances: emptyBalances,
+    uid: uid,
   });
 }
 
