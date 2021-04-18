@@ -58,7 +58,11 @@ export default function AccountScreen({ navigation }) {
           data={suitemates}
           keyExtractor={(suitemate) => suitemate.id.toString()}
           renderItem={({ item }) => (
-            <Suitemate name={item.name} pronouns={item.pronouns} />
+            <Suitemate
+              name={item.name}
+              photoURL={item.photoURL}
+              pronouns={item.pronouns}
+            />
           )}
           ItemSeparatorComponent={HorizontalSpaceSeparator}
         />
