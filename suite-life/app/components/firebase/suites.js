@@ -74,22 +74,6 @@ export function disconnectFromChores(suiteID) {
   db.ref(`suites/${suiteID}/chores`).off("value");
 }
 
-export function switchSuiteID() {
-  db.ref(`suites/1111111`).on(
-    "value",
-    (snapshot) => {
-      values = snapshot.val();
-      console.log("values:", values);
-
-      db.ref(`suites/12345678`).set(values);
-    },
-    (err) => {
-      console.error(err);
-      setChores([]);
-    }
-  );
-}
-
 export async function getUserChores(setChores, suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
@@ -127,10 +111,15 @@ export async function getUserChores(setChores, suiteID, uid = null) {
 }
 
 export function disconnectFromTransactions(suiteID) {
-  db.ref(`suites/${suiteID}/payments`).off("value");
+  db.ref(`suites/${suiteID}/transactions`).off("value");
 }
 
-export function getSuitemates(setSuitemates, suiteID, uid = null) {
+export function getSuitemates(
+  setSuitemates,
+  suiteID,
+  uid = null,
+  filter = null
+) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
@@ -151,8 +140,15 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
                 id: val.uid,
                 ...val,
               };
-              suitemates.push(newSuitemate);
-              setSuitemates(suitemates);
+              if (filter) {
+                if (filter[newSuitemate.id]) {
+                  suitemates.push(newSuitemate);
+                  setSuitemates(suitemates);
+                }
+              } else {
+                suitemates.push(newSuitemate);
+                setSuitemates(suitemates);
+              }
             });
           });
         }
@@ -163,6 +159,31 @@ export function getSuitemates(setSuitemates, suiteID, uid = null) {
         setSuitemates([]);
       }
     );
+}
+
+export async function getSuitematesList(suiteID, uid = null) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
+  let suitemates = [];
+  db.ref(`suites/${suiteID}/users`)
+    .orderByChild("name")
+    .on(
+      "value",
+      (snapshot) => {
+        if (snapshot.exists()) {
+          console.log("snapshot val");
+          snapshot.forEach((child) => {
+            const suitemate = child.val();
+            suitemates.push(suitemate.uid);
+          });
+        }
+      },
+      (err) => {
+        console.error(err);
+      }
+    );
+  return suitemates;
 }
 
 export async function getRules() {

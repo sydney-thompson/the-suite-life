@@ -11,11 +11,11 @@ export default function TransactionOverview({
   style = null,
   textStyle = null,
 }) {
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  });
+  // const formatter = new Intl.NumberFormat("en-US", {
+  //   style: "currency",
+  //   currency: "USD",
+  //   minimumFractionDigits: 2,
+  // });
   return (
     <View style={[styles.container, style]}>
       <AppText style={styles.title} numberOfLines={1}>
@@ -23,7 +23,8 @@ export default function TransactionOverview({
       </AppText>
       <View style={styles.icon}>
         <AppText style={[styles.text, styles.money, { color: colors[color] }]}>
-          {formatter.format(amount)}
+          {/* {formatter.format(amount)} */}
+          {amount}
         </AppText>
       </View>
       <AppText style={styles.detailsText} numberOfLines={2}>

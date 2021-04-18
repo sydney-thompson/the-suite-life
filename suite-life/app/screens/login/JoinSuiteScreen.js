@@ -45,6 +45,7 @@ export default function JoinSuiteScreen({ route, navigation }) {
 
   function registerUser(values, setRegistered) {
     const uid = auth.currentUser.uid;
+    const photoURL = auth.currentUser.photoURL;
     return new Promise((resolve, reject) => {
       Promise.all([checkSuiteExists(values.suiteID), checkUserExists(uid)])
         .then((res) => {
@@ -56,6 +57,7 @@ export default function JoinSuiteScreen({ route, navigation }) {
               uid,
               route.params.name,
               route.params.pronouns,
+              photoURL,
               values.suiteID
             ).then((res) => {
               console.log("adding user to suite");

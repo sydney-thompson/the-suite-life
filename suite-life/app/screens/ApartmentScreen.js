@@ -81,7 +81,7 @@ export default function ApartmentScreen({ navigation }) {
                 day={item.day}
                 details={item.details}
                 frequency={item.frequency}
-                name={item.title}
+                name={item.name}
               />
             )}
             ItemSeparatorComponent={VerticalSpaceSeparator}
