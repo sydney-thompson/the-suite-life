@@ -253,6 +253,39 @@ export function getUserTransactions(setTransactions, suiteID, uid = null) {
   );
 }
 
+export function getUserTransactionsTogether(setTransactions, suiteID, otheruid, uid = null) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
+
+  let transactions = [];
+  return db.ref(`suites/${suiteID}/payments`).on(
+    "value",
+    (snapshot) => {
+      let transactions = [];
+      if (snapshot.exists()) {
+        snapshot.forEach((child) => {
+          const transaction = child.val();
+          if ((transaction.payer == uid & transaction.payees == otheruid) 
+                || (transaction.payees == uid & transaction.payer == otheruid)) {
+            const newTransaction = {
+              id: child.ref.key,
+              color: transaction.payer == uid ? "danger" : "secondary",
+              ...transaction,
+            };
+            transactions.push(newTransaction);
+          }
+        });
+      }
+      setTransactions(transactions);
+    },
+    (err) => {
+      console.error(err);
+      setTransactions([]);
+    }
+  );
+}
+
 export function createTestSuite() {
   const values = {
     chores: {

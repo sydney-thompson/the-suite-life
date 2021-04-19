@@ -28,13 +28,14 @@ import {
   disconnectFromSuitemates,
   getSuitemates,
 } from "../../components/firebase/suites";
-import { addNewPayment } from "../../components/firebase/payments";
+import { addNewPayment, getBalances } from "../../components/firebase/payments";
 
 export default function PaymentScreen({ navigation }) {
   const [user, setUser] = useState(null);
   const [suitemates, setSuitemates] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [initialPayees, setInitialPayees] = useState({});
+  const [balances, setbalances] = useState({});
 
   const hardInitialPayees = {
     "3W6ZDlPdDhWmPxvPGVBSa9U3A4l2": false,
@@ -47,6 +48,14 @@ export default function PaymentScreen({ navigation }) {
     yjGDsdtY9jNjjpyMaEWHFFzhQa43: false,
     z0Ax8ZANZdSZNFdr3o7TeDdDAal2: false,
   };
+
+  useEffect(() => {
+    // Balances placeholder: populate by retrieving suite members and balances;
+  // color depending on sign of balance value
+    getBalances().then((val) => {
+      setbalances(val);
+    });
+  });
 
   useEffect(() => {
     getUserData().then((val) => {
@@ -105,20 +114,6 @@ export default function PaymentScreen({ navigation }) {
     }
   };
 
-  // Balances placeholder: populate by retrieving suite members and balances;
-  // color depending on sign of balance value
-  const balances = [
-    {
-      name: "Suitemate 1",
-      id: 123,
-      value: 15,
-    },
-    {
-      name: "Suitemate 2",
-      id: 456,
-      value: -60,
-    },
-  ];
   return (
     <Screen style={styles.screen}>
       <Modal
@@ -176,7 +171,7 @@ export default function PaymentScreen({ navigation }) {
               )}
             >
               <TouchableOpacity
-                onPress={() => navigation.navigate(routes.PAYMENT_HISTORY)}
+                onPress={() => navigation.navigate(routes.PAYMENT_HISTORY, item)}
               >
                 <BalanceDisplay
                   name={item.name}

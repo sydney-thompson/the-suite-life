@@ -117,6 +117,7 @@ export async function get_name(user_id) {
     .then(function (snapshot) {
       name = snapshot.val();
     });
+    //console.log(name)
   return name;
 }
 
@@ -163,4 +164,40 @@ export async function deletePayment(toDeleteID) {
   var suiteID = await get_suiteID();
   let toDelete = await db.ref(`/suites/${suiteID}/payments/${toDeleteID}`);
   await toDelete.remove();
+}
+
+// gets balances from firebase and formats them for use on payment screen 
+export async function getBalances() {
+  var uid = auth.currentUser.uid;
+  var balances = []
+
+  // get balances 
+  await db
+    .ref(`users/${uid}/balances`)
+    .once("value")
+    .then(function (snapshot) {
+      balances = snapshot.val();
+    });
+
+  // get list of suitemate ids 
+  var suitemate_ids = Object.keys(balances)
+  var formatted_balances = []
+  // loop over suitemate ids
+  for (var suitemate_id in suitemate_ids) {
+    // get name of suitemate 
+    var name = await get_name(suitemate_ids[suitemate_id])
+    // get id of suitemate
+    var id = suitemate_ids[suitemate_id]
+    // get value suitemate owes
+    var value = balances[suitemate_ids[suitemate_id]] 
+    // push all info to array that will be returned 
+    formatted_balances.push({
+      name: name,
+      id: id,
+      value: value,
+    })
+  }
+
+  // return formatted information 
+  return formatted_balances 
 }

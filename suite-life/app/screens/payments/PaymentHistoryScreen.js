@@ -5,15 +5,17 @@ import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
 import { auth, db } from "../../components/firebase/firebase";
 import * as paymentFunctions from "../../components/firebase/payments";
-import { disconnectFromTransactions, getUserTransactions} from  "../../components/firebase/suites";
+import { disconnectFromTransactions, getUserTransactionsTogether} from  "../../components/firebase/suites";
 import { getUserData } from "../../components/firebase/users";
 
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 
-export default function PaymentHistoryScreen({ navigation }) {
+export default function PaymentHistoryScreen({route}) {
   const [user, setUser] = useState(null);
   const [transactions, setTransactions] = useState([]);
+  const navigation = route.params.navigation
+  const otheruid =route.params.id
 
   const navigate_to_add = () => {
     navigation.navigate(routes.PAYMENT_ADD, {navigation})
@@ -27,7 +29,7 @@ export default function PaymentHistoryScreen({ navigation }) {
 
   useEffect(() => {
     if (user) {
-      getUserTransactions(setTransactions, user.suiteID, user.uid);
+      getUserTransactionsTogether(setTransactions, user.suiteID, otheruid, user.uid)
     } else {
       setTransactions([]);
     }
