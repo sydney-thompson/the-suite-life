@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-evenly",
     padding: 10,
-    width: 150,
+    width: 160,
   },
   icon: {
     margin: 20,

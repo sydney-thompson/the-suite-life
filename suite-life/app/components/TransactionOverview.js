@@ -1,16 +1,35 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Image, View } from "react-native";
 import colors from "../config/colors";
 import AppText from "./AppText";
 import Dollar from "./Dollar";
+import { getUserData } from "./firebase/users";
 
 export default function TransactionOverview({
   amount,
   details,
   title,
+  payer,
+  payee,
+  item,
   style = null,
   textStyle = null,
 }) {
+  const [payerData, setPayerData] = useState(null);
+  const [payeeData, setPayeeData] = useState(null);
+
+  useEffect(() => {
+    getUserData(payee).then((val) => {
+      setPayeeData(val);
+    });
+  }, []);
+
+  useEffect(() => {
+    getUserData(payer).then((val) => {
+      setPayerData(val);
+    });
+  }, []);
+
   let color = "medium";
   if (parseFloat(amount) < 0) {
     color = "danger";
@@ -23,6 +42,17 @@ export default function TransactionOverview({
       <AppText style={styles.title} numberOfLines={1}>
         {title}
       </AppText>
+      <Image
+        source={
+          amount < 0
+            ? {
+                uri: payerData.photoURL,
+              }
+            : { uri: payeeData.photoURL }
+        }
+        style={styles.iconImage}
+        resizeMode={"contain"}
+      />
       <View style={styles.icon}>
         <Dollar style={[styles.text, styles.money, { color: colors[color] }]}>
           {amount}
@@ -42,7 +72,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-evenly",
     padding: 5,
-    width: 160,
   },
   icon: {
     margin: 10,
@@ -58,6 +87,15 @@ const styles = StyleSheet.create({
   iconText: {
     color: colors.white,
     fontWeight: "500",
+  },
+  iconImage: {
+    alignItems: "center",
+    alignSelf: "center",
+    borderRadius: 20,
+    height: 40,
+    justifyContent: "center",
+    marginRight: 5,
+    width: 40,
   },
   title: {
     alignSelf: "center",

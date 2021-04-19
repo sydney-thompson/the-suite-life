@@ -101,6 +101,9 @@ export default function ApartmentScreen({ navigation }) {
                 amount={item.net_amount}
                 details={item.details}
                 title={item.title}
+                payer={item.payer}
+                payee={item.payees}
+                item={item}
               />
             )}
             ItemSeparatorComponent={VerticalSpaceSeparator}
@@ -119,9 +122,10 @@ const styles = StyleSheet.create({
     width: "95%",
     margin: "2%",
     height: "33%",
+    flex: 1,
   },
   cardText: {
-    marginBottom: 10,
+    marginBottom: 5,
     fontSize: 30,
     fontWeight: "600",
   },
@@ -143,6 +147,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
     height: "25%",
     justifyContent: "center",
+    flex: 0,
   },
   welcomeText: {
     color: colors.white,
