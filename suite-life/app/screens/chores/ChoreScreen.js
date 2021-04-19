@@ -30,7 +30,7 @@ import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator"
 import colors from "../../config/colors";
 import Chore from "../../components/Chore";
 import AppTitle from "../../components/AppTitle";
-import CompleteChoreAction from "../../components/CompleteChoreAction";
+import CompleteAction from "../../components/CompleteAction";
 import ChoreForm from "../../components/forms/ChoreForm";
 import { add } from "react-native-reanimated";
 import daysOfWeek from "../../config/daysOfWeek";
@@ -187,7 +187,7 @@ export default function ChoreScreen({ navigation }) {
               renderItem={({ item }) => (
                 <Swipeable
                   renderRightActions={() => (
-                    <CompleteChoreAction onPress={() => handleComplete(item)} />
+                    <CompleteAction onPress={() => handleComplete(item)} />
                   )}
                 >
                   <TouchableOpacity

@@ -27,7 +27,7 @@ import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator"
 import colors from "../../config/colors";
 import Chore from "../../components/Chore";
 import AppTitle from "../../components/AppTitle";
-import CompleteChoreAction from "../../components/CompleteChoreAction";
+import CompleteAction from "../../components/CompleteAction";
 
 export default function ChoreScreen({ navigation }) {
   const [chores, setChores] = useState([]);
@@ -111,7 +111,7 @@ export default function ChoreScreen({ navigation }) {
               renderItem={({ item }) => (
                 <Swipeable
                   renderRightActions={() => (
-                    <CompleteChoreAction onPress={() => handleComplete(item)} />
+                    <CompleteAction onPress={() => handleComplete(item)} />
                   )}
                 >
                   <TouchableOpacity onPress={() => navigate_to_edit(item)}>

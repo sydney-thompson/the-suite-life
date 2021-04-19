@@ -19,7 +19,7 @@ import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator";
-import CompleteChoreAction from "../../components/CompleteChoreAction";
+import CompleteAction from "../../components/CompleteAction";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import PaymentForm from "../../components/forms/PaymentForm";
 import { auth } from "firebase";
@@ -29,6 +29,7 @@ import {
   getSuitemates,
 } from "../../components/firebase/suites";
 import { addNewPayment, getBalances } from "../../components/firebase/payments";
+import AddPaymentModal from "../../components/AddPaymentModal";
 
 export default function PaymentScreen({ navigation }) {
   const [user, setUser] = useState(null);
@@ -90,77 +91,17 @@ export default function PaymentScreen({ navigation }) {
     return () => (mounted = false);
   }, [suitemates, setInitialPayees]);
 
-  const addPayment = (values) => {
-    const payerID = values.payer.id;
-    if (values.payees[payerID]) {
-      Alert.alert("You cannot add the payer to the assigned suitemates");
-    } else {
-      var payees = [];
-      const suitemates = Object.keys(values.payees);
-      suitemates.forEach((suitemate) => {
-        if (values.payees[suitemate] == true) {
-          payees.push(suitemate);
-        }
-      });
-
-      addNewPayment({
-        title: values.title,
-        amount: values.amount,
-        payer: values.payer.id,
-        payees: payees,
-        details: values.details,
-        completed: false,
-      })
-        .then(() => {
-          setModalVisible(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          Alert.alert("Something went wrong, please try again.");
-        });
-    }
+  const handleBalance = (item) => {
+    console.log("item:", item);
   };
 
   return (
     <Screen style={styles.screen}>
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <Screen style={styles.modal}>
-          <View style={styles.modalHeaderContainer}>
-            <View style={styles.deleteIconContainer}>
-              <TouchableWithoutFeedback
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <MaterialCommunityIcons
-                  name="close"
-                  color={colors.medium}
-                  size={30}
-                />
-              </TouchableWithoutFeedback>
-            </View>
-            <AppTitle style={defaultStyles.title}>New Payment</AppTitle>
-          </View>
-          <PaymentForm
-            initialValues={{
-              title: "",
-              amount: "",
-              payer: "",
-              payees: initialPayees,
-              details: "",
-            }}
-            onSubmit={(values) => {
-              addPayment(values);
-            }}
-          />
-        </Screen>
-      </Modal>
+      <AddPaymentModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        initialPayees={initialPayees}
+      />
 
       <View style={[styles.cardContainer, styles.headerContainer]}>
         <AppText style={styles.headerText}>Transactions</AppText>
@@ -174,7 +115,10 @@ export default function PaymentScreen({ navigation }) {
           renderItem={({ item }) => (
             <Swipeable
               renderRightActions={() => (
-                <CompleteChoreAction onPress={() => handleComplete(item)} />
+                <CompleteAction
+                  iconName="scale-balance"
+                  onPress={() => handleBalance(item)}
+                />
               )}
             >
               <TouchableOpacity
@@ -244,24 +188,5 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: "center",
     width: "95%",
-  },
-
-  modalHeaderContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  deleteIconContainer: {
-    position: "absolute",
-    left: 10,
-  },
-  modal: {
-    alignItems: "flex-start",
-    backgroundColor: colors.white,
-    paddingTop: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginBottom: 0,
   },
 });
