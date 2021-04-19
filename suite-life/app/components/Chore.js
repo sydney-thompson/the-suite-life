@@ -66,6 +66,9 @@ export default function Chore({
         style={styles.detailsText}
         numberOfLines={2}
       >{`${details}`}</AppText>
+      <AppText style={styles.rightText}>
+        {"Edit"}
+      </AppText>
     </View>
   );
 }
@@ -110,16 +113,20 @@ const styles = StyleSheet.create({
   title: {
     alignSelf: "center",
     color: colors.black,
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 30,
   },
   text: {
     color: colors.black,
-    fontSize: 22,
-    fontWeight: "600",
+    fontSize: 20,
   },
   detailsText: {
     color: colors.secondary,
     fontSize: 20,
   },
+  rightText: {
+    // marginTop: 50,
+    color: colors.black,
+    fontSize: 15,
+    alignSelf: "flex-end",
+  }
 });
