@@ -11,11 +11,6 @@ export default function TransactionOverview({
   style = null,
   textStyle = null,
 }) {
-  // const formatter = new Intl.NumberFormat("en-US", {
-  //   style: "currency",
-  //   currency: "USD",
-  //   minimumFractionDigits: 2,
-  // });
   return (
     <View style={[styles.container, style]}>
       <AppText style={styles.title} numberOfLines={1}>

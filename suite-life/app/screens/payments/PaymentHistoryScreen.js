@@ -56,10 +56,10 @@ export default function PaymentHistoryScreen({ navigation }) {
                 key= {item.id}
                 color="tertiary"
                 title={ item.title}
-                amount = { "Amount: $" + item.amount }
+                amount = { "$" + item.amount }
                 payer={ "Payer: " + 'person 1' }
                 involved={  "Involved: " + 'person 1, person 2 ' }
-                details={"details"}
+                details={"Taco Tuesday at Taco Bell on 3/14/87"}
               >
               </HistoryItem>
               )
