@@ -79,11 +79,19 @@ export default function PaymentScreen({ navigation }) {
     if (values.payees[payerID]) {
       Alert.alert("You cannot add the payer to the assigned suitemates");
     } else {
+      var payees = [];
+      const suitemates = Object.keys(values.payees);
+      suitemates.forEach(suitemate => {
+        if(values.payees[suitemate] == true){
+          payees.push(suitemate)
+        }
+      });
+      
       addNewPayment({
         title: values.title,
         amount: values.amount,
         payer: values.payer.id,
-        payees: values.payees,
+        payees: payees,
         details: values.details,
         completed: false,
       })
