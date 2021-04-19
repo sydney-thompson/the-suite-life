@@ -87,7 +87,8 @@ export default function ChoreScreen({ navigation }) {
                 title={ item.name }
                 assignees={"\nAssignees: " + item.assignees}
                 frequency={"\nFrequency: " + item.frequency}
-                rightText={"Details "}
+                details={"\Details: " + item.details}
+                rightText={"Edit "}
                 onPress={() => navigate_to_edit(item.firebaseID)}>
               </ChoresButton>
               )
