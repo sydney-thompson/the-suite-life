@@ -42,17 +42,19 @@ export default function TransactionOverview({
       <AppText style={styles.title} numberOfLines={1}>
         {title}
       </AppText>
-      <Image
-        source={
-          amount < 0
-            ? {
-                uri: payerData.photoURL,
-              }
-            : { uri: payeeData.photoURL }
-        }
-        style={styles.iconImage}
-        resizeMode={"contain"}
-      />
+      {payerData && payeeData && (
+        <Image
+          source={
+            amount < 0
+              ? {
+                  uri: payerData.photoURL,
+                }
+              : { uri: payeeData.photoURL }
+          }
+          style={styles.iconImage}
+          resizeMode={"contain"}
+        />
+      )}
       <View style={styles.icon}>
         <Dollar style={[styles.text, styles.money, { color: colors[color] }]}>
           {amount}
