@@ -239,7 +239,7 @@ export function getUserTransactions(setTransactions, suiteID, uid = null) {
             const newTransaction = {
               id: child.ref.key,
               net_amount: parseFloat(transaction.amount) * owed,
-              color: transaction.payer == uid ? "danger" : "secondary",
+              color: transaction.payer == uid ? "secondary" : "danger",
               ...transaction,
             };
             transactions.push(newTransaction);
@@ -277,9 +277,11 @@ export function getUserTransactionsTogether(
             (transaction.payer == uid) & (transaction.payees == otheruid) ||
             (transaction.payees == uid) & (transaction.payer == otheruid)
           ) {
+            const owed = transaction.payer == uid ? 1 : -1;
             const newTransaction = {
               id: child.ref.key,
-              color: transaction.payer == uid ? "danger" : "secondary",
+              net_amount: parseFloat(transaction.amount) * owed,
+              color: transaction.payer == uid ? "secondary" : "danger",
               ...transaction,
             };
             transactions.push(newTransaction);

@@ -103,11 +103,13 @@ export default function PaymentScreen({ navigation }) {
         initialPayees={initialPayees}
       />
 
-      <View style={[styles.cardContainer, styles.headerContainer]}>
-        <AppText style={styles.headerText}>Transactions</AppText>
+      <View
+        style={[defaultStyles.cardContainer, defaultStyles.headerContainer]}
+      >
+        <AppText style={defaultStyles.headerText}>Transactions</AppText>
       </View>
 
-      <View style={[styles.cardContainer, { flex: 1 }]}>
+      <View style={[defaultStyles.cardContainer, { flex: 1 }]}>
         <AppTitle style={styles.cardText}>{`Balances`}</AppTitle>
         <FlatList
           data={balances}
@@ -153,40 +155,14 @@ const styles = StyleSheet.create({
   screen: {
     alignItems: "center",
   },
-  cardContainer: {
-    backgroundColor: colors.primary,
-    borderRadius: 20,
-    padding: 15,
-    width: "95%",
-    margin: "2%",
-  },
-  headerContainer: {
-    paddingTop: 10,
-    alignItems: "center",
-    backgroundColor: colors.secondary,
-    flex: 0,
-    height: "11%",
-    justifyContent: "center",
-  },
-  cardText: {
-    marginBottom: 10,
-    fontSize: 30,
-    fontWeight: "600",
-  },
-  headerText: {
-    color: colors.white,
-    fontWeight: "500",
-    fontSize: 50,
-  },
-
   topButtonContainer: {
     alignItems: "center",
     marginBottom: -5,
     width: "95%",
   },
-
   buttonContainer: {
     alignItems: "center",
     width: "95%",
+    marginBottom: 10,
   },
 });

@@ -5,12 +5,18 @@ import AppText from "./AppText";
 
 export default function Dollar({ children, style }) {
   const format = (amount) => {
-    return Number(amount)
+    return Math.abs(amount)
       .toFixed(2)
       .replace(/\d(?=(\d{3})+\.)/g, "$&,");
   };
 
-  return <AppText style={style}>${format(children)}</AppText>;
+  let amount = parseFloat(children);
+
+  return amount < 0 ? (
+    <AppText style={style}>-${format(amount)}</AppText>
+  ) : (
+    <AppText style={style}>${format(amount)}</AppText>
+  );
 }
 
 const styles = StyleSheet.create({});
