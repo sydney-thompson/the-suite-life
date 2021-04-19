@@ -60,14 +60,14 @@ export default function Chore({
         />
       </View>
       <AppText style={styles.text}>
-        {recurring ? `Every ${day}` : `${day}`}
+        { recurring ? `Every ${day}` : `${day}`}
       </AppText>
       <AppText
         style={styles.detailsText}
         numberOfLines={2}
       >{`${details}`}</AppText>
       <AppText style={styles.rightText}>
-        {"Edit"}
+        {'Edit'}
       </AppText>
     </View>
   );
@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     color: colors.black,
     fontSize: 30,
+    fontWeight: "bold",
   },
   text: {
     color: colors.black,
