@@ -37,18 +37,6 @@ export default function PaymentScreen({ navigation }) {
   const [initialPayees, setInitialPayees] = useState({});
   const [balances, setbalances] = useState({});
 
-  const hardInitialPayees = {
-    "3W6ZDlPdDhWmPxvPGVBSa9U3A4l2": false,
-    "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2": false,
-    IdIiDUvCu9bnb5QkdwmThJoAi863: false,
-    SbyVXqeCisX8IvEnZosxFHytqw53: false,
-    b3q3PcKIfdgUapdHbkCLgsUtWQ83: false,
-    mJNOAnpK4ZTF5v9MeLSFa5nqCrH3: false,
-    oiZtBtU47TW3C6UA7tFq5KV5UW12: false,
-    yjGDsdtY9jNjjpyMaEWHFFzhQa43: false,
-    z0Ax8ZANZdSZNFdr3o7TeDdDAal2: false,
-  };
-
   useEffect(() => {
     // Balances placeholder: populate by retrieving suite members and balances;
     // color depending on sign of balance value
