@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   },
   image: { borderRadius: 30, height: 60, width: 60, marginRight: 15 },
   nameContainer: {
-    backgroundColor: colors.tertiary,
+    backgroundColor: colors.white,
     borderRadius: 10,
     flex: 1,
     justifyContent: "space-evenly",
