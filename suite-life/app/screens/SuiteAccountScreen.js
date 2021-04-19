@@ -58,7 +58,11 @@ export default function AccountScreen({ navigation }) {
           data={suitemates}
           keyExtractor={(suitemate) => suitemate.id.toString()}
           renderItem={({ item }) => (
-            <Suitemate name={item.name} pronouns={item.pronouns} />
+            <Suitemate
+              name={item.name}
+              photoURL={item.photoURL}
+              pronouns={item.pronouns}
+            />
           )}
           ItemSeparatorComponent={HorizontalSpaceSeparator}
         />
@@ -66,7 +70,7 @@ export default function AccountScreen({ navigation }) {
       <View style={styles.buttonContainer}>
         <AppButton
           title="View Rules"
-          color="primary"
+          color="secondary"
           onPress={() => {
             getRules().then((res) => {
               navigation.navigate(routes.RULES, { rules: res });
@@ -95,20 +99,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerContainer: {
-    paddingTop: 25,
+    paddingTop: 15,
+    borderRadius: 20,
     alignItems: "center",
     backgroundColor: colors.secondary,
     flex: 0,
-    height: "15%",
+    height: "11%",
     justifyContent: "center",
   },
   headerText: {
     color: colors.white,
-    fontWeight: "600",
+    fontWeight: "500",
+    fontSize: 40,
   },
   buttonContainer: {
     alignItems: "center",
-    marginBottom: 20,
     width: "95%",
   },
 });

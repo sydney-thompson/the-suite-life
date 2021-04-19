@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
-import { TextInput } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Alert,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { TextInput } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
 import { auth, db } from "../../components/firebase/firebase";
 import * as choreFunctions from "../../components/firebase/chores";
 import * as Yup from "yup";
-import {disconnectFromSuitemates, getSuitemates} from "../../components/firebase/suites"; 
+import {
+  disconnectFromSuitemates,
+  getSuitemates,
+} from "../../components/firebase/suites";
 import { getUserData } from "../../components/firebase/users";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import defaultStyles from "../../config/styles";
 
@@ -18,120 +29,68 @@ import {
   AppFormFieldCheckbox as Checkbox,
   SubmitButton,
 } from "../../components/forms";
+import ChoreForm from "../../components/forms/ChoreForm";
+import colors from "../../config/colors";
+import AppTitle from "../../components/AppTitle";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
   frequency: Yup.string().required().label("Frequency"),
-  details: Yup.string().label("Details")
+  details: Yup.string().label("Details"),
 });
 
-export default function ChoreAddScreen({navigation}) {
-  const [user, setUser] = useState(null);
-  const [suitemates, setSuitemates] = useState([]);
-  const [initialhousemates, setIHmates] = useState({});
+export default function ChoreAddScreen({ route }) {
+  const initialValues = {
+    details: "",
+    name: "",
+    assignees: route.params.initialAssignees,
+    recurring: false,
+    day: null,
+  };
 
-  const AddChore = (values) => {
+  function addChore(values) {
     // Send values to firebase and navigate back
-
-    choreFunctions.addNewChore({
-      'name': values.name,
-      'frequency': values.frequency,
-      'assignees': values.assignees,
-      'details': values.details,
-      'completed': false
-    })
-    navigation.goBack()
+    choreFunctions.addNewChore(values);
+    route.params.navigation.goBack();
   }
-  //const housemates = [{id: 'id1', name: 'Name 1'}, {id: 'id2', name: 'Name 2'}];    // placeholders for reading in the housemates of that suite
-  //const initialhousemates = {'id1': false, 'id2': false};
-
-  useEffect(() => {
-    getUserData().then((val) => {
-      setUser(val);
-    });
-  }, [auth]);
-
-  useEffect(() => {
-    if (user) {
-      getSuitemates(setSuitemates, user.suiteID);
-      console.log("suitemates:", suitemates);
-      let checkvalues = {};
-      suitemates.forEach((mate) => {
-        checkvalues[mate.id] = false;
-      })
-      setIHmates(checkvalues);
-    } else {
-      setSuitemates([]);
-      setIHmates({});
-    }
-    return () => {
-      disconnectFromSuitemates();
-    };
-  }, [user, setSuitemates, setIHmates]);
 
   return (
     <Screen style={styles.screen}>
-      <AppText style={defaultStyles.title}>New Chore</AppText>
-      <Form
-        initialValues={{ name: "", frequency: "", assignees: initialhousemates, details: ""}}
-        onSubmit={(values) => AddChore(values)}
-        validationSchema={validationSchema}
-      >
-        <ScrollView style={{width: '100%'}}>
-        <FormField
-          display="AppTextInputLabel"
-          label="Name"
-          autoCapitalize="none"
-          autoCorrect={false}
-          name="name"
-          placeholder="Name of the chore"
-        />
-        <FormField
-          display="AppTextInputLabel"
-          label="Frequency"
-          autoCapitalize="none"
-          autoCorrect={false}
-          name="frequency"
-          placeholder="One-time or weekly?"
-        />
-        <FormField
-          display="AppTextInputLabel"
-          label="Details"
-          autoCapitalize="none"
-          autoCorrect={false}
-          name="details"
-          placeholder="Additional details"
-        />
-        <AppText style={[{color: defaultStyles.colors.black}]}>Select housemates assigned:</AppText>
-        <View>
-        {suitemates.map((mate) => {
-          return (
-            <Checkbox
-              name="assignees"
-              specificName={mate.id}
-              key={mate.id}
-              checkedIcon='check-box'
-              iconType='material'
-              uncheckedIcon='check-box-outline-blank'
-              title={mate.name}
+      <View style={styles.headerContainer}>
+        <View style={styles.deleteIconContainer}>
+          <TouchableWithoutFeedback
+            onPress={() => route.params.navigation.goBack()}
+          >
+            <MaterialCommunityIcons
+              name="close"
+              color={colors.medium}
+              size={30}
             />
-          );
-        })}
+          </TouchableWithoutFeedback>
         </View>
-        </ScrollView>
-        <SubmitButton title="Save Chore" />
-      </Form>
-      <AppButton
-        title="Cancel"
-        color="primary"
-        onPress={() => navigation.goBack()}
-      ></AppButton>
+        <AppTitle style={defaultStyles.title}>New Chore</AppTitle>
+      </View>
+      <ChoreForm initialValues={initialValues} onSubmit={addChore} />
     </Screen>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  screen: {
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
+    width: "100%",
+  },
+  deleteIconContainer: {
+    position: "absolute",
+    left: 10,
+  },
+  screen: {
+    alignItems: "flex-start",
+    backgroundColor: colors.white,
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
 });

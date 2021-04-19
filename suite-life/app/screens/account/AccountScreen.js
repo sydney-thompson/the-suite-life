@@ -28,24 +28,22 @@ import {
 } from "../../testing/unitTests";
 
 export default function AccountScreen({ navigation }) {
-  const [name, setName] = useState("");
-  const [pronouns, setPronouns] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    getUserData(auth.currentUser.uid).then((userData) => {
-      setName(userData.name);
-      setPronouns(userData.pronouns);
+    getUserData().then((val) => {
+      setUser(val);
     });
-  });
+  }, [auth]);
 
   async function runTests() {
-    let chores_res = await TestChores();
-    let payments_res = await TestPayments();
+    //let chores_res = await TestChores();
+    //let payments_res = await TestPayments();
     let suites_res = await TestSuites();
     let users_res = await TestUsers();
     return {
-      chores_res: chores_res,
-      payments_res: payments_res,
+      //chores_res: chores_res,
+      //payments_res: payments_res,
       suites_res: suites_res,
       users_res: users_res,
     };
@@ -55,33 +53,43 @@ export default function AccountScreen({ navigation }) {
     <RegistrationContext.Consumer>
       {(setRegistered) => (
         <Screen style={styles.screen}>
+          {user && (
+            <Image
+              source={{
+                uri: user.photoURL,
+              }}
+              style={styles.image}
+              resizeMode={"contain"}
+            />
+          )}
+          <View style={styles.editContainer}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                navigation.navigate(routes.ACCOUNT_EDIT, {
+                  name: user.name,
+                  pronouns: user.pronouns,
+                });
+              }}
+            >
+              <AppText style={styles.edit}>Edit</AppText>
+            </TouchableWithoutFeedback>
+          </View>
           <View style={styles.headerContainer}>
-            <AppTitle style={styles.title}>{name}</AppTitle>
-            <View style={styles.loginContainer}>
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  navigation.navigate(routes.ACCOUNT_EDIT, {
-                    name: name,
-                    pronouns: pronouns,
-                  });
-                }}
-              >
-                <AppText style={styles.edit}>Edit</AppText>
-              </TouchableWithoutFeedback>
-            </View>
+            <AppTitle style={styles.title}>{user ? user.name : ""}</AppTitle>
           </View>
 
-          <AppText style={styles.pronouns}>{pronouns}</AppText>
+          <AppText style={styles.pronouns}>{user ? user.pronouns : ""}</AppText>
           <View style={styles.spacer} />
           <View style={styles.logoutContainer}>
             <AppButton
               style={styles.logout}
               title="Run Unit Testing"
+              color="secondary"
               onPress={() => {
                 runTests().then((res) => {
                   navigation.navigate(routes.TESTING_RES, {
-                    chores_res: res.chores_res,
-                    payments_res: res.payments_res,
+                    //chores_res: res.chores_res,
+                    //payments_res: res.payments_res,
                     suites_res: res.suites_res,
                     users_res: res.users_res,
                   });
@@ -93,6 +101,7 @@ export default function AccountScreen({ navigation }) {
             <AppButton
               style={styles.logout}
               title="Log Out"
+              color="secondary"
               onPress={() => {
                 googleLogout(setRegistered.setRegistered);
               }}
@@ -117,8 +126,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   edit: {
+    position: "absolute",
+    right: 20,
+    top: 20,
     color: colors.primary,
-    justifyContent: "flex-end",
+    // justifyContent: "flex-end",
   },
   headerContainer: {
     flexDirection: "row",
@@ -131,9 +143,8 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 100,
     resizeMode: "cover",
-  },
-  logout: {
-    alignSelf: "flex-end",
+    marginTop: 10,
+    marginBottom: 10,
   },
   logout: {
     alignSelf: "flex-end",
@@ -144,7 +155,7 @@ const styles = StyleSheet.create({
   logoutContainer: {
     width: "95%",
   },
-  loginContainer: {
+  editContainer: {
     position: "absolute",
     right: 20,
   },

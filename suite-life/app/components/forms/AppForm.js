@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Formik } from "formik";
 
 export default function AppForm({
+  enableReinitialize = false,
   initialValues,
   onSubmit,
   validationSchema,
@@ -10,6 +11,7 @@ export default function AppForm({
 }) {
   return (
     <Formik
+      enableReinitialize={enableReinitialize}
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}

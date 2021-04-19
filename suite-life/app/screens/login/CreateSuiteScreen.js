@@ -36,6 +36,7 @@ export default function CreateSuiteScreen({ route, navigation }) {
 
     const suiteID = Math.floor(Math.random() * 90000000) + 10000000;
     const uid = auth.currentUser.uid;
+    const photoURL = auth.currentUser.photoURL;
     Promise.all([checkSuiteExists(suiteID), checkUserExists(uid)])
       .then((res) => {
         console.log("RES:", res);
@@ -43,7 +44,13 @@ export default function CreateSuiteScreen({ route, navigation }) {
         const userExists = res[1];
         if (!suiteExists && !userExists) {
           createSuite(suiteID, values.suiteName);
-          createUser(uid, route.params.name, route.params.pronouns, suiteID);
+          createUser(
+            uid,
+            route.params.name,
+            route.params.pronouns,
+            photoURL,
+            suiteID
+          );
           addUserToSuite(suiteID, uid);
           //setRegistered(true);
         } else if (suiteExists && !userExists) {

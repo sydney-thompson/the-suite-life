@@ -6,20 +6,14 @@ import {
   ScrollView,
   FlatList,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Alert,
-  Modal,
 } from "react-native";
 import AppButton from "../../components/AppButton";
-import ChoresButton from "../../components/ChoresButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
-import colors from "../../config/colors";
-
 import { auth, db } from "../../components/firebase/firebase";
 import * as choreFunctions from "../../components/firebase/chores";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
@@ -34,18 +28,11 @@ import colors from "../../config/colors";
 import Chore from "../../components/Chore";
 import AppTitle from "../../components/AppTitle";
 import CompleteChoreAction from "../../components/CompleteChoreAction";
-import ChoreForm from "../../components/forms/ChoreForm";
-import { add } from "react-native-reanimated";
-import daysOfWeek from "../../config/daysOfWeek";
 
 export default function ChoreScreen({ navigation }) {
   const [chores, setChores] = useState([]);
   const [user, setUser] = useState(null);
   const [suitemates, setSuitemates] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [initialAssignees, setInitialAssignees] = useState({});
-  const [initialValues, setInitialValues] = useState({});
-  const [onPress, setOnPress] = useState(null);
 
   useEffect(() => {
     getUserData().then((val) => {
@@ -64,12 +51,20 @@ export default function ChoreScreen({ navigation }) {
     };
   }, [user, setSuitemates]);
 
-  useEffect(() => {
+  // navigate to add screen
+  const navigate_to_add = () => {
+    let initialAssignees = {};
     suitemates.forEach((item) => {
       initialAssignees[item.id] = false;
-      setInitialAssignees(initialAssignees);
     });
-  }, [suitemates, setInitialAssignees]);
+    console.log("initialAssignees:", initialAssignees);
+    navigation.navigate(routes.CHORE_ADD, { navigation, initialAssignees });
+  };
+
+  // navigate to edit screen
+  const navigate_to_edit = (chore) => {
+    navigation.navigate(routes.CHORE_EDIT, { navigation, chore });
+  };
 
   function handleComplete(item) {
     choreFunctions.completeChore(item.id, user.suiteID).catch((err) => {
@@ -96,58 +91,8 @@ export default function ChoreScreen({ navigation }) {
     };
   }, [user, setChores]);
 
-  function addChore(values) {
-    // Send values to firebase and navigate back
-    choreFunctions.addNewChore(values);
-    // route.params.navigation.goBack();
-    setModalVisible(!modalVisible);
-  }
-
-  function submitEdits(values) {
-    if (user) {
-      choreFunctions
-        .updateChore(values, values.id, user.suiteID)
-        .then(() => {
-          setModalVisible(!modalVisible);
-        })
-        .catch((err) => {
-          console.error("HERE:", err);
-          Alert.alert("Something went wrong. Try again.");
-        });
-    } else {
-      Alert.alert("Something went wrong. Try again.");
-    }
-  }
-
   return (
     <Screen style={styles.screen}>
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <Screen style={styles.modal}>
-          <View style={styles.modalHeaderContainer}>
-            <View style={styles.deleteIconContainer}>
-              <TouchableWithoutFeedback
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <MaterialCommunityIcons
-                  name="close"
-                  color={colors.medium}
-                  size={30}
-                />
-              </TouchableWithoutFeedback>
-            </View>
-            <AppTitle style={defaultStyles.title}>New Chore</AppTitle>
-          </View>
-          <ChoreForm initialValues={initialValues} onSubmit={onPress} />
-        </Screen>
-      </Modal>
       <View style={[styles.cardContainer, styles.headerContainer]}>
         <AppText style={styles.headerText}>Chores</AppText>
       </View>
@@ -169,19 +114,7 @@ export default function ChoreScreen({ navigation }) {
                     <CompleteChoreAction onPress={() => handleComplete(item)} />
                   )}
                 >
-                  <TouchableOpacity
-                    onPress={() => {
-                      setInitialValues({
-                        ...item,
-                        day: daysOfWeek.filter((day) => {
-                          return day.label === item.day;
-                        })[0],
-                      });
-                      setOnPress((values) => submitEdits);
-                      setModalVisible(true);
-                    }}
-                  >
-                    {/* <TouchableOpacity onPress={() => navigate_to_edit(item)}> */}
+                  <TouchableOpacity onPress={() => navigate_to_edit(item)}>
                     <Chore
                       assignees={item.assignees}
                       day={item.day}
@@ -202,18 +135,7 @@ export default function ChoreScreen({ navigation }) {
         <AppButton
           title="Add chore +"
           color="secondary"
-          onPress={() => {
-            setInitialValues({
-              details: "",
-              name: "",
-              assignees: initialAssignees,
-              recurring: false,
-              day: null,
-            });
-            setOnPress(addChore);
-            setModalVisible(true);
-          }}
-          // onPress={() => navigate_to_add()}
+          onPress={() => navigate_to_add()}
         ></AppButton>
       </View>
     </Screen>
@@ -260,7 +182,7 @@ const styles = StyleSheet.create({
   headerText: {
     color: colors.white,
     fontWeight: "500",
-    fontSize: 40,
+    fontSize: 50,
   },
 
   topButtonContainer: {
@@ -272,24 +194,5 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: "center",
     width: "95%",
-  },
-
-  modalHeaderContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  deleteIconContainer: {
-    position: "absolute",
-    left: 10,
-  },
-  modal: {
-    alignItems: "flex-start",
-    backgroundColor: colors.white,
-    paddingTop: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginBottom: 0,
   },
 });
