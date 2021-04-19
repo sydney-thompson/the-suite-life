@@ -98,8 +98,7 @@ export default function ApartmentScreen({ navigation }) {
             keyExtractor={(transaction) => transaction.id}
             renderItem={({ item }) => (
               <TransactionOverview
-                amount={item.amount}
-                color={item.color}
+                amount={item.net_amount}
                 details={item.details}
                 title={item.title}
               />

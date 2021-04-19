@@ -2,30 +2,31 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import colors from "../config/colors";
 import AppText from "./AppText";
+import Dollar from "./Dollar";
 
 export default function TransactionOverview({
   amount,
-  color = "secondary",
   details,
   title,
   style = null,
   textStyle = null,
 }) {
-  // const formatter = new Intl.NumberFormat("en-US", {
-  //   style: "currency",
-  //   currency: "USD",
-  //   minimumFractionDigits: 2,
-  // });
+  let color = "medium";
+  if (parseFloat(amount) < 0) {
+    color = "danger";
+  } else if (parseFloat(amount) > 0) {
+    color = "primary";
+  }
+
   return (
     <View style={[styles.container, style]}>
       <AppText style={styles.title} numberOfLines={1}>
         {title}
       </AppText>
       <View style={styles.icon}>
-        <AppText style={[styles.text, styles.money, { color: colors[color] }]}>
-          {/* {formatter.format(amount)} */}
+        <Dollar style={[styles.text, styles.money, { color: colors[color] }]}>
           {amount}
-        </AppText>
+        </Dollar>
       </View>
       <AppText style={styles.detailsText} numberOfLines={2}>
         {details}
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-evenly",
     padding: 5,
-    width: 150,
+    width: 160,
   },
   icon: {
     margin: 10,

@@ -8,11 +8,10 @@ import Dollar from "./Dollar";
 
 const BalanceDisplay = ({ name, value }) => {
   // BalanceDisplay: component displaying balances on main Payment screen
+  const color = "medium";
   if (parseFloat(value) < 0) {
     color = "danger";
-  } else if (parseFloat(value) == 0) {
-    color = "medium";
-  } else {
+  } else if (parseFloat(value) > 0) {
     color = "primary";
   }
 

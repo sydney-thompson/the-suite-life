@@ -234,9 +234,11 @@ export function getUserTransactions(setTransactions, suiteID, uid = null) {
       if (snapshot.exists()) {
         snapshot.forEach((child) => {
           const transaction = child.val();
-          if (transaction.payer == uid || transaction.payees[uid]) {
+          if (transaction.payer == uid || transaction.payees == uid) {
+            const owed = transaction.payer == uid ? 1 : -1;
             const newTransaction = {
               id: child.ref.key,
+              net_amount: parseFloat(transaction.amount) * owed,
               color: transaction.payer == uid ? "danger" : "secondary",
               ...transaction,
             };
@@ -253,7 +255,12 @@ export function getUserTransactions(setTransactions, suiteID, uid = null) {
   );
 }
 
-export function getUserTransactionsTogether(setTransactions, suiteID, otheruid, uid = null) {
+export function getUserTransactionsTogether(
+  setTransactions,
+  suiteID,
+  otheruid,
+  uid = null
+) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
@@ -266,8 +273,10 @@ export function getUserTransactionsTogether(setTransactions, suiteID, otheruid, 
       if (snapshot.exists()) {
         snapshot.forEach((child) => {
           const transaction = child.val();
-          if ((transaction.payer == uid & transaction.payees == otheruid) 
-                || (transaction.payees == uid & transaction.payer == otheruid)) {
+          if (
+            (transaction.payer == uid) & (transaction.payees == otheruid) ||
+            (transaction.payees == uid) & (transaction.payer == otheruid)
+          ) {
             const newTransaction = {
               id: child.ref.key,
               color: transaction.payer == uid ? "danger" : "secondary",
