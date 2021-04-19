@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     fontSize: 40,
   },
-
   topButtonContainer: {
     alignItems: "center",
     marginBottom: -5,
