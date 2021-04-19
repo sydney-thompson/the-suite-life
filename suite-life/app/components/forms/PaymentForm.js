@@ -79,6 +79,7 @@ export default function PaymentForm({ initialValues, onSubmit }) {
         name="details"
         placeholder="Additional details"
         multiline
+        maxHeight={200}
         numberOfLines={6}
       />
       <FormPicker

@@ -51,36 +51,55 @@ export default function PaymentScreen({ navigation }) {
 
   useEffect(() => {
     // Balances placeholder: populate by retrieving suite members and balances;
-  // color depending on sign of balance value
-    getBalances().then((val) => {
-      setbalances(val);
-    });
+    // color depending on sign of balance value
+    let mounted = true;
+    if (mounted) {
+      getBalances().then((val) => {
+        setbalances(val);
+      });
+    }
+    return () => (mounted = false);
   });
 
   useEffect(() => {
-    getUserData().then((val) => {
-      setUser(val);
-    });
+    let mounted = true;
+    if (mounted) {
+      getUserData().then((val) => {
+        setUser(val);
+      });
+    }
+
+    return () => (mounted = false);
   }, [auth]);
 
   useEffect(() => {
-    if (user) {
-      getSuitemates(setSuitemates, user.suiteID);
-    } else {
-      setSuitemates([]);
+    let mounted = true;
+    if (mounted) {
+      if (user) {
+        getSuitemates(setSuitemates, user.suiteID);
+      } else {
+        setSuitemates([]);
+      }
     }
+
     return () => {
+      mounted = false;
       disconnectFromSuitemates();
     };
   }, [user, setSuitemates]);
 
   useEffect(() => {
-    if (suitemates.length > 0) {
-      for (const [key, value] of Object.entries(suitemates[0].balances)) {
-        initialPayees[key] = false;
-        setInitialPayees(initialPayees);
+    let mounted = true;
+    if (mounted) {
+      if (suitemates.length > 0) {
+        for (const [key, value] of Object.entries(suitemates[0].balances)) {
+          initialPayees[key] = false;
+          setInitialPayees(initialPayees);
+        }
       }
     }
+
+    return () => (mounted = false);
   }, [suitemates, setInitialPayees]);
 
   const addPayment = (values) => {
@@ -90,12 +109,12 @@ export default function PaymentScreen({ navigation }) {
     } else {
       var payees = [];
       const suitemates = Object.keys(values.payees);
-      suitemates.forEach(suitemate => {
-        if(values.payees[suitemate] == true){
-          payees.push(suitemate)
+      suitemates.forEach((suitemate) => {
+        if (values.payees[suitemate] == true) {
+          payees.push(suitemate);
         }
       });
-      
+
       addNewPayment({
         title: values.title,
         amount: values.amount,
@@ -171,7 +190,9 @@ export default function PaymentScreen({ navigation }) {
               )}
             >
               <TouchableOpacity
-                onPress={() => navigation.navigate(routes.PAYMENT_HISTORY, item)}
+                onPress={() =>
+                  navigation.navigate(routes.PAYMENT_HISTORY, item)
+                }
               >
                 <BalanceDisplay
                   name={item.name}

@@ -30,19 +30,27 @@ export default function ChoreForm({ initialValues, onSubmit }) {
   const [suitemates, setSuitemates] = useState([]);
 
   useEffect(() => {
-    getUserData().then((val) => {
-      setUser(val);
-    });
+    let mounted = true;
+    if (mounted) {
+      getUserData().then((val) => {
+        setUser(val);
+      });
+    }
+    return () => (mounted = false);
   }, [auth]);
 
   useEffect(() => {
-    if (user) {
-      getSuitemates(setSuitemates, user.suiteID);
-      console.log("suitemates:", suitemates.length);
-    } else {
-      setSuitemates([]);
+    let mounted = true;
+    if (mounted) {
+      if (user) {
+        getSuitemates(setSuitemates, user.suiteID);
+        console.log("suitemates:", suitemates.length);
+      } else {
+        setSuitemates([]);
+      }
     }
     return () => {
+      mounted = false;
       disconnectFromSuitemates();
     };
   }, [user, setSuitemates]);
@@ -50,9 +58,7 @@ export default function ChoreForm({ initialValues, onSubmit }) {
   return (
     <Form
       initialValues={initialValues}
-      onSubmit={(values) => {
-        onSubmit(values);
-      }}
+      onSubmit={onSubmit}
       validationSchema={validationSchema}
     >
       <FormField
@@ -70,6 +76,7 @@ export default function ChoreForm({ initialValues, onSubmit }) {
         autoCorrect={false}
         name="details"
         placeholder="Additional details"
+        maxHeight={200}
         multiline
         numberOfLines={6}
       />
