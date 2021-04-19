@@ -56,6 +56,17 @@ export default function PaymentHistoryScreen({ route }) {
     };
   }, [user, setTransactions]);
 
+  const balanceTransactions = () => {
+    console.log("balancing");
+  };
+
+  let title = "No History";
+  if (route.params.value < 0) {
+    title = `You owe ${route.params.name} $${route.params.value}`;
+  } else if (route.params.value > 0) {
+    title = `${route.params.name} owes you $${route.params.value}`;
+  }
+
   return (
     <Screen style={styles.screen}>
       <AddPaymentModal
@@ -70,7 +81,6 @@ export default function PaymentHistoryScreen({ route }) {
           return initialPayees;
         }}
       />
-
       <View
         style={[
           defaultStyles.headerContainer,
@@ -78,12 +88,15 @@ export default function PaymentHistoryScreen({ route }) {
         ]}
       >
         <AppTitle
-          style={[defaultStyles.headerText, { color: colors.secondary }]}
+          style={[
+            defaultStyles.headerText,
+            { color: colors.secondary, fontSize: 30 },
+          ]}
+          numberofLines={2}
         >
-          Transactions
+          {title}
         </AppTitle>
       </View>
-
       <View style={styles.container}>
         {transactions.length === 0 ? (
           <View style={defaultStyles.clearedContainer}>
@@ -100,6 +113,8 @@ export default function PaymentHistoryScreen({ route }) {
                 <Swipeable
                   renderRightActions={() => (
                     <CompleteAction
+                      color="danger"
+                      iconName="delete"
                       onPress={() => console.log("completed:", item)}
                     />
                   )}
@@ -123,7 +138,13 @@ export default function PaymentHistoryScreen({ route }) {
           </View>
         )}
       </View>
-
+      <View style={styles.buttonContainer}>
+        <AppButton
+          title="Balance Transactions"
+          color="primary"
+          onPress={balanceTransactions}
+        ></AppButton>
+      </View>
       <View style={styles.buttonContainer}>
         <AppButton
           title="Add transaction +"

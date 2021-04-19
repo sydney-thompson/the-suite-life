@@ -9,10 +9,10 @@ export default function Payment({ title, details, net_amount, color }) {
   return (
     <View style={styles.container}>
       <View style={styles.detailsContainer}>
-        <AppText style={styles.text}>{title}</AppText>
+        <AppText style={styles.title}>{title}</AppText>
         <AppText style={styles.text}>{details}</AppText>
       </View>
-      <Dollar style={[styles.text, { color: colors[color] }]}>
+      <Dollar style={[styles.amount, { color: colors[color] }]}>
         {net_amount}
       </Dollar>
     </View>
@@ -20,6 +20,9 @@ export default function Payment({ title, details, net_amount, color }) {
 }
 
 const styles = StyleSheet.create({
+  amount: {
+    fontSize: 24,
+  },
   container: {
     backgroundColor: colors.tertiary,
     flexDirection: "row",
@@ -30,7 +33,11 @@ const styles = StyleSheet.create({
   detailsContainer: {
     flex: 1,
   },
-  text: {
+  title: {
+    fontSize: 22,
     color: colors.black,
+  },
+  text: {
+    color: colors.dark,
   },
 });
