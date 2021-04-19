@@ -55,7 +55,10 @@ export default function PaymentHistoryScreen({ navigation }) {
               <HistoryItem
                 key= {item.id}
                 color="tertiary"
-                title={ item.title + "\nAmount: " + item.amount }
+                title={ item.title}
+                amount = { "\nAmount: $" + item.amount }
+                payer={ "\nPayer: " + 'person 1' }
+                involved={  "\nInvolved: " + 'person 1, person 2 ' }
               >
               </HistoryItem>
               )
@@ -66,7 +69,7 @@ export default function PaymentHistoryScreen({ navigation }) {
      <View style={styles.buttonContainer}>
        <AppButton
           title="Add Transaction"
-          color="primary"
+          color="secondary"
           onPress={() => navigate_to_add()}
         ></AppButton>
       </View>
@@ -105,7 +108,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: "center",
-    marginBottom: 20,
     width: "95%",
   },
 });
