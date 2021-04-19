@@ -56,9 +56,10 @@ export default function PaymentHistoryScreen({ navigation }) {
                 key= {item.id}
                 color="tertiary"
                 title={ item.title}
-                amount = { "\nAmount: $" + item.amount }
-                payer={ "\nPayer: " + 'person 1' }
-                involved={  "\nInvolved: " + 'person 1, person 2 ' }
+                amount = { "Amount: $" + item.amount }
+                payer={ "Payer: " + 'person 1' }
+                involved={  "Involved: " + 'person 1, person 2 ' }
+                details={"details"}
               >
               </HistoryItem>
               )
