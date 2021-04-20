@@ -11,8 +11,11 @@ import {
   Modal,
 } from "react-native";
 import AppButton from "../../components/AppButton";
+import ChoresButton from "../../components/ChoresButton";
 import AppText from "../../components/AppText";
 import Screen from "../../components/Screen";
+import colors from "../../config/colors";
+
 import { auth, db } from "../../components/firebase/firebase";
 import * as choreFunctions from "../../components/firebase/chores";
 import Swipeable from "react-native-gesture-handler/Swipeable";
@@ -27,7 +30,6 @@ import {
 } from "../../components/firebase/suites";
 import { getUserData } from "../../components/firebase/users";
 import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator";
-import colors from "../../config/colors";
 import Chore from "../../components/Chore";
 import AppTitle from "../../components/AppTitle";
 import CompleteChoreAction from "../../components/CompleteChoreAction";
@@ -178,7 +180,6 @@ export default function ChoreScreen({ navigation }) {
                       setModalVisible(true);
                     }}
                   >
-                    {/* <TouchableOpacity onPress={() => navigate_to_edit(item)}> */}
                     <Chore
                       assignees={item.assignees}
                       day={item.day}

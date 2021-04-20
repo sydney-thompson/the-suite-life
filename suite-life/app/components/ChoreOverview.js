@@ -31,7 +31,6 @@ export default function ChoreOverview({
           {frequencyAbbreviations[day]}
         </AppText>
       </View>
-      {/* <AppText style={styles.text}>{`${frequency}`}</AppText> */}
       <AppText
         style={styles.detailsText}
         numberOfLines={2}

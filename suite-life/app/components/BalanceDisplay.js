@@ -25,7 +25,7 @@ const BalanceDisplay = ({ name, value }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: defaultStyles.colors.white,
+    backgroundColor: defaultStyles.colors.tertiary,
     borderRadius: 15,
     flexDirection: "row",
     width: "100%",
