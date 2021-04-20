@@ -140,24 +140,6 @@ export default function PaymentHistoryScreen({ route }) {
                             user.suiteID,
                             [item]
                           );
-                          // Alert.alert(
-                          //   "Balance Transactions",
-                          //   `Continuing will mark this transaction as paid. Please ensure payments with ${route.params.name} are settled before continuing.`,
-                          //   [
-                          //     {
-                          //       text: "Continue",
-                          //       onPress: () => {
-                          //         paymentFunctions.completePayment(
-                          //           user.suiteID,
-                          //           item
-                          //         );
-                          //       },
-                          //     },
-                          //     {
-                          //       text: "Cancel",
-                          //     },
-                          //   ]
-                          // );
                         }}
                       />
                       <CompleteAction
