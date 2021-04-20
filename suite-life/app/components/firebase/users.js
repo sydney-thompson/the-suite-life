@@ -159,7 +159,7 @@ export function getUserData(uid = null) {
   });
 }
 
-export function getUserDataConnection(uid = null, setUser) {
+export function getUserDataConnection(setUser, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
@@ -171,8 +171,8 @@ export function getUserDataConnection(uid = null, setUser) {
     if (!uid) {
       uid = auth.currentUser.uid;
     }
-    const ref = db.ref(`users/${uid}`);
-    ref
+    const ref = db
+      .ref(`users/${uid}`)
       .on("value", (snapshot) => {
         if (snapshot.exists()) {
           const userData = snapshot.val();

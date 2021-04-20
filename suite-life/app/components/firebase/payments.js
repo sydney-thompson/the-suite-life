@@ -1,3 +1,4 @@
+import { Alert } from "react-native";
 import { auth, db } from "./firebase";
 
 export async function get_suiteID() {
@@ -68,11 +69,8 @@ export async function addPaymentToBalance(suitemate1, suitemate2, amount) {
     .then(async (snapshot) => {
       if (snapshot.exists()) {
         const balances = snapshot.val();
-        const curBalance = balances[suitemate2];
-        const newBalance = parseFloat(curBalance) + parseFloat(amount);
-        console.log(
-          `1: ${suitemate1} - 2: ${suitemate2} - amount: ${amount} - curBalance: ${curBalance} - newBalance: ${newBalance}`
-        );
+        const newBalance =
+          parseFloat(balances[suitemate2]) + parseFloat(amount);
         await update_balance(suitemate1, suitemate2, newBalance);
       }
     });
@@ -177,10 +175,23 @@ export async function updatePayment(info, firebaseID) {
 }
 
 // deletes payment from firebase
-export async function deletePayment(toDeleteID) {
-  var suiteID = await get_suiteID();
-  let toDelete = await db.ref(`/suites/${suiteID}/payments/${toDeleteID}`);
-  await toDelete.remove();
+export async function deletePayment(suiteID, payment) {
+  const choreRef = await db.ref(`/suites/${suiteID}/payments/${payment.id}/`);
+  await choreRef.remove();
+
+  if (!payment.completed) {
+    await addPaymentToBalance(
+      payment.payer,
+      payment.payees,
+      -1 * parseFloat(payment.amount)
+    );
+    await addPaymentToBalance(
+      payment.payees,
+      payment.payer,
+      parseFloat(payment.amount)
+    );
+  }
+  return `done - ${payment.id}`;
 }
 
 // gets balances from firebase and formats them for use on payment screen
@@ -222,8 +233,6 @@ export async function completePayment(suiteID, payment) {
     completed: true,
   });
 
-  console.log("updating balance");
-  console.log("payment:", payment);
   await addPaymentToBalance(
     payment.payer,
     payment.payees,
@@ -234,19 +243,41 @@ export async function completePayment(suiteID, payment) {
     payment.payer,
     parseFloat(payment.amount)
   );
-  console.log("done with that");
   return `done - ${payment.id}`;
 }
 
 export async function balancePayments(suiteID, payments) {
   try {
     for (let index = 0; index < payments.length; index++) {
-      const completedPromise = await completePayment(suiteID, payments[index]);
-      console.log(`i: ${index} - completedPromise: ${completedPromise}`);
+      if (!payments[index].completed) {
+        const completedPromise = await completePayment(
+          suiteID,
+          payments[index]
+        );
+      }
     }
     return true;
   } catch (err) {
     console.log(err);
     return false;
   }
+}
+
+export async function handleBalance(name, info, suiteID, transactions) {
+  Alert.alert(
+    info,
+    `This will clear your balance with ${name}. Please ensure that outstanding balances with ${name} are resolved in full before continuing.`,
+    [
+      {
+        text: "Continue",
+        onPress: () => {
+          balancePayments(suiteID, transactions).then((res) => {});
+        },
+      },
+      {
+        text: "Cancel",
+      },
+    ],
+    { cancelable: false }
+  );
 }

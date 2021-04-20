@@ -115,26 +115,15 @@ export default function PaymentScreen({ navigation }) {
           data={balances}
           keyExtractor={(balance) => balance.id.toString()}
           renderItem={({ item }) => (
-            <Swipeable
-              renderRightActions={() => (
-                <CompleteAction
-                  iconName="scale-balance"
-                  onPress={() => handleBalance(item)}
-                />
-              )}
+            <TouchableOpacity
+              onPress={() => navigation.navigate(routes.PAYMENT_HISTORY, item)}
             >
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate(routes.PAYMENT_HISTORY, item)
-                }
-              >
-                <BalanceDisplay
-                  name={item.name}
-                  key={item.id}
-                  value={item.value}
-                />
-              </TouchableOpacity>
-            </Swipeable>
+              <BalanceDisplay
+                name={item.name}
+                key={item.id}
+                value={item.value}
+              />
+            </TouchableOpacity>
           )}
           ItemSeparatorComponent={HorizontalSpaceSeparator}
         />

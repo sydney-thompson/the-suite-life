@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, FlatList, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
@@ -10,7 +16,10 @@ import {
   disconnectFromTransactions,
   getUserTransactionsTogether,
 } from "../../components/firebase/suites";
-import { getUserDataConnection } from "../../components/firebase/users";
+import {
+  getUserData,
+  getUserDataConnection,
+} from "../../components/firebase/users";
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 import AddPaymentModal from "../../components/AddPaymentModal";
@@ -26,7 +35,6 @@ export default function PaymentHistoryScreen({ route }) {
   const [transactions, setTransactions] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState("No outstanding payments");
-  const [isLoading, setIsLoading] = useState(false);
 
   const navigation = route.params.navigation;
   const otheruid = route.params.id;
@@ -36,8 +44,13 @@ export default function PaymentHistoryScreen({ route }) {
   };
 
   useEffect(() => {
-    getUserDataConnection(setUser);
-  }, []);
+    // getUserData().then((res) => {
+    //   setUser(res);
+    // });
+    getUserDataConnection(setUser).catch((err) => {
+      console.error("getUserDataConnection error:", err);
+    });
+  }, [setUser]);
 
   useEffect(() => {
     if (user) {
@@ -66,17 +79,11 @@ export default function PaymentHistoryScreen({ route }) {
         setTitle(
           `${route.params.name} owes you $${user.balances[route.params.id]}`
         );
+      } else {
+        setTitle("No outstanding payments");
       }
     }
-  }, [user]);
-
-  const handleBalance = async () => {
-    console.log("balancing");
-    setIsLoading(true);
-    paymentFunctions.balancePayments(user.suiteID, transactions).then((res) => {
-      setIsLoading(false);
-    });
-  };
+  }, [user, setTitle]);
 
   return (
     <Screen style={styles.screen}>
@@ -125,14 +132,57 @@ export default function PaymentHistoryScreen({ route }) {
                   renderRightActions={() => (
                     <View style={{ flexDirection: "row" }}>
                       <CompleteAction
-                        onPress={() =>
-                          paymentFunctions.completePayment(user.suiteID, item)
-                        }
+                        iconName="scale-balance"
+                        onPress={() => {
+                          paymentFunctions.handleBalance(
+                            route.params.name,
+                            `Balance ${item.name}`,
+                            user.suiteID,
+                            [item]
+                          );
+                          // Alert.alert(
+                          //   "Balance Transactions",
+                          //   `Continuing will mark this transaction as paid. Please ensure payments with ${route.params.name} are settled before continuing.`,
+                          //   [
+                          //     {
+                          //       text: "Continue",
+                          //       onPress: () => {
+                          //         paymentFunctions.completePayment(
+                          //           user.suiteID,
+                          //           item
+                          //         );
+                          //       },
+                          //     },
+                          //     {
+                          //       text: "Cancel",
+                          //     },
+                          //   ]
+                          // );
+                        }}
                       />
                       <CompleteAction
                         color="danger"
                         iconName="delete"
-                        onPress={() => console.log("deleted:", item)}
+                        onPress={() => {
+                          Alert.alert(
+                            "Delete",
+                            `Are you sure you want to delete this transaction?`,
+                            [
+                              {
+                                text: "Continue",
+                                onPress: () => {
+                                  paymentFunctions.deletePayment(
+                                    user.suiteID,
+                                    item
+                                  );
+                                },
+                              },
+                              {
+                                text: "Cancel",
+                              },
+                            ]
+                          );
+                        }}
                       />
                     </View>
                   )}
@@ -162,7 +212,14 @@ export default function PaymentHistoryScreen({ route }) {
           <AppButton
             title="Balance Transactions"
             color="primary"
-            onPress={handleBalance}
+            onPress={() =>
+              paymentFunctions.handleBalance(
+                route.params.name,
+                `Balance All Transactions`,
+                user.suiteID,
+                transactions
+              )
+            }
           ></AppButton>
         </View>
       )}
