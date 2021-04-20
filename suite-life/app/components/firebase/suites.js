@@ -274,8 +274,9 @@ export function getUserTransactionsTogether(
         snapshot.forEach((child) => {
           const transaction = child.val();
           if (
-            (transaction.payer == uid) & (transaction.payees == otheruid) ||
-            (transaction.payees == uid) & (transaction.payer == otheruid)
+            ((transaction.payer == uid) & (transaction.payees == otheruid) ||
+              (transaction.payees == uid) & (transaction.payer == otheruid)) &&
+            !transaction.completed
           ) {
             const owed = transaction.payer == uid ? 1 : -1;
             const newTransaction = {

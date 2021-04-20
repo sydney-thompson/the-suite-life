@@ -61,6 +61,23 @@ export async function update_balance(
     .set(new_amount);
 }
 
+export async function addPaymentToBalance(suitemate1, suitemate2, amount) {
+  await db
+    .ref(`users/${suitemate1}/balances/`)
+    .once("value")
+    .then(async (snapshot) => {
+      if (snapshot.exists()) {
+        const balances = snapshot.val();
+        const curBalance = balances[suitemate2];
+        const newBalance = parseFloat(curBalance) + parseFloat(amount);
+        console.log(
+          `1: ${suitemate1} - 2: ${suitemate2} - amount: ${amount} - curBalance: ${curBalance} - newBalance: ${newBalance}`
+        );
+        await update_balance(suitemate1, suitemate2, newBalance);
+      }
+    });
+}
+
 export async function add_transaction_balance(
   payer_ID,
   payee_ID,
@@ -117,7 +134,7 @@ export async function get_name(user_id) {
     .then(function (snapshot) {
       name = snapshot.val();
     });
-    //console.log(name)
+  //console.log(name)
   return name;
 }
 
@@ -166,38 +183,70 @@ export async function deletePayment(toDeleteID) {
   await toDelete.remove();
 }
 
-// gets balances from firebase and formats them for use on payment screen 
+// gets balances from firebase and formats them for use on payment screen
 export async function getBalances() {
   var uid = auth.currentUser.uid;
-  var balances = []
+  var balances = [];
 
-  // get balances 
-  await db
-    .ref(`users/${uid}/balances`)
-    .once("value")
-    .then(function (snapshot) {
-      balances = snapshot.val();
-    });
+  // get balances
+  await db.ref(`users/${uid}/balances`).once("value", (snapshot) => {
+    balances = snapshot.val();
+  });
 
-  // get list of suitemate ids 
-  var suitemate_ids = Object.keys(balances)
-  var formatted_balances = []
+  // get list of suitemate ids
+  var suitemate_ids = Object.keys(balances);
+  var formatted_balances = [];
   // loop over suitemate ids
   for (var suitemate_id in suitemate_ids) {
-    // get name of suitemate 
-    var name = await get_name(suitemate_ids[suitemate_id])
+    // get name of suitemate
+    var name = await get_name(suitemate_ids[suitemate_id]);
     // get id of suitemate
-    var id = suitemate_ids[suitemate_id]
+    var id = suitemate_ids[suitemate_id];
     // get value suitemate owes
-    var value = balances[suitemate_ids[suitemate_id]] 
-    // push all info to array that will be returned 
+    var value = balances[suitemate_ids[suitemate_id]];
+    // push all info to array that will be returned
     formatted_balances.push({
       name: name,
       id: id,
       value: value,
-    })
+    });
   }
 
-  // return formatted information 
-  return formatted_balances 
+  // return formatted information
+  return formatted_balances;
+}
+
+export async function completePayment(suiteID, payment) {
+  const choreRef = await db.ref(`/suites/${suiteID}/payments/${payment.id}/`);
+  await choreRef.update({
+    completed: true,
+  });
+
+  console.log("updating balance");
+  console.log("payment:", payment);
+  await addPaymentToBalance(
+    payment.payer,
+    payment.payees,
+    -1 * parseFloat(payment.amount)
+  );
+  await addPaymentToBalance(
+    payment.payees,
+    payment.payer,
+    parseFloat(payment.amount)
+  );
+  console.log("done with that");
+  return `done - ${payment.id}`;
+}
+
+export async function balancePayments(suiteID, payments) {
+  try {
+    for (let index = 0; index < payments.length; index++) {
+      const completedPromise = await completePayment(suiteID, payments[index]);
+      console.log(`i: ${index} - completedPromise: ${completedPromise}`);
+    }
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
 }

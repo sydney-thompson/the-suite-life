@@ -10,7 +10,7 @@ import {
   disconnectFromTransactions,
   getUserTransactionsTogether,
 } from "../../components/firebase/suites";
-import { getUserData } from "../../components/firebase/users";
+import { getUserDataConnection } from "../../components/firebase/users";
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 import AddPaymentModal from "../../components/AddPaymentModal";
@@ -25,6 +25,8 @@ export default function PaymentHistoryScreen({ route }) {
   const [user, setUser] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [title, setTitle] = useState("No outstanding payments");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigation = route.params.navigation;
   const otheruid = route.params.id;
@@ -34,9 +36,7 @@ export default function PaymentHistoryScreen({ route }) {
   };
 
   useEffect(() => {
-    getUserData().then((val) => {
-      setUser(val);
-    });
+    getUserDataConnection(setUser);
   }, []);
 
   useEffect(() => {
@@ -56,16 +56,27 @@ export default function PaymentHistoryScreen({ route }) {
     };
   }, [user, setTransactions]);
 
-  const balanceTransactions = () => {
-    console.log("balancing");
-  };
+  useEffect(() => {
+    if (user) {
+      if (user.balances[route.params.id] < 0) {
+        setTitle(
+          `You owe ${route.params.name} $${user.balances[route.params.id]}`
+        );
+      } else if (user.balances[route.params.id] > 0) {
+        setTitle(
+          `${route.params.name} owes you $${user.balances[route.params.id]}`
+        );
+      }
+    }
+  }, [user]);
 
-  let title = "No History";
-  if (route.params.value < 0) {
-    title = `You owe ${route.params.name} $${route.params.value}`;
-  } else if (route.params.value > 0) {
-    title = `${route.params.name} owes you $${route.params.value}`;
-  }
+  const handleBalance = async () => {
+    console.log("balancing");
+    setIsLoading(true);
+    paymentFunctions.balancePayments(user.suiteID, transactions).then((res) => {
+      setIsLoading(false);
+    });
+  };
 
   return (
     <Screen style={styles.screen}>
@@ -112,11 +123,18 @@ export default function PaymentHistoryScreen({ route }) {
               renderItem={({ item }) => (
                 <Swipeable
                   renderRightActions={() => (
-                    <CompleteAction
-                      color="danger"
-                      iconName="delete"
-                      onPress={() => console.log("completed:", item)}
-                    />
+                    <View style={{ flexDirection: "row" }}>
+                      <CompleteAction
+                        onPress={() =>
+                          paymentFunctions.completePayment(user.suiteID, item)
+                        }
+                      />
+                      <CompleteAction
+                        color="danger"
+                        iconName="delete"
+                        onPress={() => console.log("deleted:", item)}
+                      />
+                    </View>
                   )}
                 >
                   <TouchableOpacity
@@ -129,6 +147,7 @@ export default function PaymentHistoryScreen({ route }) {
                       details={item.details}
                       net_amount={item.net_amount}
                       color={item.color}
+                      completed={item.completed}
                     />
                   </TouchableOpacity>
                 </Swipeable>
@@ -138,13 +157,16 @@ export default function PaymentHistoryScreen({ route }) {
           </View>
         )}
       </View>
-      <View style={styles.buttonContainer}>
-        <AppButton
-          title="Balance Transactions"
-          color="primary"
-          onPress={balanceTransactions}
-        ></AppButton>
-      </View>
+      {transactions.length > 0 && (
+        <View style={styles.buttonContainer}>
+          <AppButton
+            title="Balance Transactions"
+            color="primary"
+            onPress={handleBalance}
+          ></AppButton>
+        </View>
+      )}
+
       <View style={styles.buttonContainer}>
         <AppButton
           title="Add transaction +"

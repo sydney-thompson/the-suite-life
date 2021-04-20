@@ -5,9 +5,17 @@ import AppText from "./AppText";
 import Dollar from "./Dollar";
 import colors from "../config/colors";
 
-export default function Payment({ title, details, net_amount, color }) {
+export default function Payment({
+  title,
+  details,
+  net_amount,
+  color,
+  completed,
+}) {
+  const backgroundColor = completed ? colors.medium : colors.tertiary;
+  color = completed ? "dark" : color;
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor }]}>
       <View style={styles.detailsContainer}>
         <AppText style={styles.title}>{title}</AppText>
         <AppText style={styles.text}>{details}</AppText>
@@ -24,7 +32,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   container: {
-    backgroundColor: colors.tertiary,
     flexDirection: "row",
     borderRadius: 15,
     alignItems: "center",

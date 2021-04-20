@@ -158,3 +158,31 @@ export function getUserData(uid = null) {
       });
   });
 }
+
+export function getUserDataConnection(uid = null, setUser) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
+  return new Promise((resolve, reject) => {
+    if (!auth.currentUser) {
+      console.error("auth has no user");
+      reject();
+    }
+    if (!uid) {
+      uid = auth.currentUser.uid;
+    }
+    const ref = db.ref(`users/${uid}`);
+    ref
+      .on("value", (snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          setUser(userData);
+        } else {
+          reject({ code: "user-not-found" });
+        }
+      })
+      .catch(function (error) {
+        reject(error);
+      });
+  });
+}
