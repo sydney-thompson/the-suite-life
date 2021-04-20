@@ -234,7 +234,10 @@ export function getUserTransactions(setTransactions, suiteID, uid = null) {
       if (snapshot.exists()) {
         snapshot.forEach((child) => {
           const transaction = child.val();
-          if (transaction.payer == uid || transaction.payees == uid) {
+          if (
+            (transaction.payer == uid || transaction.payees == uid) &&
+            !transaction.completed
+          ) {
             const owed = transaction.payer == uid ? 1 : -1;
             const newTransaction = {
               id: child.ref.key,

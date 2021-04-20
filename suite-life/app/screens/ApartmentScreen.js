@@ -91,7 +91,13 @@ export default function ApartmentScreen({ navigation }) {
 
       <View style={styles.cardContainer}>
         <AppTitle style={styles.cardText}>{`Transactions`}</AppTitle>
-        {
+        {transactions.length === 0 ? (
+          <View style={styles.clearedContainer}>
+            <AppText style={styles.clearedText}>
+              {"No outstanding transactions"}
+            </AppText>
+          </View>
+        ) : (
           <FlatList
             data={transactions}
             horizontal={true}
@@ -108,7 +114,7 @@ export default function ApartmentScreen({ navigation }) {
             )}
             ItemSeparatorComponent={VerticalSpaceSeparator}
           />
-        }
+        )}
       </View>
     </Screen>
   );
