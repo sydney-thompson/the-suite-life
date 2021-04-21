@@ -32,7 +32,7 @@ export async function createUser(uid, name, pronouns, photoURL, suiteID) {
   // get list of suitemates
   const suitemateList = await getSuitematesList(suiteID, uid);
   let emptyBalances = {};
-  suitemateList.keys().forEach((suitemate) => {
+  Object.keys(suitemateList).forEach((suitemate) => {
     emptyBalances[suitemate] = 0;
     const sm_balances = suitemateList[suitemate];
     sm_balances[uid] = 0;
