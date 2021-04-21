@@ -52,6 +52,7 @@ export default function ViewRulesScreen({ route, navigation }) {
           textStyle={styles.buttonText}
           color="white"
           onPress={() => {
+            updateRules(text);
             navigation.navigate(routes.SUITE, { navigation });
           }}
         />
