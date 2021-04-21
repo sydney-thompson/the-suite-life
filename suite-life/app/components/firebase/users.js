@@ -187,6 +187,8 @@ export function getUserDataConnection(setUser, uid = null) {
       .catch(function (error) {
         reject(error);
       });
+  })
+}
 
 export async function updateFeedback(text) {
   let uid = auth.currentUser.uid;
