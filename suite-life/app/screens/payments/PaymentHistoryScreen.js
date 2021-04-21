@@ -73,7 +73,7 @@ export default function PaymentHistoryScreen({ route }) {
     if (user) {
       if (user.balances[route.params.id] < 0) {
         setTitle(
-          `You owe ${route.params.name} $${user.balances[route.params.id]}`
+          `You owe ${route.params.name} $${user.balances[route.params.id]*(-1)}`
         );
       } else if (user.balances[route.params.id] > 0) {
         setTitle(

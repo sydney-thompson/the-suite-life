@@ -4,7 +4,7 @@ export async function getSuitematesList(suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
-  let suitemates = [];
+  let suitemates = {};
   db.ref(`suites/${suiteID}/users`).on(
     "value",
     (snapshot) => {
@@ -12,7 +12,7 @@ export async function getSuitematesList(suiteID, uid = null) {
         snapshot.forEach((child) => {
           const suitemate = child.val();
           if (suitemate.uid != uid) {
-            suitemates.push(suitemate.uid);
+            suitemates[suitemate.uid] = suitemate.balances;
           }
         });
       }
@@ -32,9 +32,11 @@ export async function createUser(uid, name, pronouns, photoURL, suiteID) {
   // get list of suitemates
   const suitemateList = await getSuitematesList(suiteID, uid);
   let emptyBalances = {};
-  suitemateList.forEach((suitemate) => {
-    // TO DO: make this the actual suitemate field as the key
+  suitemateList.keys().forEach((suitemate) => {
     emptyBalances[suitemate] = 0;
+    const sm_balances = suitemateList[suitemate];
+    sm_balances[uid] = 0;
+    db.ref(`users/${suitemate}/balances`).set(updated_balances);
   });
   if (suitemateList == []) {
     emptyBalances = "None";
