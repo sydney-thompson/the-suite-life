@@ -63,10 +63,10 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.black,
-    fontSize: 150,
+    fontSize: 130,
     flexWrap: "wrap",
     lineHeight: 135,
-    paddingTop: 30,
+    paddingTop: 50,
     paddingLeft: 40,
   },
 });
