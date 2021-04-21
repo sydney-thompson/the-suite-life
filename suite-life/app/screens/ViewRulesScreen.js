@@ -22,7 +22,7 @@ import routes from "../navigation/routes";
 export default function ViewRulesScreen({ route, navigation }) {
   const [text, setText] = React.useState("");
   const [editable, seteditable] = React.useState("");
-  console.log(route.params.rules);
+  //console.log(route.params.rules);
 
   return (
     <Screen style={styles.screen}>

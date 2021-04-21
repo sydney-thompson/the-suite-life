@@ -87,12 +87,14 @@ export default function AccountScreen({ navigation }) {
               color="secondary"
               onPress={() => {
                 runTests().then((res) => {
-                  navigation.navigate(routes.TESTING_RES, {
+                  navigation.navigate(routes.TESTING_RES);
+                  
+                  /*navigation.navigate(routes.TESTING_RES, {
                     //chores_res: res.chores_res,
                     //payments_res: res.payments_res,
                     suites_res: res.suites_res,
                     users_res: res.users_res,
-                  });
+                  }); */
                 });
               }}
             />
@@ -148,6 +150,7 @@ const styles = StyleSheet.create({
   },
   logout: {
     alignSelf: "flex-end",
+    
   },
   logoutContainer: {
     width: "95%",
