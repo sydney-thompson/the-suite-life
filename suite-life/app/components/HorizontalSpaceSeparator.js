@@ -6,7 +6,7 @@ export default function HorizontalSpaceSeparator() {
 }
 
 const styles = StyleSheet.create({
-  conatiner: {
+  container: {
     height: 12,
   },
 });
