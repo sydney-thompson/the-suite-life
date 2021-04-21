@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     padding: 10,
-    top: 200,
+    top: 230,
   },
   input: {
     height: 425,

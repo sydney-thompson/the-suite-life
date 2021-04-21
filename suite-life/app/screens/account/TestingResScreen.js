@@ -12,7 +12,7 @@ import AppText from "../../components/AppText";
 import AppTitle from "../../components/AppTitle";
 import colors from "../../config/colors";
 import Screen from "../../components/Screen";
-import { updateUserDetails } from "../../components/firebase/users";
+import { updateFeedback } from "../../components/firebase/users";
 import { TextInput } from "react-native-gesture-handler";
 import AppButton from "../../components/AppButton";
 
@@ -27,17 +27,17 @@ export default function TestingResScreen({ route, navigation }) {
       <View style={styles.titleContainer}>
         <TouchableWithoutFeedback
           onPress={() =>
-            updateRules(text).then(() => {
+            updateFeedback(text).then(() => {
               Keyboard.dismiss();
             })
           }
         >
-          <AppText style={styles.tagline}>Feedback Form</AppText>
+          <AppText style={styles.tagline}>Feedback</AppText>
         </TouchableWithoutFeedback>
       </View>
       <View style={styles.inputContainer}>
         <TextInput
-          defaultValue={"Please type comments or feedback here!"}
+          defaultValue={route.params.feedback}
           style={styles.input}
           editable={true}
           onChangeText={(text) => setText(text)}
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     padding: 10,
-    top: 250,
+    top: 235,
   },
   input: {
     height: 425,
@@ -101,8 +101,10 @@ const styles = StyleSheet.create({
     fontSize: 50,
     fontWeight: "bold",
     lineHeight: 25,
-    paddingLeft: 40,
+    paddingLeft: 70,
+    alignItems: "center",
     paddingTop: 75,
+    textAlign: 'center'
   },
   textTitle: {
     color: colors.black,
