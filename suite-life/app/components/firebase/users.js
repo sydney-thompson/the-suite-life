@@ -175,7 +175,7 @@ export function getUserDataConnection(setUser, uid = null) {
     }
     const ref = db
       .ref(`users/${uid}`)
-      .on("value", (snapshot) => {
+      .once("value", (snapshot) => {
         if (snapshot.exists()) {
           const userData = snapshot.val();
           setUser(userData);
