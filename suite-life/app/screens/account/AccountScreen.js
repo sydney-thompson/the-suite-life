@@ -80,7 +80,7 @@ export default function AccountScreen({ navigation }) {
 
           <AppText style={styles.pronouns}>{user ? user.pronouns : ""}</AppText>
           <View style={styles.spacer} />
-          <View style={styles.logoutContainer}>
+          <View style={styles.topContainer}>
             <AppButton
               style={styles.logout}
               title="Run Unit Testing"
@@ -149,8 +149,9 @@ const styles = StyleSheet.create({
   logout: {
     alignSelf: "flex-end",
   },
-  logoutContainer: {
+  topContainer: {
     width: "95%",
+    marginBottom: 10,
   },
   logoutContainer: {
     width: "95%",
