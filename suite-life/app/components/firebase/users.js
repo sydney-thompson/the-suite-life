@@ -4,7 +4,7 @@ export async function getSuitematesList(suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
-  let suitemates = [];
+  let suitemates = {};
   db.ref(`suites/${suiteID}/users`).on(
     "value",
     (snapshot) => {
@@ -12,7 +12,7 @@ export async function getSuitematesList(suiteID, uid = null) {
         snapshot.forEach((child) => {
           const suitemate = child.val();
           if (suitemate.uid != uid) {
-            suitemates.push(suitemate.uid);
+            suitemates[suitemate.uid] = suitemate.balances;
           }
         });
       }
@@ -32,9 +32,11 @@ export async function createUser(uid, name, pronouns, photoURL, suiteID) {
   // get list of suitemates
   const suitemateList = await getSuitematesList(suiteID, uid);
   let emptyBalances = {};
-  suitemateList.forEach((suitemate) => {
-    // TO DO: make this the actual suitemate field as the key
+  Object.keys(suitemateList).forEach((suitemate) => {
     emptyBalances[suitemate] = 0;
+    const sm_balances = suitemateList[suitemate];
+    sm_balances[uid] = 0;
+    db.ref(`users/${suitemate}/balances`).set(updated_balances);
   });
   if (suitemateList == []) {
     emptyBalances = "None";
@@ -158,6 +160,34 @@ export function getUserData(uid = null) {
         reject(error);
       });
   });
+}
+
+export function getUserDataConnection(setUser, uid = null) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
+  return new Promise((resolve, reject) => {
+    if (!auth.currentUser) {
+      console.error("auth has no user");
+      reject();
+    }
+    if (!uid) {
+      uid = auth.currentUser.uid;
+    }
+    const ref = db
+      .ref(`users/${uid}`)
+      .once("value", (snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          setUser(userData);
+        } else {
+          reject({ code: "user-not-found" });
+        }
+      })
+      .catch(function (error) {
+        reject(error);
+      });
+  })
 }
 
 export async function updateFeedback(text) {

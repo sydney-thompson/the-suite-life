@@ -3,11 +3,19 @@ import { StyleSheet, Text, View, TouchableWithoutFeedback } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../config/colors";
 
-const CompleteChoreAction = ({ onPress }) => {
+const CompleteAction = ({
+  color = "secondary",
+  iconName = "check",
+  onPress,
+}) => {
   return (
     <TouchableWithoutFeedback onPress={onPress}>
-      <View style={styles.container}>
-        <MaterialCommunityIcons name="check" size={35} color={colors.white} />
+      <View style={[styles.container, { backgroundColor: colors[color] }]}>
+        <MaterialCommunityIcons
+          name={iconName}
+          size={35}
+          color={colors.white}
+        />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -15,7 +23,6 @@ const CompleteChoreAction = ({ onPress }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.secondary,
     width: 70,
     height: "100%",
     justifyContent: "center",
@@ -24,4 +31,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CompleteChoreAction;
+export default CompleteAction;

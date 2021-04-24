@@ -1,31 +1,64 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Image, View } from "react-native";
 import colors from "../config/colors";
 import AppText from "./AppText";
+import Dollar from "./Dollar";
+import { getUserData } from "./firebase/users";
 
 export default function TransactionOverview({
   amount,
-  color = "secondary",
   details,
   title,
+  payer,
+  payee,
+  item,
   style = null,
   textStyle = null,
 }) {
-  // const formatter = new Intl.NumberFormat("en-US", {
-  //   style: "currency",
-  //   currency: "USD",
-  //   minimumFractionDigits: 2,
-  // });
+  const [payerData, setPayerData] = useState(null);
+  const [payeeData, setPayeeData] = useState(null);
+
+  useEffect(() => {
+    getUserData(payee).then((val) => {
+      setPayeeData(val);
+    });
+  }, []);
+
+  useEffect(() => {
+    getUserData(payer).then((val) => {
+      setPayerData(val);
+    });
+  }, []);
+
+  let color = "medium";
+  if (parseFloat(amount) < 0) {
+    color = "danger";
+  } else if (parseFloat(amount) > 0) {
+    color = "primary";
+  }
+
   return (
     <View style={[styles.container, style]}>
       <AppText style={styles.title} numberOfLines={1}>
         {title}
       </AppText>
+      {payerData && payeeData && (
+        <Image
+          source={
+            amount < 0
+              ? {
+                  uri: payerData.photoURL,
+                }
+              : { uri: payeeData.photoURL }
+          }
+          style={styles.iconImage}
+          resizeMode={"contain"}
+        />
+      )}
       <View style={styles.icon}>
-        <AppText style={[styles.text, styles.money, { color: colors[color] }]}>
-          {/* {formatter.format(amount)} */}
+        <Dollar style={[styles.text, styles.money, { color: colors[color] }]}>
           {amount}
-        </AppText>
+        </Dollar>
       </View>
       <AppText style={styles.detailsText} numberOfLines={2}>
         {details}
@@ -41,7 +74,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-evenly",
     padding: 5,
-    width: 150,
   },
   icon: {
     margin: 10,
@@ -57,6 +89,15 @@ const styles = StyleSheet.create({
   iconText: {
     color: colors.white,
     fontWeight: "500",
+  },
+  iconImage: {
+    alignItems: "center",
+    alignSelf: "center",
+    borderRadius: 20,
+    height: 40,
+    justifyContent: "center",
+    marginRight: 5,
+    width: 40,
   },
   title: {
     alignSelf: "center",

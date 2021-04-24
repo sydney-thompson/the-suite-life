@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
   },
   screen: {
     alignContent: "center",
+    paddingLeft: 20,
   },
   text: {
     flex: 1,

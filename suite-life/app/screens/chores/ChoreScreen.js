@@ -32,7 +32,7 @@ import { getUserData } from "../../components/firebase/users";
 import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator";
 import Chore from "../../components/Chore";
 import AppTitle from "../../components/AppTitle";
-import CompleteChoreAction from "../../components/CompleteChoreAction";
+import CompleteAction from "../../components/CompleteAction";
 import ChoreForm from "../../components/forms/ChoreForm";
 import { add } from "react-native-reanimated";
 import daysOfWeek from "../../config/daysOfWeek";
@@ -44,31 +44,62 @@ export default function ChoreScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [initialAssignees, setInitialAssignees] = useState({});
   const [initialValues, setInitialValues] = useState({});
-  const [onPress, setOnPress] = useState(null);
 
   useEffect(() => {
-    getUserData().then((val) => {
-      setUser(val);
-    });
+    let mounted = true;
+    if (mounted) {
+      getUserData().then((val) => {
+        setUser(val);
+      });
+    }
+    return () => {
+      mounted = false;
+    };
   }, [auth]);
 
   useEffect(() => {
-    if (user) {
-      getSuitemates(setSuitemates, user.suiteID);
-    } else {
-      setSuitemates([]);
+    let mounted = true;
+    if (mounted) {
+      if (user) {
+        getSuitemates(setSuitemates, user.suiteID);
+      } else {
+        setSuitemates([]);
+      }
     }
     return () => {
+      mounted = false;
       disconnectFromSuitemates();
     };
   }, [user, setSuitemates]);
 
   useEffect(() => {
-    suitemates.forEach((item) => {
-      initialAssignees[item.id] = false;
-      setInitialAssignees(initialAssignees);
-    });
+    let mounted = true;
+    if (mounted) {
+      suitemates.forEach((item) => {
+        initialAssignees[item.id] = false;
+        setInitialAssignees(initialAssignees);
+      });
+    }
+    return () => {
+      mounted = false;
+    };
   }, [suitemates, setInitialAssignees]);
+
+  useEffect(() => {
+    let mounted = true;
+    if (mounted) {
+      if (user) {
+        choreFunctions.getSuiteChores(setChores, user.suiteID);
+      } else {
+        setChores([]);
+      }
+    }
+
+    return () => {
+      mounted = false;
+      disconnectFromChores();
+    };
+  }, [user, setChores]);
 
   function handleComplete(item) {
     choreFunctions.completeChore(item.id, user.suiteID).catch((err) => {
@@ -77,33 +108,16 @@ export default function ChoreScreen({ navigation }) {
     });
   }
 
-  useEffect(() => {
-    getUserData().then((val) => {
-      setUser(val);
-    });
-  }, [auth]);
-
-  useEffect(() => {
-    if (user) {
-      choreFunctions.getSuiteChores(setChores, user.suiteID);
-    } else {
-      setChores([]);
-    }
-
-    return () => {
-      disconnectFromChores();
-    };
-  }, [user, setChores]);
-
   function addChore(values) {
+    console.log("adding");
     // Send values to firebase and navigate back
     choreFunctions.addNewChore(values);
-    // route.params.navigation.goBack();
     setModalVisible(!modalVisible);
   }
 
   function submitEdits(values) {
     if (user) {
+      console.log("values:", values);
       choreFunctions
         .updateChore(values, values.id, user.suiteID)
         .then(() => {
@@ -144,9 +158,19 @@ export default function ChoreScreen({ navigation }) {
             </View>
             <AppTitle style={defaultStyles.title}>New Chore</AppTitle>
           </View>
-          <ChoreForm initialValues={initialValues} onSubmit={onPress} />
+          <ChoreForm
+            initialValues={initialValues}
+            onSubmit={(values) => {
+              if (initialValues && (initialValues.id != null)) {
+                  submitEdits(values);
+              } else {
+                addChore(values);
+              }
+            }}
+          />
         </Screen>
       </Modal>
+
       <View style={[styles.cardContainer, styles.headerContainer]}>
         <AppText style={styles.headerText}>Chores</AppText>
       </View>
@@ -165,7 +189,7 @@ export default function ChoreScreen({ navigation }) {
               renderItem={({ item }) => (
                 <Swipeable
                   renderRightActions={() => (
-                    <CompleteChoreAction onPress={() => handleComplete(item)} />
+                    <CompleteAction onPress={() => handleComplete(item)} />
                   )}
                 >
                   <TouchableOpacity
@@ -176,7 +200,6 @@ export default function ChoreScreen({ navigation }) {
                           return day.label === item.day;
                         })[0],
                       });
-                      setOnPress((values) => submitEdits);
                       setModalVisible(true);
                     }}
                   >
@@ -208,7 +231,6 @@ export default function ChoreScreen({ navigation }) {
               recurring: false,
               day: null,
             });
-            setOnPress(addChore);
             setModalVisible(true);
           }}
           // onPress={() => navigate_to_add()}

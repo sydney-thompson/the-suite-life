@@ -91,22 +91,30 @@ export default function ApartmentScreen({ navigation }) {
 
       <View style={styles.cardContainer}>
         <AppTitle style={styles.cardText}>{`Transactions`}</AppTitle>
-        {
+        {transactions.length === 0 ? (
+          <View style={styles.clearedContainer}>
+            <AppText style={styles.clearedText}>
+              {"No outstanding transactions"}
+            </AppText>
+          </View>
+        ) : (
           <FlatList
             data={transactions}
             horizontal={true}
             keyExtractor={(transaction) => transaction.id}
             renderItem={({ item }) => (
               <TransactionOverview
-                amount={item.amount}
-                color={item.color}
+                amount={item.net_amount}
                 details={item.details}
                 title={item.title}
+                payer={item.payer}
+                payee={item.payees}
+                item={item}
               />
             )}
             ItemSeparatorComponent={VerticalSpaceSeparator}
           />
-        }
+        )}
       </View>
     </Screen>
   );
@@ -120,9 +128,10 @@ const styles = StyleSheet.create({
     width: "95%",
     margin: "2%",
     height: "33%",
+    flex: 1,
   },
   cardText: {
-    marginBottom: 10,
+    marginBottom: 5,
     fontSize: 30,
     fontWeight: "600",
   },
@@ -144,6 +153,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
     height: "25%",
     justifyContent: "center",
+    flex: 0,
   },
   welcomeText: {
     color: colors.white,

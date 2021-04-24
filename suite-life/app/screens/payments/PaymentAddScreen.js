@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/AppText";
 import TextInput2 from "../../components/TextInput2";
@@ -31,14 +31,44 @@ export default function PaymentAddScreen({navigation}) {
   const [suitemates, setSuitemates] = useState([]);
   const [initialhousemates, setIHmates] = useState({});
 
-  const AddTransaction = (values) => {
+  const AddTransaction = async(values) => {
     // Send values to firebase and navigate back
 
-    paymentFunctions.addNewPayment({
+    // check payer_id
+    var payer_id = await paymentFunctions.check_payer(values)
+
+    if(payer_id == ""){
+      Alert.alert("Invalid Name", 
+      "Payer name is invalid. Please enter valid suitemate name",
+      [{
+        text: "Cancel",
+        style: "cancel" 
+      }])
+      return 
+    }
+
+    var payees = ["IdIiDUvCu9bnb5QkdwmThJoAi863", "mJNOAnpK4ZTF5v9MeLSFa5nqCrH3"]
+
+    // TO DO change payees back 
+    //for (var payee_id in payees){
+    payees.forEach((payee_id) => {
+      if(payee_id == payer_id){
+        Alert.alert("Invalid Payee", 
+        "Payer cannot owe themselves money. Please remove payer from list.",
+        [{
+          text: "Cancel",
+          style: "cancel"
+        }])
+        return 
+        }
+    })
+
+    // TO DO change payees back 
+    await paymentFunctions.addNewPayment({
       'title': values.title,
       'amount': values.amount,
-      'payer': values.payer,
-      'payees': values.payees,
+      'payer': payer_id,
+      'payees': payees,
       'details': values.details,
       'completed': false
     })

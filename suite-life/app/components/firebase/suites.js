@@ -138,6 +138,7 @@ export function getSuitemates(
             getUserData(suitemate.uid).then((val) => {
               const newSuitemate = {
                 id: val.uid,
+                label: val.name,
                 ...val,
               };
               if (filter) {
@@ -233,10 +234,15 @@ export function getUserTransactions(setTransactions, suiteID, uid = null) {
       if (snapshot.exists()) {
         snapshot.forEach((child) => {
           const transaction = child.val();
-          if (transaction.payer == uid || transaction.payees[uid]) {
+          if (
+            (transaction.payer == uid || transaction.payees == uid) &&
+            !transaction.completed
+          ) {
+            const owed = transaction.payer == uid ? 1 : -1;
             const newTransaction = {
               id: child.ref.key,
-              color: transaction.payer == uid ? "danger" : "secondary",
+              net_amount: parseFloat(transaction.amount) * owed,
+              color: transaction.payer == uid ? "secondary" : "danger",
               ...transaction,
             };
             transactions.push(newTransaction);
@@ -250,6 +256,51 @@ export function getUserTransactions(setTransactions, suiteID, uid = null) {
       setTransactions([]);
     }
   );
+}
+
+export function getUserTransactionsTogether(
+  setTransactions,
+  suiteID,
+  otheruid,
+  uid = null
+) {
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
+
+  let transactions = [];
+  return db
+    .ref(`suites/${suiteID}/payments`)
+    .orderByKey()
+    .on(
+      "value",
+      (snapshot) => {
+        let transactions = [];
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const transaction = child.val();
+            if (
+              (transaction.payer == uid) & (transaction.payees == otheruid) ||
+              (transaction.payees == uid) & (transaction.payer == otheruid)
+            ) {
+              const owed = transaction.payer == uid ? 1 : -1;
+              const newTransaction = {
+                id: child.ref.key,
+                net_amount: parseFloat(transaction.amount) * owed,
+                color: transaction.payer == uid ? "secondary" : "danger",
+                ...transaction,
+              };
+              transactions = [newTransaction, ...transactions];
+            }
+          });
+        }
+        setTransactions(transactions);
+      },
+      (err) => {
+        console.error(err);
+        setTransactions([]);
+      }
+    );
 }
 
 export function createTestSuite() {

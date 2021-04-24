@@ -20,37 +20,29 @@ import { disconnectFromSuitemates, getSuitemates } from "../firebase/suites";
 import { getUserData } from "../firebase/users";
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required().label("Name"),
+  title: Yup.string().required().label("Title"),
+  amount: Yup.number().required().positive().label("Amount"),
+  payer: Yup.object().required().label("Payer"),
   details: Yup.string().label("Details"),
-  // day: Yup.string().required().label("Day of Week"),
 });
 
-export default function ChoreForm({ initialValues, onSubmit }) {
+export default function PaymentForm({ initialValues, onSubmit }) {
   const [user, setUser] = useState(null);
   const [suitemates, setSuitemates] = useState([]);
 
   useEffect(() => {
-    let mounted = true;
-    if (mounted) {
-      getUserData().then((val) => {
-        setUser(val);
-      });
-    }
-    return () => (mounted = false);
+    getUserData().then((val) => {
+      setUser(val);
+    });
   }, [auth]);
 
   useEffect(() => {
-    let mounted = true;
-    if (mounted) {
-      if (user) {
-        getSuitemates(setSuitemates, user.suiteID);
-        console.log("suitemates:", suitemates.length);
-      } else {
-        setSuitemates([]);
-      }
+    if (user) {
+      getSuitemates(setSuitemates, user.suiteID);
+    } else {
+      setSuitemates([]);
     }
     return () => {
-      mounted = false;
       disconnectFromSuitemates();
     };
   }, [user, setSuitemates]);
@@ -58,16 +50,26 @@ export default function ChoreForm({ initialValues, onSubmit }) {
   return (
     <Form
       initialValues={initialValues}
-      onSubmit={onSubmit}
+      onSubmit={(values) => {
+        onSubmit(values);
+      }}
       validationSchema={validationSchema}
     >
       <FormField
         display="AppTextInputLabel"
-        label="Name"
+        label="Title"
         autoCapitalize="none"
         autoCorrect={false}
-        name="name"
-        placeholder="Chore Name"
+        name="title"
+        placeholder="What is this for?"
+      />
+      <FormField
+        display="AppTextInputLabel"
+        label="Amount"
+        autoCapitalize="none"
+        autoCorrect={false}
+        name="amount"
+        placeholder="Amount payed"
       />
       <FormField
         display="AppTextInputLabel"
@@ -76,17 +78,16 @@ export default function ChoreForm({ initialValues, onSubmit }) {
         autoCorrect={false}
         name="details"
         placeholder="Additional details"
-        maxHeight={200}
         multiline
+        maxHeight={200}
         numberOfLines={6}
       />
       <FormPicker
-        name="day"
-        label="Day of Week"
-        items={daysOfWeek}
-        placeholder="Day of Week"
+        name="payer"
+        label="Payer"
+        items={suitemates}
+        placeholder="Who paid?"
       />
-      <RadioButton label="Repeat Weekly" name="recurring" />
       <AppText style={styles.suitemates}>Select suitemates assigned:</AppText>
       <View style={styles.checklistContainer}>
         <FlatList
@@ -94,7 +95,7 @@ export default function ChoreForm({ initialValues, onSubmit }) {
           keyExtractor={(suitemate) => suitemate.id.toString()}
           renderItem={({ item }) => (
             <Checkbox
-              name="assignees"
+              name="payees"
               suitemate={item.id}
               key={item.id}
               checkedIcon="check-box"
