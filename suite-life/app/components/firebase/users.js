@@ -4,15 +4,15 @@ export async function getSuitematesList(suiteID, uid = null) {
   if (!uid) {
     uid = auth.currentUser.uid;
   }
-  let suitemates = {};
-  db.ref(`suites/${suiteID}/users`).on(
+  let suitemates = [];
+  await db.ref(`suites/${suiteID}/users`).once(
     "value",
     (snapshot) => {
       if (snapshot.exists()) {
         snapshot.forEach((child) => {
           const suitemate = child.val();
           if (suitemate.uid != uid) {
-            suitemates[suitemate.uid] = suitemate.balances;
+            suitemates.push(suitemate.uid);
           }
         });
       }
@@ -32,15 +32,14 @@ export async function createUser(uid, name, pronouns, photoURL, suiteID) {
   // get list of suitemates
   const suitemateList = await getSuitematesList(suiteID, uid);
   let emptyBalances = {};
-  Object.keys(suitemateList).forEach((suitemate) => {
+  suitemateList.forEach((suitemate) => {
     emptyBalances[suitemate] = 0;
-    const sm_balances = suitemateList[suitemate];
-    sm_balances[uid] = 0;
-    db.ref(`users/${suitemate}/balances`).set(updated_balances);
+    db.ref(`users/${suitemate}/balances/${uid}`).set(0);
   });
   if (suitemateList == []) {
-    emptyBalances = "None";
+    emptyBalances = {};
   }
+  console.log("empty balances: ", emptyBalances);
 
   return db.ref(`users/${uid}`).set({
     // initialize to empty arrays by default

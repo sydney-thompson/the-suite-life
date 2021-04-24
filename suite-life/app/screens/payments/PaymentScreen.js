@@ -80,7 +80,7 @@ export default function PaymentScreen({ navigation }) {
   useEffect(() => {
     let mounted = true;
     if (mounted) {
-      if (suitemates.length > 0) {
+      if ((suitemates.length > 0) && (suitemates[0].balances)) {
         for (const [key, value] of Object.entries(suitemates[0].balances)) {
           initialPayees[key] = false;
           setInitialPayees(initialPayees);

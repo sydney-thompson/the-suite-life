@@ -205,6 +205,7 @@ export async function getBalances() {
   });
 
   // get list of suitemate ids
+  if (balances) {
   var suitemate_ids = Object.keys(balances);
   var formatted_balances = [];
   // loop over suitemate ids
@@ -221,6 +222,7 @@ export async function getBalances() {
       id: id,
       value: value,
     });
+  }
   }
 
   // return formatted information
