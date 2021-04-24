@@ -53,6 +53,7 @@ export async function createUser(uid, name, pronouns, photoURL, suiteID) {
     pronouns: pronouns,
     suiteID: suiteID,
     uid: uid,
+    feedback: "Please type comments or feedback here!", 
   });
 }
 
@@ -189,5 +190,31 @@ export function getUserDataConnection(setUser, uid = null) {
       .catch(function (error) {
         reject(error);
       });
+  })
+}
+
+export async function updateFeedback(text) {
+  let uid = auth.currentUser.uid;
+  db.ref(`users/${uid}/feedback`).set(text);
+
+  /*const ref = db.ref(`users/${uid}/feedback`);
+  ref.once("value", (snapshot) => {
+    if (snapshot.val() == "N/A") {
+      db.ref(`users/${uid}/feedback`).set(text);
+    } else {
+      const text_append = snapshot.val() + text;
+      db.ref(`users/${uid}/feedback`).set(text_append);
+    }
+  }); */
+  
+  return true;
+}
+
+export async function getFeedback() {
+  return new Promise((resolve, reject) => {
+    let uid = auth.currentUser.uid;
+    db.ref(`users/${uid}/feedback`).once("value", (snapshot) => {
+      resolve(snapshot.val());
+    });
   });
 }

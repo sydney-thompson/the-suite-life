@@ -14,7 +14,7 @@ import { googleLogout } from "../../components/auth/googleAuth";
 import RegistrationContext from "../../components/auth/RegistrationContext";
 
 import { auth } from "../../components/firebase/firebase";
-import { getUserData } from "../../components/firebase/users";
+import { getUserData, getFeedback } from "../../components/firebase/users";
 import Screen from "../../components/Screen";
 import colors from "../../config/colors";
 import defaultStyles from "../../config/styles";
@@ -80,20 +80,25 @@ export default function AccountScreen({ navigation }) {
 
           <AppText style={styles.pronouns}>{user ? user.pronouns : ""}</AppText>
           <View style={styles.spacer} />
-          <View style={styles.logoutContainer}>
+          <View style={styles.topContainer}>
             <AppButton
               style={styles.logout}
-              title="Run Unit Testing"
+              title="Submit Feedback"
               color="secondary"
               onPress={() => {
-                runTests().then((res) => {
+                getFeedback().then((res) => {
+                  navigation.navigate(routes.TESTING_RES, { feedback: res });
+                });
+                /*runTests().then((res) => {
+                  
+                  
                   navigation.navigate(routes.TESTING_RES, {
                     //chores_res: res.chores_res,
                     //payments_res: res.payments_res,
                     suites_res: res.suites_res,
                     users_res: res.users_res,
-                  });
-                });
+                  }); 
+                }); */
               }}
             />
           </View>
@@ -148,9 +153,11 @@ const styles = StyleSheet.create({
   },
   logout: {
     alignSelf: "flex-end",
+    
   },
-  logoutContainer: {
+  topContainer: {
     width: "95%",
+    marginBottom: 10,
   },
   logoutContainer: {
     width: "95%",

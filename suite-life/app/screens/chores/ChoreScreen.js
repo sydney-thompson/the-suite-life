@@ -161,8 +161,8 @@ export default function ChoreScreen({ navigation }) {
           <ChoreForm
             initialValues={initialValues}
             onSubmit={(values) => {
-              if (initialValues && !(initialValues.id == "")) {
-                submitEdits(values);
+              if (initialValues && (initialValues.id != null)) {
+                  submitEdits(values);
               } else {
                 addChore(values);
               }
