@@ -1,15 +1,13 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
-import AppButton from "../components/AppButton";
 import AppText from "../components/text/AppText";
 import AppTitle from "../components/text/AppTitle";
 import ChoreOverview from "../components/lists/ChoreOverview";
 import TransactionOverview from "../components/lists/TransactionOverview";
 import colors from "../config/colors";
+import { auth } from "firebase";
 import { getUserData } from "../components/firebase/users";
-import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import VerticalSpaceSeparator from "../components/lists/VerticalSpaceSeparator";
 import {
@@ -18,8 +16,6 @@ import {
   disconnectFromTransactions,
   getUserTransactions,
 } from "../components/firebase/suites";
-import { auth } from "firebase";
-import { db } from "../components/firebase/firebase";
 
 export default function ApartmentScreen({ navigation }) {
   const [user, setUser] = useState(null);
