@@ -6,27 +6,23 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import Swipeable from "react-native-gesture-handler/Swipeable";
 
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/text/AppText";
 import Screen from "../../components/Screen";
-import { auth, db } from "../../components/firebase/firebase";
 import * as paymentFunctions from "../../components/firebase/payments";
 import {
   disconnectFromPayments,
   getUserTransactionsTogether,
 } from "../../components/firebase/suites";
-import {
-  getUserData,
-  getUserDataConnection,
-} from "../../components/firebase/users";
+import { getUserDataConnection } from "../../components/firebase/users";
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 import AddPaymentModal from "../../components/AddPaymentModal";
 import AppTitle from "../../components/text/AppTitle";
 import Payment from "../../components/lists/Payment";
 import HorizontalSpaceSeparator from "../../components/lists/HorizontalSpaceSeparator";
-import Swipeable from "react-native-gesture-handler/Swipeable";
 import CompleteAction from "../../components/lists/CompleteAction";
 import colors from "../../config/colors";
 
@@ -44,9 +40,6 @@ export default function PaymentHistoryScreen({ route }) {
   };
 
   useEffect(() => {
-    // getUserData().then((res) => {
-    //   setUser(res);
-    // });
     getUserDataConnection(setUser).catch((err) => {
       console.error("getUserDataConnection error:", err);
     });
