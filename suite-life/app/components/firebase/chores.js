@@ -125,40 +125,22 @@ export function completeChore(choreID, suiteID) {
 }
 
 // deletes chore from firebase
-export async function deleteChore(toDeleteID) {
+export async function deleteChore(choreID) {
+  /**
+   * Delete chore {choreID} from suite of current user
+   * @param {string} choreID    Chore to delete from suite of current user
+   */
   var suiteID = await get_suiteID();
-  let toDelete = await db.ref(`/suites/${suiteID}/chores/${toDeleteID}`);
+  let toDelete = await db.ref(`/suites/${suiteID}/chores/${choreID}`);
   toDelete.remove();
 }
 
-// currently does not work
-export async function renderChoress() {
-  var suiteID = await get_suiteID();
-  const choreJSON1 = [];
-  const render_promise = new Promise((resolve, reject) => {
-    // grab chore data from firebase
-    db.ref()
-      .child("suites")
-      .child({ suiteID })
-      .child("chores")
-      .on("value", (snapshot) => {
-        let data = snapshot.val();
-        let keys = Object.keys(data);
-        // loop through firebase data and add data to choreJSON for use in rendering elements
-        keys.forEach((key) => {
-          choreJSON1.push({
-            name: data[key].name,
-            firebaseID: key,
-            frequency: data[key].frequency,
-          });
-        });
-      });
-  });
-  render_promise.then();
-  return choreJSON1;
-}
-
 export async function getSuiteChores(setChores, suiteID) {
+  /**
+   * Get live list of chores from suite {suiteID}
+   * @param {function} setChores   useEffect function to update chores with open connection to firebase
+   * @param {string} suiteID    ID of suite to pull chores
+   */
   let chores = [];
   return db
     .ref(`suites/${suiteID}/chores`)
