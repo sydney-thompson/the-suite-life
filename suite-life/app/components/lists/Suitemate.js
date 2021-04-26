@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
-import colors from "../config/colors";
-import AppText from "./text/AppText";
+import colors from "../../config/colors";
+import AppText from "../text/AppText";
 
 export default function Suitemate({
   name,

@@ -5,13 +5,13 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import AppButton from "../components/AppButton";
 import AppText from "../components/text/AppText";
 import AppTitle from "../components/text/AppTitle";
-import ChoreOverview from "../components/ChoreOverview";
-import TransactionOverview from "../components/TransactionOverview";
+import ChoreOverview from "../components/lists/ChoreOverview";
+import TransactionOverview from "../components/lists/TransactionOverview";
 import colors from "../config/colors";
 import { getUserData } from "../components/firebase/users";
 import routes from "../navigation/routes";
 import Screen from "../components/Screen";
-import VerticalSpaceSeparator from "../components/VerticalSpaceSeparator";
+import VerticalSpaceSeparator from "../components/lists/VerticalSpaceSeparator";
 import {
   disconnectFromChores,
   getUserChores,

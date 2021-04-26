@@ -24,10 +24,10 @@ import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 import AddPaymentModal from "../../components/AddPaymentModal";
 import AppTitle from "../../components/text/AppTitle";
-import Payment from "../../components/Payment";
-import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator";
+import Payment from "../../components/lists/Payment";
+import HorizontalSpaceSeparator from "../../components/lists/HorizontalSpaceSeparator";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import CompleteAction from "../../components/CompleteAction";
+import CompleteAction from "../../components/lists/CompleteAction";
 import colors from "../../config/colors";
 
 export default function PaymentHistoryScreen({ route }) {

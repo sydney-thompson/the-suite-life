@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import AppButton from "./AppButton";
-import AppText from "./text/AppText";
-import Dollar from "./Dollar";
-import colors from "../config/colors";
+import AppButton from "../AppButton";
+import AppText from "../text/AppText";
+import Dollar from "../text/Dollar";
+import colors from "../../config/colors";
 
 export default function Payment({
   title,

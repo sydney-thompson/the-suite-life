@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import AppText from "./text/AppText";
+import AppText from "../text/AppText";
 
-import colors from "../config/colors";
-import defaultStyles from "../config/styles";
-import Dollar from "./Dollar";
+import colors from "../../config/colors";
+import defaultStyles from "../../config/styles";
+import Dollar from "../text/Dollar";
 
 const BalanceDisplay = ({ name, value }) => {
   // BalanceDisplay: component displaying balances on main Payment screen

@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import AppText from "./text/AppText";
+import AppText from "./AppText";
 
 export default function Dollar({ children, style }) {
   const format = (amount) => {

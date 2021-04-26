@@ -15,7 +15,7 @@ import {
 import colors from "../../config/colors";
 import daysOfWeek from "../../config/daysOfWeek";
 import defaultStyles from "../../config/styles";
-import HorizontalSpaceSeparator from "../HorizontalSpaceSeparator";
+import HorizontalSpaceSeparator from "../lists/HorizontalSpaceSeparator";
 import { disconnectFromSuitemates, getSuitemates } from "../firebase/suites";
 import { getUserData } from "../firebase/users";
 

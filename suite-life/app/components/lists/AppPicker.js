@@ -9,11 +9,11 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import AppText from "./text/AppText";
+import AppText from "../text/AppText";
 import PickerItem from "./PickerItem";
-import Screen from "./Screen";
-import defaultStyles from "../config/styles";
-import colors from "../config/colors";
+import Screen from "../Screen";
+import defaultStyles from "../../config/styles";
+import colors from "../../config/colors";
 
 export default function AppPicker({
   items,

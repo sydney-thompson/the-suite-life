@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, FlatList } from "react-native";
 
-import colors from "../config/colors";
-import AppText from "./text/AppText";
-import { auth } from "./firebase/firebase";
-import { disconnectFromSuitemates, getSuitemates } from "./firebase/suites";
-import { getUserData } from "./firebase/users";
+import colors from "../../config/colors";
+import AppText from "../text/AppText";
+import { auth } from "../firebase/firebase";
+import { disconnectFromSuitemates, getSuitemates } from "../firebase/suites";
+import { getUserData } from "../firebase/users";
 import HorizontalSpaceSeparator from "./HorizontalSpaceSeparator";
 
 export default function Chore({
