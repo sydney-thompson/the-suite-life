@@ -10,10 +10,10 @@ import {
   Alert,
 } from "react-native";
 import AppButton from "../../components/AppButton";
-import AppText from "../../components/AppText";
+import AppText from "../../components/text/AppText";
 import BalanceDisplay from "../../components/BalanceDisplay";
 import Screen from "../../components/Screen";
-import AppTitle from "../../components/AppTitle";
+import AppTitle from "../../components/text/AppTitle";
 import colors from "../../config/colors";
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
@@ -80,7 +80,7 @@ export default function PaymentScreen({ navigation }) {
   useEffect(() => {
     let mounted = true;
     if (mounted) {
-      if ((suitemates.length > 0) && (suitemates[0].balances)) {
+      if (suitemates.length > 0 && suitemates[0].balances) {
         for (const [key, value] of Object.entries(suitemates[0].balances)) {
           initialPayees[key] = false;
           setInitialPayees(initialPayees);

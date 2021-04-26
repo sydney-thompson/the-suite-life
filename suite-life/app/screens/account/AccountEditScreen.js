@@ -10,8 +10,8 @@ import { googleLogout } from "../../components/auth/googleAuth";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Yup from "yup";
 
-import AppText from "../../components/AppText";
-import AppTitle from "../../components/AppTitle";
+import AppText from "../../components/text/AppText";
+import AppTitle from "../../components/text/AppTitle";
 import {
   AppForm as Form,
   AppFormField as FormField,
@@ -26,7 +26,6 @@ import { updateUserDetails } from "../../components/firebase/users";
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
   pronouns: Yup.string().optional().label("Pronouns"),
-
 });
 
 export default function AccountEditScreen({ route, navigation }) {

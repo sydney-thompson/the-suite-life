@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import AppButton from "../../components/AppButton";
-import AppText from "../../components/AppText";
+import AppText from "../../components/text/AppText";
 import Screen from "../../components/Screen";
 import { auth, db } from "../../components/firebase/firebase";
 import * as paymentFunctions from "../../components/firebase/payments";
@@ -23,7 +23,7 @@ import {
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 import AddPaymentModal from "../../components/AddPaymentModal";
-import AppTitle from "../../components/AppTitle";
+import AppTitle from "../../components/text/AppTitle";
 import Payment from "../../components/Payment";
 import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator";
 import Swipeable from "react-native-gesture-handler/Swipeable";
@@ -73,7 +73,7 @@ export default function PaymentHistoryScreen({ route }) {
     if (user) {
       if (user.balances[route.params.id] < 0) {
         setTitle(
-          `You owe ${route.params.name} $${user.balances[route.params.id]*(-1)}`
+          `You owe ${route.params.name} $${user.balances[route.params.id] * -1}`
         );
       } else if (user.balances[route.params.id] > 0) {
         setTitle(

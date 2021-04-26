@@ -15,8 +15,8 @@ import {
   AppFormField as FormField,
   SubmitButton,
 } from "../../components/forms";
-import AppText from "../../components/AppText";
-import AppTitle from "../../components/AppTitle";
+import AppText from "../../components/text/AppText";
+import AppTitle from "../../components/text/AppTitle";
 import colors from "../../config/colors";
 import { googleLogin, googleLogout } from "../../components/auth/googleAuth";
 import routes from "../../navigation/routes";

@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AppTitle from "./AppTitle";
+import AppTitle from "./text/AppTitle";
 import PaymentForm from "./forms/PaymentForm";
 import Screen from "./Screen";
 import colors from "../config/colors";

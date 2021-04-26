@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import AppButton from "../../components/AppButton";
 import ChoresButton from "../../components/ChoresButton";
-import AppText from "../../components/AppText";
+import AppText from "../../components/text/AppText";
 import Screen from "../../components/Screen";
 import colors from "../../config/colors";
 
@@ -31,7 +31,7 @@ import {
 import { getUserData } from "../../components/firebase/users";
 import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator";
 import Chore from "../../components/Chore";
-import AppTitle from "../../components/AppTitle";
+import AppTitle from "../../components/text/AppTitle";
 import CompleteAction from "../../components/CompleteAction";
 import ChoreForm from "../../components/forms/ChoreForm";
 import { add } from "react-native-reanimated";
@@ -161,8 +161,8 @@ export default function ChoreScreen({ navigation }) {
           <ChoreForm
             initialValues={initialValues}
             onSubmit={(values) => {
-              if (initialValues && (initialValues.id != null)) {
-                  submitEdits(values);
+              if (initialValues && initialValues.id != null) {
+                submitEdits(values);
               } else {
                 addChore(values);
               }

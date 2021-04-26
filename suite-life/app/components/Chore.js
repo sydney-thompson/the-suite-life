@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, FlatList } from "react-native";
 
 import colors from "../config/colors";
-import AppText from "./AppText";
+import AppText from "./text/AppText";
 import { auth } from "./firebase/firebase";
 import { disconnectFromSuitemates, getSuitemates } from "./firebase/suites";
 import { getUserData } from "./firebase/users";
@@ -60,15 +60,13 @@ export default function Chore({
         />
       </View>
       <AppText style={styles.text}>
-        { recurring ? `Every ${day}` : `${day}`}
+        {recurring ? `Every ${day}` : `${day}`}
       </AppText>
       <AppText
         style={styles.detailsText}
         numberOfLines={2}
       >{`${details}`}</AppText>
-      <AppText style={styles.rightText}>
-        {'Edit'}
-      </AppText>
+      <AppText style={styles.rightText}>{"Edit"}</AppText>
     </View>
   );
 }
@@ -129,5 +127,5 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontSize: 15,
     alignSelf: "flex-end",
-  }
+  },
 });

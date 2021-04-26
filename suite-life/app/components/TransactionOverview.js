@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Image, View } from "react-native";
 import colors from "../config/colors";
-import AppText from "./AppText";
+import AppText from "./text/AppText";
 import Dollar from "./Dollar";
 import { getUserData } from "./firebase/users";
 

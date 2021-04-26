@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
-import AppText from "../components/AppText";
+import AppText from "../components/text/AppText";
 import AppButton from "../components/AppButton";
-import AppTitle from "../components/AppTitle";
+import AppTitle from "../components/text/AppTitle";
 import colors from "../config/colors";
 import HorizontalSpaceSeparator from "../components/HorizontalSpaceSeparator";
 import routes from "../navigation/routes";

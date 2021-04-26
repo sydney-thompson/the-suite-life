@@ -8,8 +8,8 @@ import {
 } from "react-native";
 import { useState } from "react/cjs/react.development";
 import AppButton from "../../components/AppButton";
-import AppText from "../../components/AppText";
-import AppTitle from "../../components/AppTitle";
+import AppText from "../../components/text/AppText";
+import AppTitle from "../../components/text/AppTitle";
 import { googleLogout } from "../../components/auth/googleAuth";
 import RegistrationContext from "../../components/auth/RegistrationContext";
 
@@ -153,7 +153,6 @@ const styles = StyleSheet.create({
   },
   logout: {
     alignSelf: "flex-end",
-    
   },
   topContainer: {
     width: "95%",

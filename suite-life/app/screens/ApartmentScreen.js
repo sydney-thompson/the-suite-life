@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 import AppButton from "../components/AppButton";
-import AppText from "../components/AppText";
-import AppTitle from "../components/AppTitle";
+import AppText from "../components/text/AppText";
+import AppTitle from "../components/text/AppTitle";
 import ChoreOverview from "../components/ChoreOverview";
 import TransactionOverview from "../components/TransactionOverview";
 import colors from "../config/colors";

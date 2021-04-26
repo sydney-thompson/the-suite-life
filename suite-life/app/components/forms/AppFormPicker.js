@@ -4,7 +4,7 @@ import { useFormikContext } from "formik";
 
 import AppPicker from "../AppPicker";
 import ErrorMessage from "./ErrorMessage";
-import AppText from "../AppText";
+import AppText from "../text/AppText";
 
 import defaultStyles from "../../config/styles";
 

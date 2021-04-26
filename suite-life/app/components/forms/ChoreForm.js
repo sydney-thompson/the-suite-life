@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View, FlatList } from "react-native";
 import * as Yup from "yup";
 
-import AppText from "../AppText";
+import AppText from "../text/AppText";
 import { auth } from "../firebase/firebase";
 import {
   AppForm as Form,

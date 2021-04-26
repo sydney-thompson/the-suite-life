@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, Platform } from "react-native";
 
-import defaultStyles from "../config/styles";
+import defaultStyles from "../../config/styles";
 
 export default function AppTitle({ children, style, ...otherProps }) {
   return (

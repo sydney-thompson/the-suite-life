@@ -13,7 +13,7 @@ import {
   AppFormField as FormField,
   SubmitButton,
 } from "../../components/forms";
-import AppTitle from "../../components/AppTitle";
+import AppTitle from "../../components/text/AppTitle";
 import colors from "../../config/colors";
 import { auth } from "../../components/firebase/firebase";
 import {

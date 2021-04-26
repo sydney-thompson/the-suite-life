@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import colors from "../config/colors";
-import AppText from "./AppText";
+import AppText from "./text/AppText";
 
 export default function ChoreOverview({
   day,

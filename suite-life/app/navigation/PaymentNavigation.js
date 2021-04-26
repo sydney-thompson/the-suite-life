@@ -17,7 +17,6 @@ const PaymentNavigator = () => (
       name={routes.PAYMENT_HISTORY}
       component={PaymentHistoryScreen}
     />
-    <Stack.Screen name={routes.PAYMENT_ADD} component={PaymentAddScreen} />
   </Stack.Navigator>
 );
 
