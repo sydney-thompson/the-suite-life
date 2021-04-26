@@ -8,7 +8,6 @@ export default Object.freeze({
   CHORE_EDIT: "ChoreEdit",
   CHORE_NAV: "ChoreNavigation",
   CREATE_SUITE: "CreateSuite",
-  LOGIN: "Login",
   JOIN_SUITE: "JoinSuite",
   PAYMENTS: "Payments",
   PAYMENT_ADD: "PaymentAdd",
