@@ -23,11 +23,6 @@ import Screen from "../../components/Screen";
 import { auth } from "../../components/firebase/firebase";
 import { updateUserDetails } from "../../components/firebase/users";
 
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required().label("Name"),
-  pronouns: Yup.string().optional().label("Pronouns"),
-});
-
 export default function AccountEditScreen({ route, navigation }) {
   return (
     <Screen style={styles.screen}>
@@ -66,12 +61,12 @@ export default function AccountEditScreen({ route, navigation }) {
           name="pronouns"
           placeholder="Pronouns (optional)"
         />
-        <FormField
+        {/* <FormField
           autoCapitalize="none"
           autoCorrect={false}
           name="suiteid"
           placeholder="8 Digit Suite ID (optional)"
-        />
+        /> */}
         <View style={styles.spacer} />
         <SubmitButton title="Update" />
       </Form>
@@ -88,8 +83,8 @@ const styles = StyleSheet.create({
   },
   screen: {
     flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: colors.primary,
+    justifyContent: "flex-start",
+    backgroundColor: colors.white,
   },
   buttonContainer: {
     alignItems: "center",

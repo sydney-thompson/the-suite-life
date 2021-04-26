@@ -1,23 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { useState } from "react/cjs/react.development";
+
 import AppButton from "../../components/AppButton";
 import AppText from "../../components/text/AppText";
 import AppTitle from "../../components/text/AppTitle";
 import { googleLogout } from "../../components/auth/googleAuth";
 import RegistrationContext from "../../components/auth/RegistrationContext";
 
-import { auth } from "../../components/firebase/firebase";
-import { getUserData, getFeedback } from "../../components/firebase/users";
+import {
+  getFeedback,
+  getUserDataConnection,
+} from "../../components/firebase/users";
 import Screen from "../../components/Screen";
 import colors from "../../config/colors";
-import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 
 import {
@@ -26,24 +26,22 @@ import {
   TestSuites,
   TestUsers,
 } from "../../testing/unitTests";
+import EditAccountModal from "../../components/EditAccountModal";
 
 export default function AccountScreen({ navigation }) {
-  const [user, setUser] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [user, setUser] = useState({ name: "", pronouns: "" });
 
   useEffect(() => {
-    getUserData().then((val) => {
-      setUser(val);
+    getUserDataConnection(setUser).catch((err) => {
+      console.error("getUserDataConnection error:", err);
     });
-  }, [auth]);
+  }, []);
 
   async function runTests() {
-    //let chores_res = await TestChores();
-    //let payments_res = await TestPayments();
     let suites_res = await TestSuites();
     let users_res = await TestUsers();
     return {
-      //chores_res: chores_res,
-      //payments_res: payments_res,
       suites_res: suites_res,
       users_res: users_res,
     };
@@ -53,6 +51,14 @@ export default function AccountScreen({ navigation }) {
     <RegistrationContext.Consumer>
       {(setRegistered) => (
         <Screen style={styles.screen}>
+          <EditAccountModal
+            initialName={user.name}
+            initialPronouns={user.pronouns}
+            uid={user.uid}
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+          />
+
           {user && (
             <Image
               source={{
@@ -65,11 +71,13 @@ export default function AccountScreen({ navigation }) {
           <View style={styles.editContainer}>
             <TouchableWithoutFeedback
               onPress={() => {
-                navigation.navigate(routes.ACCOUNT_EDIT, {
-                  name: user.name,
-                  pronouns: user.pronouns,
-                });
+                setModalVisible(true);
               }}
+              //   navigation.navigate(routes.ACCOUNT_EDIT, {
+              //     name: user.name,
+              //     pronouns: user.pronouns,
+              //   });
+              // }}
             >
               <AppText style={styles.edit}>Edit</AppText>
             </TouchableWithoutFeedback>
@@ -170,5 +178,24 @@ const styles = StyleSheet.create({
   },
   spacer: {
     flex: 1,
+  },
+
+  modalHeaderContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
+  deleteIconContainer: {
+    position: "absolute",
+    left: 10,
+  },
+  modal: {
+    alignItems: "flex-start",
+    backgroundColor: colors.white,
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginBottom: 0,
   },
 });
