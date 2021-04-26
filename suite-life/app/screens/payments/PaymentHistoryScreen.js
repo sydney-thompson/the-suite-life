@@ -13,7 +13,7 @@ import Screen from "../../components/Screen";
 import { auth, db } from "../../components/firebase/firebase";
 import * as paymentFunctions from "../../components/firebase/payments";
 import {
-  disconnectFromTransactions,
+  disconnectFromPayments,
   getUserTransactionsTogether,
 } from "../../components/firebase/suites";
 import {
@@ -65,7 +65,7 @@ export default function PaymentHistoryScreen({ route }) {
     }
 
     return () => {
-      disconnectFromTransactions();
+      disconnectFromPayments();
     };
   }, [user, setTransactions]);
 

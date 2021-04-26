@@ -13,7 +13,7 @@ import VerticalSpaceSeparator from "../components/lists/VerticalSpaceSeparator";
 import {
   disconnectFromChores,
   getUserChores,
-  disconnectFromTransactions,
+  disconnectFromPayments,
   getUserTransactions,
 } from "../components/firebase/suites";
 
@@ -48,7 +48,7 @@ export default function ApartmentScreen({ navigation }) {
     }
 
     return () => {
-      disconnectFromTransactions();
+      disconnectFromPayments();
     };
   }, [user, setTransactions]);
 
