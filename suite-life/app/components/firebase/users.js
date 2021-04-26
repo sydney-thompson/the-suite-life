@@ -49,29 +49,9 @@ export async function createUser(uid, name, pronouns, photoURL, suiteID) {
     pronouns: pronouns,
     suiteID: suiteID,
     uid: uid,
-    feedback: "Please type comments or feedback here!", 
+    feedback: "Please type comments or feedback here!",
   });
 }
-
-// ONE-TIME USE initialize balance for all test users to zero
-/* export async function temporary_InitBalances() {
-
-  const testsuite_ids = ["3W6ZDlPdDhWmPxvPGVBSa9U3A4l2", "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2",
-  "IdIiDUvCu9bnb5QkdwmThJoAi863", "SbyVXqeCisX8IvEnZosxFHytqw53",
-  "b3q3PcKIfdgUapdHbkCLgsUtWQ83", "mJNOAnpK4ZTF5v9MeLSFa5nqCrH3",
-  "oiZtBtU47TW3C6UA7tFq5KV5UW12", "yjGDsdtY9jNjjpyMaEWHFFzhQa43",
-  "z0Ax8ZANZdSZNFdr3o7TeDdDAal2"];
-
-  testsuite_ids.forEach((suitemate) => {
-    let emptyBalances = {};
-    testsuite_ids.forEach((sub_suitemate) => {
-      if (sub_suitemate != suitemate) {
-        emptyBalances[sub_suitemate] = 0
-      }
-    });
-    db.ref(`users/${suitemate}/balances`).set(emptyBalances);
-  });
-}  */
 
 // Delete a user
 export function deleteUser(toDeleteID) {
@@ -186,23 +166,13 @@ export function getUserDataConnection(setUser, uid = null) {
       .catch(function (error) {
         reject(error);
       });
-  })
+  });
 }
 
 export async function updateFeedback(text) {
   let uid = auth.currentUser.uid;
   db.ref(`users/${uid}/feedback`).set(text);
 
-  /*const ref = db.ref(`users/${uid}/feedback`);
-  ref.once("value", (snapshot) => {
-    if (snapshot.val() == "N/A") {
-      db.ref(`users/${uid}/feedback`).set(text);
-    } else {
-      const text_append = snapshot.val() + text;
-      db.ref(`users/${uid}/feedback`).set(text_append);
-    }
-  }); */
-  
   return true;
 }
 
