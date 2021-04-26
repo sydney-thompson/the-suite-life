@@ -1,6 +1,5 @@
 export default Object.freeze({
   ACCOUNT: "Account",
-  ACCOUNT_EDIT: "AccountEdit",
   ACCOUNT_NAV: "AccountNavigation",
   APARTMENT: "Apartment",
   CHORES: "Chores",
