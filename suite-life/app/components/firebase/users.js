@@ -202,10 +202,21 @@ export function getUserDataConnection(setUser, uid = null) {
           reject({ code: "user-not-found" });
         }
       })
-      .catch(function (error) {
+      .catch((error) => {
         reject(error);
       });
   });
+}
+
+export function disconnectFromUser(uid = null) {
+  /**
+   * Disconnects from active firebase listener to users/uid
+   * @param {string} uid (default null)    user ID of listener connection. If null, use current user.
+   */
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
+  db.ref(`users/${uid}`).off("value");
 }
 
 export async function updateFeedback(text) {

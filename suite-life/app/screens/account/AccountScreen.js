@@ -13,6 +13,7 @@ import { googleLogout } from "../../components/auth/googleAuth";
 import RegistrationContext from "../../components/auth/RegistrationContext";
 
 import {
+  disconnectFromUser,
   getFeedback,
   getUserDataConnection,
 } from "../../components/firebase/users";
@@ -36,7 +37,11 @@ export default function AccountScreen({ navigation }) {
     getUserDataConnection(setUser).catch((err) => {
       console.error("getUserDataConnection error:", err);
     });
-  }, []);
+
+    return () => {
+      disconnectFromUser(user.uid);
+    };
+  }, [setUser]);
 
   async function runTests() {
     let suites_res = await TestSuites();
