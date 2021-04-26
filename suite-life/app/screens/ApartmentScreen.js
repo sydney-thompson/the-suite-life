@@ -65,7 +65,7 @@ export default function ApartmentScreen({ navigation }) {
         )}
       </View>
       <View style={styles.cardContainer}>
-        <AppTitle style={styles.cardText}>{`Chores`}</AppTitle>
+        <AppTitle style={styles.cardText}>{`Your Chores`}</AppTitle>
         {chores.length === 0 ? (
           <View style={styles.clearedContainer}>
             <AppText style={styles.clearedText}>{"All cleared!"}</AppText>
@@ -90,7 +90,7 @@ export default function ApartmentScreen({ navigation }) {
       </View>
 
       <View style={styles.cardContainer}>
-        <AppTitle style={styles.cardText}>{`Transactions`}</AppTitle>
+        <AppTitle style={styles.cardText}>{`Your Transactions`}</AppTitle>
         {transactions.length === 0 ? (
           <View style={styles.clearedContainer}>
             <AppText style={styles.clearedText}>

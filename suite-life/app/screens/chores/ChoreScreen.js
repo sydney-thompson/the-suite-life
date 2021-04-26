@@ -172,7 +172,7 @@ export default function ChoreScreen({ navigation }) {
       </Modal>
 
       <View style={[styles.cardContainer, styles.headerContainer]}>
-        <AppText style={styles.headerText}>Chores</AppText>
+        <AppText style={styles.headerText}>All Chores</AppText>
       </View>
 
       <View style={[styles.cardContainer, { flex: 1 }]}>
