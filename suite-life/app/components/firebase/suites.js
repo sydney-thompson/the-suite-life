@@ -185,31 +185,6 @@ export function disconnectFromSuitemates(suiteID) {
    */
   db.ref(`suites/${suiteID}/users`).off("value");
 }
-export async function getSuitematesList(suiteID) {
-  /**
-   * Get static list of suitemates from {suiteID}, including current user
-   * @param {string} suiteID   ID of suite to query for suitemates
-   */
-  let suitemates = [];
-  db.ref(`suites/${suiteID}/users`)
-    .orderByChild("name")
-    .on(
-      "value",
-      (snapshot) => {
-        if (snapshot.exists()) {
-          console.log("snapshot val");
-          snapshot.forEach((child) => {
-            const suitemate = child.val();
-            suitemates.push(suitemate.uid);
-          });
-        }
-      },
-      (err) => {
-        console.error(err);
-      }
-    );
-  return suitemates;
-}
 
 export async function getRules() {
   /**
