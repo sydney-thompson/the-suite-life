@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Image, View } from "react-native";
-import colors from "../config/colors";
-import AppText from "./AppText";
-import Dollar from "./Dollar";
-import { getUserData } from "./firebase/users";
+import colors from "../../config/colors";
+import AppText from "../text/AppText";
+import Dollar from "../text/Dollar";
+import { getUserData } from "../firebase/users";
 
 export default function TransactionOverview({
   amount,

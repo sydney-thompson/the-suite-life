@@ -2,6 +2,9 @@ import { Alert } from "react-native";
 import { auth, db } from "./firebase";
 
 export async function get_suiteID() {
+  /**
+   * Get suite id of the currently logged-in user
+   */
   var uid = auth.currentUser.uid;
   var data = null;
 
@@ -16,7 +19,11 @@ export async function get_suiteID() {
 
 // gets one payment's data from firebase
 export async function loadPaymentData(firebaseID) {
-  var suiteID = await get_suiteID();
+  /**
+   * Load details for payment {firebaseID} from current user's suite
+   * @param {string}  firebaseID  ID of payment to load
+   */
+  var suiteID = await getSuite();
   var returnData = [];
   await db
     .ref(`/suites/${suiteID}/payments/${firebaseID}`)
@@ -34,10 +41,12 @@ export async function loadPaymentData(firebaseID) {
   return returnData;
 }
 
-// ID_of_main_person:
-//     balances:
-//         ID_of_sub_person: balance
 export async function get_balance(ID_of_main_person, ID_of_sub_person) {
+  /**
+   * Get balance between main person and sub person
+   * @param {string}  ID_of_main_person  ID of person to display (usually logged-in user)
+   * @param {string}  ID_of_sub_person  ID of person to query (usually not logged-in user)
+   */
   var curr_balance = 0;
   // update payer information
   await db
@@ -49,10 +58,13 @@ export async function get_balance(ID_of_main_person, ID_of_sub_person) {
   return curr_balance;
 }
 
-// ID_of_main_person:
-//     balances:
-//         ID_of_sub_person: balance
 export async function update_balance(
+  /**
+   * Update balance between main person and sub person
+   * @param {string}  ID_of_main_person  ID of person to display (usually logged-in user)
+   * @param {string}  ID_of_sub_person  ID of person to query (usually not logged-in user)
+   * @param {number}  new_amount        New balance amount to update in firebase
+   */
   ID_of_main_person,
   ID_of_sub_person,
   new_amount
@@ -63,6 +75,12 @@ export async function update_balance(
 }
 
 export async function addPaymentToBalance(suitemate1, suitemate2, amount) {
+  /**
+   * Incorporate payment to balance. Adds {amount} to balance owed TO suitemate1 BY suitemate2
+   * @param {string}  suitemate1  ID of person to display (usually logged-in user)
+   * @param {string}  suitemate2  ID of person to query (usually not logged-in user)
+   * @param {number}  amount      Payment amount - owed TO suitemate1 BY suitemate2
+   */
   await db
     .ref(`users/${suitemate1}/balances/`)
     .once("value")
@@ -81,6 +99,12 @@ export async function add_transaction_balance(
   payee_ID,
   payment_amount
 ) {
+  /**
+   * Incorporate payment to balance. Adds {payment_amount} to balance owed TO suitemate1 BY suitemate2
+   * @param {string}  payer_ID  ID of payer (usually logged-in user)
+   * @param {string}  payee_ID  ID of payee (usually not logged-in user)
+   * @param {number}  payment_amount  Payment amount - owed TO payer BY payee
+   */
   var curr_balance = 0;
   // update payer information
   curr_balance = await get_balance(payer_ID, payee_ID);
@@ -96,11 +120,24 @@ export async function add_transaction_balance(
 
 // function to push new payment to firebase
 export async function addNewPayment(info) {
+  /**
+   * Add new payment to firebase
+   * @param {Object}  info    payment information - structured as follows:
+   *      {
+   *          amount: int,
+   *          completed: boolean,
+   *          details: string,
+   *          payees: {
+   *            suitemateID (string): boolean, (need entry for each suitemateID)
+   *          },
+   *          payer: string,
+   *          title: string,
+   *      }
+   */
   var suiteID = await get_suiteID();
 
   // get number of payees
   const num_payees = info.payees.length;
-  //const num_payees = info.payees.keys().length;
   // get amount each person pays
   var payee_amount = Number(info.amount) / (num_payees + 1);
   payee_amount = payee_amount.toFixed(2);
@@ -124,6 +161,10 @@ export async function addNewPayment(info) {
 }
 
 export async function get_name(user_id) {
+  /**
+   * Get user display name
+   * @param {string}  user_id   ID of user to query
+   */
   var name = "";
   // get name based on user id
   await db
@@ -132,37 +173,25 @@ export async function get_name(user_id) {
     .then(function (snapshot) {
       name = snapshot.val();
     });
-  //console.log(name)
   return name;
-}
-
-export async function check_payer(info) {
-  var suiteID = await get_suiteID();
-  var data = [];
-  // get list of users in a suite
-  await db
-    .ref(`suites/${suiteID}/users`)
-    .once("value")
-    .then(function (snapshot) {
-      data = snapshot.val();
-    });
-  // for each user id in suite/suiteID/users
-  for (var suitemate in data) {
-    var suitemate_uid = data[suitemate]["uid"];
-    // get name to compare
-    var this_name = await get_name(suitemate_uid);
-    // check if names are the same
-    if (this_name.toLowerCase() == info.payer.toLowerCase()) {
-      // return user id if names the same
-      return suitemate_uid;
-    }
-  }
-  // return "" if no matching name found
-  return "";
 }
 
 // function to update data in firebase
 export async function updatePayment(info, firebaseID) {
+  /**
+   * Update payment {firebaseID} with information in info
+   * @param {Object}  info    payment information - structured as follows:
+   *      {
+   *          amount: int,
+   *          completed: boolean,
+   *          details: string,
+   *          payees: {
+   *            suitemateID (string): boolean, (need entry for each suitemateID)
+   *          },
+   *          payer: string,
+   *          title: string,
+   *      }
+   */
   var suiteID = await get_suiteID();
   await db.ref(`/suites/${suiteID}/payments/${firebaseID}`).set({
     amount: info.amount,
@@ -174,8 +203,21 @@ export async function updatePayment(info, firebaseID) {
   });
 }
 
-// deletes payment from firebase
 export async function deletePayment(suiteID, payment) {
+  /**
+   * Delete payment from firebase. Adjusts balances with users before deletion.
+   * @param {string} suiteID   ID of suite to search for payment
+   * @param {Object} payment   payment object structured as follows:
+   *                           {
+   *                               amount: int,
+   *                               completed: boolean,
+   *                               details: string,
+   *                               id: string, (firebase ID of payment)
+   *                               payees: string, (firebase ID of payee)
+   *                               payer: string, (firebase ID of payer)
+   *                               title: string,
+   *                            }
+   */
   const choreRef = await db.ref(`/suites/${suiteID}/payments/${payment.id}/`);
   await choreRef.remove();
 
@@ -194,8 +236,10 @@ export async function deletePayment(suiteID, payment) {
   return `done - ${payment.id}`;
 }
 
-// gets balances from firebase and formats them for use on payment screen
 export async function getBalances() {
+  /**
+   * Get list of balances between current user and suitemates from firebase
+   */
   var uid = auth.currentUser.uid;
   var balances = [];
 
@@ -206,23 +250,23 @@ export async function getBalances() {
 
   // get list of suitemate ids
   if (balances) {
-  var suitemate_ids = Object.keys(balances);
-  var formatted_balances = [];
-  // loop over suitemate ids
-  for (var suitemate_id in suitemate_ids) {
-    // get name of suitemate
-    var name = await get_name(suitemate_ids[suitemate_id]);
-    // get id of suitemate
-    var id = suitemate_ids[suitemate_id];
-    // get value suitemate owes
-    var value = balances[suitemate_ids[suitemate_id]];
-    // push all info to array that will be returned
-    formatted_balances.push({
-      name: name,
-      id: id,
-      value: value,
-    });
-  }
+    var suitemate_ids = Object.keys(balances);
+    var formatted_balances = [];
+    // loop over suitemate ids
+    for (var suitemate_id in suitemate_ids) {
+      // get name of suitemate
+      var name = await get_name(suitemate_ids[suitemate_id]);
+      // get id of suitemate
+      var id = suitemate_ids[suitemate_id];
+      // get value suitemate owes
+      var value = balances[suitemate_ids[suitemate_id]];
+      // push all info to array that will be returned
+      formatted_balances.push({
+        name: name,
+        id: id,
+        value: value,
+      });
+    }
   }
 
   // return formatted information
@@ -230,6 +274,18 @@ export async function getBalances() {
 }
 
 export async function completePayment(suiteID, payment) {
+  /**
+   * Mark {payment} object as complete in suite {suiteID}
+   * @param {Object}  payment    payment information - structured as follows:
+   *      {
+   *          amount: int,
+   *          completed: boolean,
+   *          details: string,
+   *          payees: string,
+   *          payer: string,
+   *          title: string,
+   *      }
+   */
   const choreRef = await db.ref(`/suites/${suiteID}/payments/${payment.id}/`);
   await choreRef.update({
     completed: true,
@@ -249,6 +305,20 @@ export async function completePayment(suiteID, payment) {
 }
 
 export async function balancePayments(suiteID, payments) {
+  /**
+   * Mark all payments in {payments} as complete (which also adjusts balance)
+   * @param {string} suiteID   ID of suite to search for payments
+   * @param {list} payments    list of payments to mark as complete.
+   *                           Each payment should be structured as follows:
+   *       {
+   *          amount: int,
+   *          completed: boolean,
+   *          details: string,
+   *          payees: string,
+   *          payer: string,
+   *          title: string,
+   *      }
+   */
   try {
     for (let index = 0; index < payments.length; index++) {
       if (!payments[index].completed) {
@@ -266,6 +336,22 @@ export async function balancePayments(suiteID, payments) {
 }
 
 export async function handleBalance(name, info, suiteID, transactions) {
+  /**
+   * Ask user for confirmation to perform balance, then balance
+   * @param {string} name   Name of user to balance with
+   * @param {string} info   Information to display in alert
+   * @param {string} suiteID   ID of suite to which users belong
+   * @param {list} transactions    list of payments to mark as complete.
+   *                           Each payment should be structured as follows:
+   *       {
+   *          amount: int,
+   *          completed: boolean,
+   *          details: string,
+   *          payees: string,
+   *          payer: string,
+   *          title: string,
+   *      }
+   */
   Alert.alert(
     info,
     `This will clear your balance with ${name}. Please ensure that outstanding balances with ${name} are resolved in full before continuing.`,

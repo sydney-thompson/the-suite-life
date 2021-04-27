@@ -15,8 +15,8 @@ import {
   AppFormField as FormField,
   SubmitButton,
 } from "../../components/forms";
-import AppText from "../../components/AppText";
-import AppTitle from "../../components/AppTitle";
+import AppText from "../../components/text/AppText";
+import AppTitle from "../../components/text/AppTitle";
 import colors from "../../config/colors";
 import { googleLogin, googleLogout } from "../../components/auth/googleAuth";
 import routes from "../../navigation/routes";
@@ -27,6 +27,7 @@ import {
   createTestSuite,
   switchSuiteID,
 } from "../../components/firebase/suites";
+import UserDetailsForm from "../../components/forms/UserDetailsForm";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
@@ -34,6 +35,14 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function RegisterScreen({ navigation }) {
+  const onSubmit = (values) => {
+    const successCallback = () => {
+      navigation.navigate(routes.JOIN_SUITE, values);
+    };
+    const failureCallback = () => {};
+    googleLogin().then(successCallback, failureCallback);
+  };
+
   return (
     <RegistrationContext.Consumer>
       {(context) => (
@@ -75,30 +84,10 @@ export default function RegisterScreen({ navigation }) {
               </TouchableWithoutFeedback>
             </View>
           </View>
-          <Form
-            initialValues={{
-              name: "",
-              pronouns: "",
-            }}
-            onSubmit={(values) => {
-              const successCallback = () => {
-                navigation.navigate(routes.JOIN_SUITE, values);
-              };
-              const failureCallback = () => {};
-              googleLogin().then(successCallback, failureCallback);
-            }}
-            validationSchema={validationSchema}
-          >
-            <FormField autoCorrect={false} name="name" placeholder="Name" />
-            <FormField
-              autoCapitalize="none"
-              autoCorrect={false}
-              name="pronouns"
-              placeholder="Pronouns (optional)"
-            />
-            <View style={styles.spacer} />
-            <SubmitButton title="Create Account" />
-          </Form>
+          <UserDetailsForm
+            initialValues={{ name: "", pronouns: "" }}
+            onSubmit={onSubmit}
+          />
         </Screen>
       )}
     </RegistrationContext.Consumer>

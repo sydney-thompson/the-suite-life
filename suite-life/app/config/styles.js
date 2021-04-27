@@ -45,7 +45,6 @@ export default {
     height: "11%",
     justifyContent: "center",
   },
-
   headerText: {
     color: colors.white,
     fontWeight: "500",

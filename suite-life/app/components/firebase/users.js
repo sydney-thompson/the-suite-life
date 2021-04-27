@@ -1,6 +1,10 @@
 import { auth, db } from "./firebase";
 
 export async function getSuitematesList(suiteID, uid = null) {
+  /**
+   * Get static list of suitemates from {suiteID}, including current user
+   * @param {string} suiteID   ID of suite to query for suitemates
+   */
   if (!uid) {
     uid = auth.currentUser.uid;
   }
@@ -24,8 +28,15 @@ export async function getSuitematesList(suiteID, uid = null) {
   return suitemates;
 }
 
-// Creates a new user
 export async function createUser(uid, name, pronouns, photoURL, suiteID) {
+  /**
+   * Create a new user
+   * @param {string} uid   User id
+   * @param {string} name  User's name
+   * @param {string} pronouns User's pronouns
+   * @param {string} photoURL URL for user's profile photo
+   * @param {string} suiteID  ID of suite to which user belongs
+   */
   const userExists = await checkUserExists(uid);
   if (userExists) throw new Error("User already exists");
 
@@ -49,38 +60,26 @@ export async function createUser(uid, name, pronouns, photoURL, suiteID) {
     pronouns: pronouns,
     suiteID: suiteID,
     uid: uid,
-    feedback: "Please type comments or feedback here!", 
+    feedback: "Please type comments or feedback here!",
   });
 }
 
-// ONE-TIME USE initialize balance for all test users to zero
-/* export async function temporary_InitBalances() {
-
-  const testsuite_ids = ["3W6ZDlPdDhWmPxvPGVBSa9U3A4l2", "8lh1VeoQrtb3gAWFEDt7Dfbwvzd2",
-  "IdIiDUvCu9bnb5QkdwmThJoAi863", "SbyVXqeCisX8IvEnZosxFHytqw53",
-  "b3q3PcKIfdgUapdHbkCLgsUtWQ83", "mJNOAnpK4ZTF5v9MeLSFa5nqCrH3",
-  "oiZtBtU47TW3C6UA7tFq5KV5UW12", "yjGDsdtY9jNjjpyMaEWHFFzhQa43",
-  "z0Ax8ZANZdSZNFdr3o7TeDdDAal2"];
-
-  testsuite_ids.forEach((suitemate) => {
-    let emptyBalances = {};
-    testsuite_ids.forEach((sub_suitemate) => {
-      if (sub_suitemate != suitemate) {
-        emptyBalances[sub_suitemate] = 0
-      }
-    });
-    db.ref(`users/${suitemate}/balances`).set(emptyBalances);
-  });
-}  */
-
 // Delete a user
 export function deleteUser(toDeleteID) {
+  /**
+   * Delete user from firebase
+   * @param {string} toDeleteID   ID of user to delete
+   */
   let toDelete = db.ref(`/users/${toDeleteID}`);
   toDelete.remove();
 }
 
 // Checks if the uid is in the users database
 export function checkUserExists(uid = null) {
+  /**
+   * Check that user exists in firebase
+   * @param {string} uid (default null)   ID of user to check if they exist. If null, user current user's id
+   */
   return new Promise((resolve, reject) => {
     try {
       if (!uid) {
@@ -109,6 +108,11 @@ export function checkUserExists(uid = null) {
 
 // Updates the user's associated suite
 export function updateUserSuite(uid, suiteID) {
+  /**
+   * Updates the suite of user {uid}
+   * @param {string} uid   ID of user to update suite id
+   * @param {string} suiteID  ID of new suite to update in user obejct
+   */
   return db.ref(`users/${uid}`).update({
     // initialize to empty arrays by default
     suiteID: suiteID,
@@ -116,6 +120,12 @@ export function updateUserSuite(uid, suiteID) {
 }
 
 export function updateUserDetails(uid, name, pronouns) {
+  /**
+   * Updates editable user details
+   * @param {string} uid   ID of user to update
+   * @param {string} name  Updated user name
+   * @param {string} pronouns Updated user pronouns
+   */
   return new Promise((resolve, reject) => {
     Promise.all([checkUserExists(uid)])
       .then((res) => {
@@ -134,6 +144,10 @@ export function updateUserDetails(uid, name, pronouns) {
 }
 
 export function getUserData(uid = null) {
+  /**
+   * Get one-time user information from firebase
+   * @param {string} uid (default null)  ID of user to query for data. If null, user current user.
+   */
   if (!uid) {
     uid = auth.currentUser.uid;
   }
@@ -162,6 +176,11 @@ export function getUserData(uid = null) {
 }
 
 export function getUserDataConnection(setUser, uid = null) {
+  /**
+   * Get connection to user object in firebase
+   * @param {function} setUser   state update function to handle changes to user object
+   * @param {string} uid (default null) ID of user to extablish connection. If null, user current user
+   */
   if (!uid) {
     uid = auth.currentUser.uid;
   }
@@ -175,7 +194,7 @@ export function getUserDataConnection(setUser, uid = null) {
     }
     const ref = db
       .ref(`users/${uid}`)
-      .once("value", (snapshot) => {
+      .on("value", (snapshot) => {
         if (snapshot.exists()) {
           const userData = snapshot.val();
           setUser(userData);
@@ -183,30 +202,38 @@ export function getUserDataConnection(setUser, uid = null) {
           reject({ code: "user-not-found" });
         }
       })
-      .catch(function (error) {
+      .catch((error) => {
         reject(error);
       });
-  })
+  });
+}
+
+export function disconnectFromUser(uid = null) {
+  /**
+   * Disconnects from active firebase listener to users/uid
+   * @param {string} uid (default null)    user ID of listener connection. If null, use current user.
+   */
+  if (!uid) {
+    uid = auth.currentUser.uid;
+  }
+  db.ref(`users/${uid}`).off("value");
 }
 
 export async function updateFeedback(text) {
+  /**
+   * Update current user's feedback in firebase
+   * @param {string} text   user feedback
+   */
   let uid = auth.currentUser.uid;
   db.ref(`users/${uid}/feedback`).set(text);
 
-  /*const ref = db.ref(`users/${uid}/feedback`);
-  ref.once("value", (snapshot) => {
-    if (snapshot.val() == "N/A") {
-      db.ref(`users/${uid}/feedback`).set(text);
-    } else {
-      const text_append = snapshot.val() + text;
-      db.ref(`users/${uid}/feedback`).set(text_append);
-    }
-  }); */
-  
   return true;
 }
 
 export async function getFeedback() {
+  /**
+   * Retrieve user's feedback from firebase
+   */
   return new Promise((resolve, reject) => {
     let uid = auth.currentUser.uid;
     db.ref(`users/${uid}/feedback`).once("value", (snapshot) => {

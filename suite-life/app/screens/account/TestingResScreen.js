@@ -8,14 +8,13 @@ import {
   Keyboard,
 } from "react-native";
 
-import AppText from "../../components/AppText";
-import AppTitle from "../../components/AppTitle";
+import AppText from "../../components/text/AppText";
+import AppTitle from "../../components/text/AppTitle";
 import colors from "../../config/colors";
 import Screen from "../../components/Screen";
 import { updateFeedback } from "../../components/firebase/users";
 import { TextInput } from "react-native-gesture-handler";
 import AppButton from "../../components/AppButton";
-
 
 export default function TestingResScreen({ route, navigation }) {
   const [text, setText] = React.useState("");
@@ -51,7 +50,7 @@ export default function TestingResScreen({ route, navigation }) {
           color="white"
           onPress={() => {
             //navigation.navigate(routes.SUITE, { navigation });
-            navigation.goBack()
+            navigation.goBack();
           }}
         />
       </View>
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
     paddingLeft: 70,
     alignItems: "center",
     paddingTop: 75,
-    textAlign: 'center'
+    textAlign: "center",
   },
   textTitle: {
     color: colors.black,
@@ -118,10 +117,6 @@ const styles = StyleSheet.create({
     top: 0,
   },
 });
-
-
-
-
 
 /*export default function TestingResScreen({ route, navigation }) {
 
