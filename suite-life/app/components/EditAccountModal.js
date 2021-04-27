@@ -6,49 +6,32 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as Yup from "yup";
+
 import AppTitle from "./text/AppTitle";
-import PaymentForm from "./forms/PaymentForm";
-import Screen from "./Screen";
 import colors from "../config/colors";
 import defaultStyles from "../config/styles";
-import { addNewPayment } from "./firebase/payments";
+import Screen from "./Screen";
 
-export default function AddPaymentModal({
+import { updateUserDetails } from "./firebase/users";
+import UserDetailsForm from "./forms/UserDetailsForm";
+
+export default function EditAccountModal({
+  initialName,
+  initialPronouns,
   modalVisible,
   setModalVisible,
-  initialPayees,
+  uid,
 }) {
-  const addPayment = (values) => {
-    const payerID = values.payer.id;
-    if (values.payees[payerID]) {
-      Alert.alert("You cannot add the payer to the assigned suitemates");
-    } else {
-      var payees = [];
-      const suitemates = Object.keys(values.payees);
-      suitemates.forEach((suitemate) => {
-        if (values.payees[suitemate] == true) {
-          payees.push(suitemate);
-        }
-      });
-
-      addNewPayment({
-        title: values.title,
-        amount: values.amount,
-        payer: values.payer.id,
-        payees: payees,
-        details: values.details,
-        completed: false,
+  const onSubmit = (values) => {
+    updateUserDetails(uid, values.name, values.pronouns)
+      .then(() => {
+        setModalVisible(false);
       })
-        .then(() => {
-          setModalVisible(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          Alert.alert("Something went wrong, please try again.");
-        });
-    }
+      .catch((err) => {
+        console.log("err:", err);
+      });
   };
-
   return (
     <Modal
       animationType="slide"
@@ -72,19 +55,11 @@ export default function AddPaymentModal({
               />
             </TouchableWithoutFeedback>
           </View>
-          <AppTitle style={defaultStyles.title}>New Payment</AppTitle>
+          <AppTitle style={defaultStyles.title}>Edit Account</AppTitle>
         </View>
-        <PaymentForm
-          initialValues={{
-            title: "",
-            amount: "",
-            payer: "",
-            payees: initialPayees,
-            details: "",
-          }}
-          onSubmit={(values) => {
-            addPayment(values);
-          }}
+        <UserDetailsForm
+          initialValues={{ name: initialName, pronouns: initialPronouns }}
+          onSubmit={onSubmit}
         />
       </Screen>
     </Modal>

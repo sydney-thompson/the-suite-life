@@ -1,4 +1,7 @@
 
+# Firebase credentials
+suite-life/app/components/firebase/firebaseConfig.js
+
 # Created by https://www.gitignore.io/api/reactnative,intellij,android,osx,xcode
 
 ### Android ###

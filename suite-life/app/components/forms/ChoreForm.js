@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View, FlatList } from "react-native";
 import * as Yup from "yup";
 
-import AppText from "../AppText";
+import AppText from "../text/AppText";
 import { auth } from "../firebase/firebase";
 import {
   AppForm as Form,
@@ -15,7 +15,7 @@ import {
 import colors from "../../config/colors";
 import daysOfWeek from "../../config/daysOfWeek";
 import defaultStyles from "../../config/styles";
-import HorizontalSpaceSeparator from "../HorizontalSpaceSeparator";
+import HorizontalSpaceSeparator from "../lists/HorizontalSpaceSeparator";
 import { disconnectFromSuitemates, getSuitemates } from "../firebase/suites";
 import { getUserData } from "../firebase/users";
 

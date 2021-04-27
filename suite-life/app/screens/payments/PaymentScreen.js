@@ -10,16 +10,16 @@ import {
   Alert,
 } from "react-native";
 import AppButton from "../../components/AppButton";
-import AppText from "../../components/AppText";
-import BalanceDisplay from "../../components/BalanceDisplay";
+import AppText from "../../components/text/AppText";
+import BalanceDisplay from "../../components/lists/BalanceDisplay";
 import Screen from "../../components/Screen";
-import AppTitle from "../../components/AppTitle";
+import AppTitle from "../../components/text/AppTitle";
 import colors from "../../config/colors";
 import defaultStyles from "../../config/styles";
 import routes from "../../navigation/routes";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator";
-import CompleteAction from "../../components/CompleteAction";
+import HorizontalSpaceSeparator from "../../components/lists/HorizontalSpaceSeparator";
+import CompleteAction from "../../components/lists/CompleteAction";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import PaymentForm from "../../components/forms/PaymentForm";
 import { auth } from "firebase";
@@ -80,7 +80,7 @@ export default function PaymentScreen({ navigation }) {
   useEffect(() => {
     let mounted = true;
     if (mounted) {
-      if (suitemates.length > 0) {
+      if (suitemates.length > 0 && suitemates[0].balances) {
         for (const [key, value] of Object.entries(suitemates[0].balances)) {
           initialPayees[key] = false;
           setInitialPayees(initialPayees);
@@ -103,10 +103,8 @@ export default function PaymentScreen({ navigation }) {
         initialPayees={initialPayees}
       />
 
-      <View
-        style={[defaultStyles.cardContainer, defaultStyles.headerContainer]}
-      >
-        <AppText style={defaultStyles.headerText}>Transactions</AppText>
+      <View style={[styles.cardContainer, styles.headerContainer]}>
+        <AppText style={styles.headerText}>Transactions</AppText>
       </View>
 
       <View style={[defaultStyles.cardContainer, { flex: 1 }]}>
@@ -144,6 +142,44 @@ const styles = StyleSheet.create({
   screen: {
     alignItems: "center",
   },
+  clearedContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  clearedText: {
+    color: colors.light,
+    fontSize: 25,
+    fontWeight: "600",
+  },
+  listContainer: {
+    width: "100%",
+  },
+  cardContainer: {
+    backgroundColor: colors.primary,
+    borderRadius: 20,
+    padding: 15,
+    width: "95%",
+    margin: "2%",
+  },
+  headerContainer: {
+    paddingTop: 10,
+    alignItems: "center",
+    backgroundColor: colors.secondary,
+    flex: 0,
+    height: "11%",
+    justifyContent: "center",
+  },
+  cardText: {
+    marginBottom: 10,
+    fontSize: 30,
+    fontWeight: "600",
+  },
+  headerText: {
+    color: colors.white,
+    fontWeight: "500",
+    fontSize: 40,
+  },
   topButtonContainer: {
     alignItems: "center",
     marginBottom: -5,
@@ -152,6 +188,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: "center",
     width: "95%",
-    marginBottom: 10,
+  },
+  deleteIconContainer: {
+    position: "absolute",
+    left: 10,
   },
 });

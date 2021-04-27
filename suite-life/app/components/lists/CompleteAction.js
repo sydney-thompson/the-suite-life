@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableWithoutFeedback } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import colors from "../config/colors";
+import colors from "../../config/colors";
 
 const CompleteAction = ({
   color = "secondary",

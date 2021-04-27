@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
-import AppText from "../components/AppText";
+import AppText from "../components/text/AppText";
 import AppButton from "../components/AppButton";
-import AppTitle from "../components/AppTitle";
+import AppTitle from "../components/text/AppTitle";
 import colors from "../config/colors";
-import HorizontalSpaceSeparator from "../components/HorizontalSpaceSeparator";
+import HorizontalSpaceSeparator from "../components/lists/HorizontalSpaceSeparator";
 import routes from "../navigation/routes";
 import Screen from "../components/Screen";
-import Suitemate from "../components/Suitemate";
+import Suitemate from "../components/lists/Suitemate";
 import {
   disconnectFromSuitemates,
   getSuitemates,

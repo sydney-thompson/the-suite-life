@@ -1,4 +1,4 @@
-﻿# The Suite Life
+# The Suite Life
 
 The Suite Life is an app built to handle the daily frustrations of living with roommates. Easily keep track of suite to-dos, including chores and transactions, and stop chasing down your suitemates for the small stuff.
 

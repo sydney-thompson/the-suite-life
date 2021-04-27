@@ -2,8 +2,8 @@ import React from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 
 import AppButton from "../../components/AppButton";
-import AppText from "../../components/AppText";
-import AppTitle from "../../components/AppTitle";
+import AppText from "../../components/text/AppText";
+import AppTitle from "../../components/text/AppTitle";
 import colors from "../../config/colors";
 import defaultStyles from "../../config/styles";
 import { googleLogin, googleLogout } from "../../components/auth/googleAuth";

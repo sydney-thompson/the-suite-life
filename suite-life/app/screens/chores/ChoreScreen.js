@@ -10,32 +10,28 @@ import {
   Alert,
   Modal,
 } from "react-native";
-import AppButton from "../../components/AppButton";
-import ChoresButton from "../../components/ChoresButton";
-import AppText from "../../components/AppText";
-import Screen from "../../components/Screen";
-import colors from "../../config/colors";
-
-import { auth, db } from "../../components/firebase/firebase";
-import * as choreFunctions from "../../components/firebase/chores";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+import AppButton from "../../components/AppButton";
+import AppText from "../../components/text/AppText";
+import AppTitle from "../../components/text/AppTitle";
+import colors from "../../config/colors";
+import Chore from "../../components/lists/Chore";
+import ChoreForm from "../../components/forms/ChoreForm";
+import CompleteAction from "../../components/lists/CompleteAction";
+import daysOfWeek from "../../config/daysOfWeek";
 import defaultStyles from "../../config/styles";
-import routes from "../../navigation/routes";
+import HorizontalSpaceSeparator from "../../components/lists/HorizontalSpaceSeparator";
+import Screen from "../../components/Screen";
+import { auth } from "../../components/firebase/firebase";
+import * as choreFunctions from "../../components/firebase/chores";
 import {
   disconnectFromChores,
   disconnectFromSuitemates,
   getSuitemates,
 } from "../../components/firebase/suites";
 import { getUserData } from "../../components/firebase/users";
-import HorizontalSpaceSeparator from "../../components/HorizontalSpaceSeparator";
-import Chore from "../../components/Chore";
-import AppTitle from "../../components/AppTitle";
-import CompleteAction from "../../components/CompleteAction";
-import ChoreForm from "../../components/forms/ChoreForm";
-import { add } from "react-native-reanimated";
-import daysOfWeek from "../../config/daysOfWeek";
 
 export default function ChoreScreen({ navigation }) {
   const [chores, setChores] = useState([]);
@@ -161,7 +157,7 @@ export default function ChoreScreen({ navigation }) {
           <ChoreForm
             initialValues={initialValues}
             onSubmit={(values) => {
-              if (initialValues && !(initialValues.id == "")) {
+              if (initialValues && initialValues.id != null) {
                 submitEdits(values);
               } else {
                 addChore(values);
@@ -171,11 +167,13 @@ export default function ChoreScreen({ navigation }) {
         </Screen>
       </Modal>
 
-      <View style={[styles.cardContainer, styles.headerContainer]}>
-        <AppText style={styles.headerText}>Chores</AppText>
+      <View
+        style={[defaultStyles.cardContainer, defaultStyles.headerContainer]}
+      >
+        <AppText style={defaultStyles.headerText}>Chores</AppText>
       </View>
 
-      <View style={[styles.cardContainer, { flex: 1 }]}>
+      <View style={[defaultStyles.cardContainer, { flex: 1 }]}>
         {chores.length === 0 ? (
           <View style={styles.clearedContainer}>
             <AppText style={styles.clearedText}>{"All cleared!"}</AppText>
@@ -244,6 +242,10 @@ const styles = StyleSheet.create({
   screen: {
     alignItems: "center",
   },
+  buttonContainer: {
+    alignItems: "center",
+    width: "95%",
+  },
   clearedContainer: {
     flex: 1,
     alignItems: "center",
@@ -254,55 +256,18 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "600",
   },
+  deleteIconContainer: {
+    position: "absolute",
+    left: 10,
+  },
   listContainer: {
     width: "100%",
   },
-  cardContainer: {
-    backgroundColor: colors.primary,
-    borderRadius: 20,
-    padding: 15,
-    width: "95%",
-    margin: "2%",
-  },
-  headerContainer: {
-    paddingTop: 10,
-    alignItems: "center",
-    backgroundColor: colors.secondary,
-    flex: 0,
-    height: "11%",
-    justifyContent: "center",
-  },
-  cardText: {
-    marginBottom: 10,
-    fontSize: 30,
-    fontWeight: "600",
-  },
-  headerText: {
-    color: colors.white,
-    fontWeight: "500",
-    fontSize: 40,
-  },
-
-  topButtonContainer: {
-    alignItems: "center",
-    marginBottom: -5,
-    width: "95%",
-  },
-
-  buttonContainer: {
-    alignItems: "center",
-    width: "95%",
-  },
-
   modalHeaderContainer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-  },
-  deleteIconContainer: {
-    position: "absolute",
-    left: 10,
   },
   modal: {
     alignItems: "flex-start",
@@ -311,5 +276,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     marginBottom: 0,
+  },
+  topButtonContainer: {
+    alignItems: "center",
+    marginBottom: -5,
+    width: "95%",
   },
 });
