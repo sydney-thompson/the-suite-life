@@ -16,7 +16,7 @@ Instructions for general usage
 
 The Suite Life uses **Google authentication**, meaning that you can use your Google account to log in. Once you have created your account, you will be prompted to either create and name a suite or join a suite (using the 8-digit code displayed on the suitemates screen in-app). You will then be asked to accept a list of **suite rules**; these are visible to and editable by the entire suite, so that everyone agrees on a basic set of rules.
 
-![Title page](https://imgur.com/9PFccUE "Title Page")
+![Title page](https://i.imgur.com/9PFccUE.png "Title Page")
 ![Sign-up page](https://imgur.com/a/STwDGk5 "Sign-up Page")
 ![Suite creation page](https://imgur.com/a/51HgACP "Suite Creation Page")
 
