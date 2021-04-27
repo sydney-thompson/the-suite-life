@@ -1,9 +1,17 @@
 import React, { useEffect, componentDidMount } from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 
 import AppButton from "../../components/AppButton";
-import AppText from "../../components/AppText";
-import AppTitle from "../../components/AppTitle";
+import AppText from "../../components/text/AppText";
+import AppTitle from "../../components/text/AppTitle";
 import colors from "../../config/colors";
 import Screen from "../../components/Screen";
 import RegistrationContext from "../../components/auth/RegistrationContext";
@@ -23,36 +31,35 @@ export default function HouseRulesScreen({ navigation }) {
 
   return (
     <RegistrationContext.Consumer>
-        {(setRegistered) => (
-            <Screen style={styles.screen}>
-                <View style={styles.titleContainer}>
-                  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                    <AppText style={styles.tagline}>House Rules</AppText>
-                  </TouchableWithoutFeedback>
-                </View>
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    defaultValue={text}
-                    style={styles.input}
-                    editable={false}
-                    onChangeText={text => setText(text)}
-                    multiline={true}
-                  />
-                </View>
-                <View style={styles.buttonContainer}>
-                    <AppButton
-                    title="I Accept"
-                    textStyle={styles.buttonText}
-                    color="white"
-                    
-                    onPress={() => {
-                      updateRules(text);
-                      setRegistered.setRegistered(true);
-                    }}
-                    />
-                </View>
-            </Screen>
-        )}
+      {(setRegistered) => (
+        <Screen style={styles.screen}>
+          <View style={styles.titleContainer}>
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+              <AppText style={styles.tagline}>House Rules</AppText>
+            </TouchableWithoutFeedback>
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              defaultValue={text}
+              style={styles.input}
+              editable={false}
+              onChangeText={(text) => setText(text)}
+              multiline={true}
+            />
+          </View>
+          <View style={styles.buttonContainer}>
+            <AppButton
+              title="I Accept"
+              textStyle={styles.buttonText}
+              color="white"
+              onPress={() => {
+                updateRules(text);
+                setRegistered.setRegistered(true);
+              }}
+            />
+          </View>
+        </Screen>
+      )}
     </RegistrationContext.Consumer>
   );
 }

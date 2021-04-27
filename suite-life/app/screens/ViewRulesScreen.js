@@ -10,8 +10,8 @@ import {
 } from "react-native";
 
 import AppButton from "../components/AppButton";
-import AppText from "../components/AppText";
-import AppTitle from "../components/AppTitle";
+import AppText from "../components/text/AppText";
+import AppTitle from "../components/text/AppTitle";
 import colors from "../config/colors";
 import Screen from "../components/Screen";
 import RegistrationContext from "../components/auth/RegistrationContext";

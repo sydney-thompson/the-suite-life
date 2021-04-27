@@ -16,9 +16,9 @@ import {
 } from "../../components/forms";
 import colors from "../../config/colors";
 import Screen from "../../components/Screen";
-import AppText from "../../components/AppText";
+import AppText from "../../components/text/AppText";
 import routes from "../../navigation/routes";
-import AppTitle from "../../components/AppTitle";
+import AppTitle from "../../components/text/AppTitle";
 import { auth } from "../../components/firebase/firebase";
 import {
   checkSuiteExists,

@@ -4,7 +4,7 @@ import { useFormikContext } from "formik";
 
 import defaultStyles from "../../config/styles";
 import colors from "../../config/colors";
-import AppText from "../AppText";
+import AppText from "../text/AppText";
 
 export default function AppFormRadioButton({ name, label, ...otherProps }) {
   const { setFieldValue, values, errors, touched } = useFormikContext();
