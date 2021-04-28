@@ -12,6 +12,7 @@ import Screen from "./Screen";
 import colors from "../config/colors";
 import defaultStyles from "../config/styles";
 import { addNewPayment } from "./firebase/payments";
+import { Alert } from "react-native";
 
 export default function AddPaymentModal({
   modalVisible,
